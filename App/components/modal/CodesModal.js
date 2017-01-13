@@ -31,26 +31,74 @@ class CodesModal extends Component{
         }
     }
 
+    onCodigoSelect(codigo){
+        if(this.props.onCodigoSelect!==undefined&&this.props.onCodigoSelect!==null)
+        {
+            this.props.onCodigoSelect(codigo);
+        }
+    }
+
+
+    renderRow(rowData){
+
+        var row=
+            <View>
+                <TouchableOpacity onPress={
+                    function() {
+                        //TODO:close this modal
+                        this.close();
+                        this.onCodigoSelect(rowData.codigo);
+                    }.bind(this)}>
+                    <View style={{flex:1,flexDirection:'row',padding:16,borderBottomWidth:1,borderColor:'#ddd',justifyContent:'center'}}>
+                        <Text>{rowData.codigo}</Text>
+                    </View>
+                </TouchableOpacity>
+
+            </View>;
+
+        return row;
+    }
+
+
 
     constructor(props)
     {
         super(props);
-
+        const {codes}=this.props;
         this.state={
-            city:null,
-            hasPhoto:false,
-
+            codes:codes
         }
     }
 
 
     render(){
 
+        var listView=null;
+        const {codes}=this.props;
+        if(codes!==undefined&&codes!==null&&Object.prototype.toString.call(codes)=='[object Array]')
+        {
+
+            var data=codes;
+            var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
+            listView=
+                <ScrollView>
+                    <ListView
+                        automaticallyAdjustContentInsets={false}
+                        dataSource={ds.cloneWithRows(data)}
+                        renderRow={this.renderRow.bind(this)}
+                    />
+                </ScrollView>;
+        }else{}
+
+
+
         return (
             <View style={{flex:1,backgroundColor:'#f0f0f0'}}>
 
+                {/*header*/}
                 <View style={[{backgroundColor:'#11c1f3',padding:4,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
-                    <View style={{flex:1}}>
+                    <View style={{flex:1,paddingLeft:10}}>
                         <TouchableOpacity onPress={
                             ()=>{
                                 this.close();
@@ -60,46 +108,18 @@ class CodesModal extends Component{
                         </TouchableOpacity>
                     </View>
                     <Text style={{fontSize:17,flex:3,textAlign:'center',color:'#fff'}}>
-                        上传行驶证照片
+                        选择条型码
                     </Text>
                     <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center'}}>
                     </View>
                 </View>
 
-                <View style={{flex:1,padding:5}}>
-                    <ScrollView style={{flex:1}}>
-                        <View style={{flex:1,padding:10}}>
-                            <View style={{flex:1,color:10}}>
-
-                                <View style={{flex:4}}>
-                                    <View style={styles.container}>
-
-                                        <View>
-                                            <Icon name='user-circle' size={30} color="#444"/>
-                                        </View>
-
-                                        <TouchableOpacity onPress={
-                                            ()=>{
-                                                this.setState({hasPhoto:!this.state.hasPhoto});
-                                            }}>
-                                            {
-                                                <Image style={styles.thumb} source={ require('../../img/Octocat.png')}/>
-                                            }
-                                        </TouchableOpacity>
-
-                                    </View>
-
-                                </View>
-                            </View>
-
-                            <View style={{flex:1}}>
-                                <Text>上传行驶证1面</Text>
-                            </View>
-
-                        </View>
-
-                    </ScrollView>
+                {/*条型码列表*/}
+                <View style={{padding:10}}>
+                    {listView}
+                    <View style={{height:50,width:width}}></View>
                 </View>
+
 
             </View>
         );

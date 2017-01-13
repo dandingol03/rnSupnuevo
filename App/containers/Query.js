@@ -62,6 +62,11 @@ class Query extends Component{
         this.setState({codesModalVisible:val})
     }
 
+    onCodigoSelect(codigo)
+    {
+        this.setState({codigo: codigo});
+    }
+
     queryGoodsCode(codeNum){
         var code = parseInt(codeNum);
         const { merchantId } = this.props;
@@ -94,7 +99,8 @@ class Query extends Component{
         this.state = {
             uploadModalVisible:false,
             goods:{},
-            codesModalVisible:false
+            codesModalVisible:false,
+            codigo:null
         };
     }
 
@@ -302,7 +308,11 @@ class Query extends Component{
                         onClose={()=>{
                             this.closeCodesModal(!this.state.codesModalVisible)
                         }}
-
+                        onCodigoSelect={
+                            (codigo)=>{
+                                this.onCodigoSelect(codigo);
+                            }}
+                        codes={this.state.codes}
                     />
                 </Modal>
 
