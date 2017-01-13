@@ -26,7 +26,7 @@ var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../proxy/Proxy');
 import Config from '../../config';
-import UploadLicenseCardModal from '../components/modal/UploadLicenseCardModal';
+import CodesModal from '../components/modal/CodesModal';
 
 class Query extends Component{
 
@@ -126,10 +126,13 @@ class Query extends Component{
                             <TextInput
                                 style={{height: 46,paddingLeft:10,paddingRight:10,paddingTop:6,paddingBottom:6}}
                                 onChangeText={(codeNum) => {
-                                    if(codeNum.toString().length>=4)
+                                    if(codeNum.toString().length==4)
                                     {
+                                        this.state.goods.codeNum=codeNum;
+                                        this.setState({goods:this.state.goods});
                                         this.queryGoodsCode(codeNum.toString().substring(0,4));
-                                    }else{
+                                    }else if(codeNum.toString().length>4){}
+                                    else{
                                         this.state.goods.codeNum=codeNum;
                                         this.setState({goods:this.state.goods});
                                     }
@@ -295,7 +298,7 @@ class Query extends Component{
                     visible={this.state.codesModalVisible}
                     onRequestClose={() => {alert("Modal has been closed.")}}>
 
-                    <UploadLicenseCardModal
+                    <CodesModal
                         onClose={()=>{
                             this.closeCodesModal(!this.state.codesModalVisible)
                         }}
