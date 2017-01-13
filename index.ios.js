@@ -12,6 +12,7 @@ import {
   View
 } from 'react-native';
 
+import App from './App/index';
 export default class rnSupnuevo extends Component {
   render() {
     return (
@@ -50,4 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('rnSupnuevo', () => rnSupnuevo);
+AppRegistry.registerComponent('rnSupnuevo', () => App);
