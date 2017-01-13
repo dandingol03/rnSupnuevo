@@ -13,6 +13,7 @@ import  {
     TextInput,
     View,
     Alert,
+    Modal,
     TouchableOpacity
 } from 'react-native';
 
@@ -25,27 +26,9 @@ var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../proxy/Proxy');
 import Config from '../../config';
+import UploadLicenseCardModal from '../components/modal/UploadLicenseCardModal';
 
 class Query extends Component{
-
-    goBack(){
-        const { navigator } = this.props;
-        if(navigator) {
-            navigator.pop();
-        }
-    }
-
-
-    uploadLicenseCard(val){
-        this.setState({uploadModalVisible:val})
-    }
-
-    appendCarNumPrefixByCity(val){
-        this.setState({modalVisible:val})
-    }
-
-
-
 
     fetchData(){
         Proxy.post({
@@ -74,20 +57,49 @@ class Query extends Component{
     }
 
 
+
+    closeCodesModal(val){
+        this.setState({codesModalVisible:val})
+    }
+
+    queryGoodsCode(codeNum){
+        var code = parseInt(codeNum);
+        const { merchantId } = this.props;
+        Proxy.post({
+            url:Config.server+'supnuevo/supnuevoGetQueryDataListByInputStringBs.do',
+            headers: {
+                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: "codigo=" + code + "&merchantId=" + merchantId
+        },(json)=> {
+            var errorMsg=json.errorMsg;
+            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                alert(errorMsg);
+
+            }else{
+                var codes=json.array;
+                this.setState({codes: codes,codesModalVisible:true});
+            }
+        }, (err) =>{
+            alert(err);
+        });
+
+    }
+
+
     constructor(props)
     {
         super(props);
-        const { accessToken } = this.props;
         this.state = {
             uploadModalVisible:false,
-            goods:{}}
-        ;
+            goods:{},
+            codesModalVisible:false
+        };
     }
 
 
     render(){
-
-        const { merchantId } = this.props;
 
         return (
             <View style={{flex:1}}>
@@ -114,9 +126,13 @@ class Query extends Component{
                             <TextInput
                                 style={{height: 46,paddingLeft:10,paddingRight:10,paddingTop:6,paddingBottom:6}}
                                 onChangeText={(codeNum) => {
-                                    this.state.goods.codeNum=codeNum;
-                                    this.setState({goods:this.state.goods});
-
+                                    if(codeNum.toString().length>=4)
+                                    {
+                                        this.queryGoodsCode(codeNum.toString().substring(0,4));
+                                    }else{
+                                        this.state.goods.codeNum=codeNum;
+                                        this.setState({goods:this.state.goods});
+                                    }
                                 }}
                                 value={this.state.goods.codeNum}
                                 placeholder='请输入条码最后四位'
@@ -270,9 +286,22 @@ class Query extends Component{
                         </View>
                     </View>
 
-
-
                 </View>
+
+
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.codesModalVisible}
+                    onRequestClose={() => {alert("Modal has been closed.")}}>
+
+                    <UploadLicenseCardModal
+                        onClose={()=>{
+                            this.closeCodesModal(!this.state.codesModalVisible)
+                        }}
+
+                    />
+                </Modal>
 
 
             </View>);
