@@ -63,7 +63,34 @@ class Query extends Component{
 
     onCodigoSelect(codigo)
     {
-        this.setState({codigo: codigo});
+
+        Proxy.post({
+            url:Config.server+"/supnuevo/supnuevoGetSupnuevoBuyerPriceFormByCodigoBs.do",
+            headers: {
+                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: "codigo=" + code + "&merchantId=" + merchantId
+        },(json)=> {
+            var goodInfo = json.object;
+            this.setState({selectedCodeInfo: goodInfo,codigo:codigo});
+
+            if(this.state.selectedCodeInfo.setSizeValue!=undefined&&this.state.selectedCodeInfo.setSizeValue!=null
+                &&this.state.selectedCodeInfo.sizeUnit!=undefined&&this.state.selectedCodeInfo.sizeUnit!=null)
+            {
+                this.state.selectedCodeInfo.goodName=this.state.selectedCodeInfo.nombre+','+
+                    this.state.selectedCodeInfo.setSizeValue+','+this.state.selectedCodeInfo.sizeUnit;
+            }
+            else{
+                this.state.selectedCodeInfo.goodName=this.state.selectedCodeInfo.nombre;
+            }
+
+        }, (err) =>{
+            alert(err);
+            this.setState({codigo:codigo});
+        });
+
+
     }
 
     queryGoodsCode(codeNum){
@@ -99,14 +126,17 @@ class Query extends Component{
             uploadModalVisible:false,
             goods:{},
             codesModalVisible:false,
-            codigo:null
+            codigo:null,
+            selectedCodeInfo:{}
         };
     }
 
 
     render(){
 
-        var username= this.props.username;
+        var username = this.props.username;
+        var codigo = this.state.selectedCodeInfo.codigo;
+        var goodName = this.state.selectedCodeInfo.goodName;
         return (
             <View style={{flex:1}}>
 
@@ -186,7 +216,7 @@ class Query extends Component{
                             <Text>商品条码:</Text>
                         </View>
                         <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start'}}>
-                            <Text>7790396921111</Text>
+                            <Text>{codigo}</Text>
                         </View>
                     </View>
 
@@ -197,7 +227,7 @@ class Query extends Component{
                             <Text>商品名称:</Text>
                         </View>
                         <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start'}}>
-                            <Text>黑人牙膏</Text>
+                            <Text>{goodName}</Text>
                         </View>
                     </View>
 
@@ -210,8 +240,14 @@ class Query extends Component{
                         <View style={{flex:5}}>
                             <TextInput
                                 style={{height: 40}}
-                                onChangeText={(carNum) => this.setState({carNum})}
-                                value={this.state.carNum}
+                                onChangeText={(priceShow) => {
+
+                                        this.state.selectedCodeInfo.priceShow=priceShow;
+                                        this.setState({selectedCodeInfo:this.state.selectedCodeInfo});
+
+                                }}
+
+                                value={this.state.priceShow}
                                 placeholder='请输入您的价格'
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"
