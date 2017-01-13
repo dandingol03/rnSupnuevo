@@ -7,35 +7,64 @@ import {
     Navigator
 } from 'react-native';
 
-
 import { connect } from 'react-redux';
-
-
-
-
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Login from '../containers/Login';
-
-
 import FontAwesome from "react-native-vector-icons/FontAwesome";
-
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
+import TabNavigator from 'react-native-tab-navigator';
+
+import Login from '../containers/Login';
+import Query from '../containers/Query';
 
 
 
 const tabBarTintColor = '#f8f8f8';// 标签栏的背景颜色
 const tabTintColor = '#3393F2'; // 被选中图标颜色
 
-
-
 class App extends React.Component {
 
     constructor(props) {
         super(props);
         this.state={
-            tab:'product',
-            selectedTab:'product'
+            tab:'query',
+            selectedTab:'query'
         }
+    }
+
+
+    _createNavigatorItem(route,icon,title)
+    {
+
+        var component=Query;
+        switch (route) {
+            case 'query':
+                component=Query;
+                break;
+            default:
+                break;
+        }
+
+
+        return (
+
+            <TabNavigator.Item
+                selected={this.state.selectedTab === route}
+                title={title!==undefined&&title!==null?title:route}
+                renderIcon={() => <Icon name={icon} size={25}/>}
+                renderSelectedIcon={() => <Icon name={icon} size={25} color='#00f' />}
+                onPress={() => this.setState({ selectedTab: route })}>
+                <Navigator
+                    initialRoute={{ name: route, component:component }}
+                    configureScene={(route) => {
+                        return Navigator.SceneConfigs.HorizontalSwipeJumpFromRight;
+                      }}
+                    renderScene={(route, navigator) => {
+                        let Component = route.component;
+                        return <Component {...route.params} navigator={navigator} />
+                      }} />
+            </TabNavigator.Item>
+        );
+
     }
 
 
@@ -43,10 +72,12 @@ class App extends React.Component {
         let auth=this.props.auth;
         if(auth==true)
         {
-            return (
-                <View>
-                    <Text>we have pass,yet</Text>
-                </View>);
+
+            return(
+                <TabNavigator>
+                    {this._createNavigatorItem('query','home','改价')}
+                </TabNavigator>
+            );
         }
         else{
             return (<Login/>);
