@@ -8,7 +8,8 @@ import {
 } from 'react-native';
 
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import Icon from 'react-native-vector-icons/FontAwesome.js';
+
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import TabNavigator from 'react-native-tab-navigator';

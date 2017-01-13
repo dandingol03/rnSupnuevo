@@ -21,7 +21,6 @@ export let loginAction=function(username,password){
             },
             body: "password=" + password + "&loginName=" + username
         },(json)=> {
-
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -35,7 +34,7 @@ export let loginAction=function(username,password){
                 //     $state.go("thefifth");
                 // }
 
-                dispatch(getSession({merchantStates:json.merchantStates,supnuevoMerchantId:json.merchantId}));
+                dispatch(getSession({username:username,merchantStates:json.merchantStates,supnuevoMerchantId:json.merchantId}));
 
             }
 
@@ -57,7 +56,8 @@ let getSession= (ob)=>{
             supnuevoMerchantId:ob.supnuevoMerchantId,
             merchantStates:ob.merchantStates,
             auth:true,
-            validate:true
+            validate:true,
+            username:ob.username
         };
     else
         return {

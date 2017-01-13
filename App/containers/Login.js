@@ -24,9 +24,9 @@ var t=require('tcomb-form-native');
 var Form = t.form.Form;
 
 var Person = t.struct({
-    'username': t.String,              // a required string
-    'password': t.String,  // an optional string
-    rememberMe: t.Boolean        // a boolean
+    'username': t.String,   // a required string
+    'password': t.String,   // an optional string
+    rememberMe: t.Boolean   // a boolean
 });
 
 var options = {};
@@ -114,8 +114,6 @@ var  Login =React.createClass({
 
 export default connect(
 )(Login);
-
-
 
 
 var styles = StyleSheet.create({

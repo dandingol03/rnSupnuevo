@@ -20,7 +20,8 @@ let user = (state = initialState, action) => {
                 validate:action.validate,
                 auth:action.auth,
                 supnuevoMerchantId:action.supnuevoMerchantId,
-                merchantStates:action.merchantStates
+                merchantStates:action.merchantStates,
+                username:action.username
             })
         default:
             return state;

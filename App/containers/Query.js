@@ -57,7 +57,6 @@ class Query extends Component{
     }
 
 
-
     closeCodesModal(val){
         this.setState({codesModalVisible:val})
     }
@@ -101,6 +100,7 @@ class Query extends Component{
 
     render(){
 
+        var username= this.props.username;
         return (
             <View style={{flex:1}}>
 
@@ -110,7 +110,7 @@ class Query extends Component{
 
                     </View>
                     <Text style={{fontSize:17,flex:3,textAlign:'center',color:'#fff'}}>
-                        solrojo
+                        {username}
                     </Text>
                     <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center'}}>
                     </View>
@@ -344,7 +344,8 @@ var styles = StyleSheet.create({
 
 
 module.exports = connect(state=>({
-        merchantId:state.user.supnuevoMerchantId
+        merchantId:state.user.supnuevoMerchantId,
+        username:state.user.username
     })
 )(Query);
 
