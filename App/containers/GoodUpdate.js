@@ -53,7 +53,7 @@ class GoodUpdate extends Component{
     {
         const {merchantId}=this.props;
         Proxy.post({
-            url:Config.server+"/supnuevo/supnuevoGetSupnuevoBuyerPriceFormByCodigoBs.do",
+            url:Config.server+"supnuevo/supnuevoGetSupnuevoBuyerPriceFormByCodigoBs.do",
             headers: {
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'
