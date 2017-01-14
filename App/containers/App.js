@@ -10,17 +10,11 @@ import {
 import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome.js';
 
-import FontAwesome from "react-native-vector-icons/FontAwesome";
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import TabNavigator from 'react-native-tab-navigator';
 
 import Login from '../containers/Login';
 import Query from '../containers/Query';
-
-
-
-const tabBarTintColor = '#f8f8f8';// 标签栏的背景颜色
-const tabTintColor = '#3393F2'; // 被选中图标颜色
 
 class App extends React.Component {
 
@@ -31,8 +25,6 @@ class App extends React.Component {
             selectedTab:'query'
         }
     }
-
-
     _createNavigatorItem(route,icon,title)
     {
 
@@ -45,9 +37,7 @@ class App extends React.Component {
                 break;
         }
 
-
         return (
-
             <TabNavigator.Item
                 selected={this.state.selectedTab === route}
                 title={title!==undefined&&title!==null?title:route}
@@ -65,9 +55,7 @@ class App extends React.Component {
                       }} />
             </TabNavigator.Item>
         );
-
     }
-
 
     render() {
         let auth=this.props.auth;

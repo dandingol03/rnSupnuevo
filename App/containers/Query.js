@@ -63,7 +63,6 @@ class Query extends Component{
 
     onCodigoSelect(codigo)
     {
-
         Proxy.post({
             url:Config.server+"/supnuevo/supnuevoGetSupnuevoBuyerPriceFormByCodigoBs.do",
             headers: {
@@ -73,7 +72,7 @@ class Query extends Component{
             body: "codigo=" + code + "&merchantId=" + merchantId
         },(json)=> {
             var goodInfo = json.object;
-            this.setState({selectedCodeInfo: goodInfo,codigo:codigo});
+            this.setState({selectedCodeInfo:goodInfo,codigo:codigo});
 
             if(this.state.selectedCodeInfo.setSizeValue!=undefined&&this.state.selectedCodeInfo.setSizeValue!=null
                 &&this.state.selectedCodeInfo.sizeUnit!=undefined&&this.state.selectedCodeInfo.sizeUnit!=null)
