@@ -36,6 +36,10 @@ import Config from '../../config';
 import _ from 'lodash';
 import CodesModal from '../components/modal/CodesModal';
 import GroupInfoManage from './GroupInfoManage';
+import Modalbox from 'react-native-modalbox';
+
+
+
 
 class GroupQuery extends Component{
 
@@ -70,7 +74,7 @@ class GroupQuery extends Component{
         }
     }
 
-    navigateToGroupInfoManage(groupInfo,code){
+    navigateToGroupInfoManage(groupInfo,code,containedInGroup){
         const { navigator } = this.props;
         if(navigator) {
             navigator.push({
@@ -78,7 +82,8 @@ class GroupQuery extends Component{
                 component: GroupInfoManage,
                 params: {
                     groupInfo:groupInfo,
-                    code:code
+                    code:code,
+                    containedInGroup:containedInGroup
                 }
             })
         }
@@ -102,7 +107,7 @@ class GroupQuery extends Component{
             <View>
                 <TouchableOpacity
                    onPress={()=>{
-                    this.queryCommodityListByGroupId(rowData.groupId);
+                    this.queryCommodityListByGroupId(rowData.groupId,rowData.groupNum,rowData.groupName,this.state.code);
                    }}>
                     <View style={lineStyle}>
 
@@ -174,8 +179,15 @@ class GroupQuery extends Component{
         this.setState({codesModalVisible:val});
     }
 
-    queryCommodityListByGroupId(groupId)
+    closeGroupAppendModal(val)
     {
+        this.setState({groupAppendModalVisible:val});
+    }
+
+    queryCommodityListByGroupId(groupId,groupNum,groupName,code)
+    {
+
+        const groupInfo=this.state.groupInfo;
 
         Proxy.post({
             url:Config.server+"supnuevo/supnuevoGetSupnuevoCommonCommodityListOfGroupMobile.do",
@@ -188,14 +200,12 @@ class GroupQuery extends Component{
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
-                this.state.query.codeNum=null;
-                this.setState({query:this.state.query});
             }else{
-                var groupInfo=json;
-                if(json.groupNum!==undefined&&json.groupNum!==null)
+                var info=json;
+                if(info.array!==undefined&&info.array!==null)
                 {
-                    //同个组的所有商品管理
-                    groupInfo.array.map(function (commodity,i) {
+                    //同个组的所有商品信息
+                    info.array.map(function (commodity,i) {
 
                         if(commodity.setSizeValue!=undefined&&commodity.setSizeValue!=null
                             &&commodity.sizeUnit!=undefined&&commodity.sizeUnit!=null)
@@ -207,15 +217,14 @@ class GroupQuery extends Component{
                             commodity.goodName=commodity.nombre;
                         }
                     });
-                    this.navigateToGroupInfoManage(groupInfo,code);
-                }else{
-                    //多个组的信息
-                    this.setState({groupInfo: groupInfo,query:query,code:code});
-                }
+                    info.groupId=groupId;
+                    info.groupNum=groupNum;
+                    info.groupName=groupName;
+                    this.navigateToGroupInfoManage(info,code,false);
+                }else{}
             }
         }, (err) =>{
             alert(err);
-            this.setState({query:query});
         });
     }
 
@@ -264,7 +273,7 @@ class GroupQuery extends Component{
                             commodity.goodName=commodity.nombre;
                         }
                     });
-                    this.navigateToGroupInfoManage(groupInfo,code);
+                    this.navigateToGroupInfoManage(groupInfo,code,true);
                 }else{
                     //多个组的信息
                     this.setState({groupInfo: groupInfo,query:query,code:code});
@@ -303,6 +312,52 @@ class GroupQuery extends Component{
         });
     }
 
+    commodityGroupAdd()
+    {
+        var groupName=this.state.groupName;
+        const {merchantId}=this.props;
+        if(groupName!==undefined&&groupName!==null&&groupName!='')
+        {
+            Proxy.post({
+                url:Config.server+'supnuevo/supnuevoSaveOrUpdateSupnuevoBuyerCommodityGroupMobile.do',
+                headers: {
+                    'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: "groupName=" + groupName + "&groupId=" + ''+'&supnuevoMerchantId='+merchantId
+            },(json)=> {
+                var errorMsg=json.errorMsg;
+                if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                    alert(errorMsg);
+                }else{
+                    Alert.alert(
+                        '信息',
+                        '组添加成功',
+                        [
+                            {text: 'OK',onPress: () =>  this.refs.modal3.close()}
+                        ]
+                    );
+                }
+            }, (err) =>{
+                alert(err);
+            });
+        }else {
+            Alert.alert(
+                '错误',
+                '请填写完组名再点击确认',
+                [
+                    {text: 'OK'}
+                ]
+            );
+        }
+    }
+
+
+    openGroupAppendModal()
+    {
+        this.setState({groupAppendModalVisible:!this.state.groupAppendModalVisible});
+    }
+
     constructor(props)
     {
         super(props);
@@ -312,6 +367,7 @@ class GroupQuery extends Component{
             groupInfo:{},
             selectAll:false,
             codesModalVisible:false,
+            groupAppendModalVisible:false,
             code:null,
             dataSource : new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
@@ -373,7 +429,7 @@ class GroupQuery extends Component{
 
                             {/* 条码 */}
                             <View style={[styles.row,{borderBottomWidth:0}]}>
-                                <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
+                                <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
                                     <Text style={{color:'#222'}}>条码</Text>
                                 </View>
                                 <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
@@ -401,7 +457,20 @@ class GroupQuery extends Component{
                                         underlineColorAndroid="transparent"
                                     />
                                 </View>
+
+                                <TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
+                                                  onPress={()=>{
+                                                          this.refs.modal3.open();
+                                                  }}>
+                                    <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
+                                        <Text style={{color:'#fff',fontSize:14}}>新增组</Text>
+                                    </View>
+                                </TouchableOpacity>
+
                             </View>
+
+
+
 
                         </View>
                     </View>
@@ -451,7 +520,46 @@ class GroupQuery extends Component{
                         />
                     </Modal>
 
+
                 </ScrollView>
+
+                <Modalbox
+                    style={[ styles.modal3,{borderRadius:12,padding:4,paddingLeft:12,paddingRight:12}]} position={"center"} ref={"modal3"}
+                    animationType={"slide"}>
+
+
+                    <View style={[styles.row,{borderWidth:0,borderBottomWidth:1,borderBottomColor:'#ddd'}]}>
+                        <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
+                            <Text style={{color:'#222'}}>组名</Text>
+                        </View>
+                        <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
+                            <TextInput
+                                style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
+                                                flexDirection:'row',alignItems:'center'}}
+                                onChangeText={(groupName) => {
+                                            this.state.groupName=groupName;
+                                            this.setState({groupName:this.state.groupName});
+                                        }}
+                                value={this.state.groupName}
+                                placeholder='请输入新增的组名'
+                                placeholderTextColor="#aaa"
+                                underlineColorAndroid="transparent"
+                            />
+                        </View>
+                    </View>
+
+
+                    <View style={[styles.row,{borderBottomWidth:0,marginTop:10,justifyContent:'center'}]}>
+                        <TouchableOpacity style={{backgroundColor:'#00f',borderRadius:8,padding:8,paddingLeft:20,paddingRight:20}}
+                          onPress={()=>{
+                               this.commodityGroupAdd();
+                            }}>
+                            <Text style={{color:'#fff',fontSize:16}}>确认</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </Modalbox>
+
             </View>
         );
     }
@@ -483,6 +591,14 @@ var styles = StyleSheet.create({
         flexDirection:'row',
         borderBottomWidth:1,
         borderBottomColor:'#222'
+    },
+    modal3: {
+        height: 120,
+        width: 300
+    },
+    modal: {
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 
