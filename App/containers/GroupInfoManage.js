@@ -271,13 +271,50 @@ class GroupInfoManage extends Component{
 
     }
 
-    commodityGroupAdd(){
+    commodityGroupNameUpdate(){
+        var groupName=this.state.groupName;
+        const {merchantId}=this.props;
+        const {groupInfo}=this.props;
+        if(groupName!==undefined&&groupName!==null&&groupName!='')
+        {
+            Proxy.post({
+                url:Config.server+'supnuevo/supnuevoSaveOrUpdateSupnuevoBuyerCommodityGroupMobile.do',
+                headers: {
+                    'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: "groupName=" + groupName + "&groupId="+groupInfo.groupId+ ''+'&supnuevoMerchantId='+merchantId
+            },(json)=> {
+                var errorMsg=json.errorMsg;
+                if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                    alert(errorMsg);
+                }else{
+                    Alert.alert(
+                        '信息',
+                        '商品组名修改成功',
+                        [
+                            {text: 'OK',onPress: () =>  this.refs.modal3.close()}
+                        ]
+                    );
+                }
+            }, (err) =>{
+                alert(err);
+            });
+        }else {
+            Alert.alert(
+                '错误',
+                '请填写完组名再点击确认',
+                [
+                    {text: 'OK'}
+                ]
+            );
+        }
 
     }
 
     openGroupNameUpdateModal()
     {
-
+        this.refs.modal3.open();
     }
 
     onCodigoSelect(codigo)
@@ -579,7 +616,7 @@ class GroupInfoManage extends Component{
                     <View style={[styles.row,{borderBottomWidth:0,marginTop:10,justifyContent:'center'}]}>
                         <TouchableOpacity style={{backgroundColor:'#00f',borderRadius:8,padding:8,paddingLeft:20,paddingRight:20}}
                                           onPress={()=>{
-                               this.commodityGroupAdd();
+                               this.commodityGroupNameUpdate();
                             }}>
                             <Text style={{color:'#fff',fontSize:16}}>确认</Text>
                         </TouchableOpacity>
