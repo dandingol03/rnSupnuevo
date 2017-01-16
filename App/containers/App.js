@@ -16,6 +16,12 @@ import TabNavigator from 'react-native-tab-navigator';
 import Login from '../containers/Login';
 import Query from '../containers/Query';
 
+import Group from '../containers/Group';
+
+
+const tabBarTintColor = '#f8f8f8';// 标签栏的背景颜色
+const tabTintColor = '#3393F2'; // 被选中图标颜色
+
 class App extends React.Component {
 
     constructor(props) {
@@ -32,6 +38,9 @@ class App extends React.Component {
         switch (route) {
             case 'query':
                 component=Query;
+                break;
+            case 'group':
+                component=Group;
                 break;
             default:
                 break;
@@ -65,6 +74,7 @@ class App extends React.Component {
             return(
                 <TabNavigator>
                     {this._createNavigatorItem('query','home','改价')}
+                    {this._createNavigatorItem('group','group','组改价')}
                 </TabNavigator>
             );
         }
