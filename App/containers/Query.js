@@ -92,7 +92,6 @@ class Query extends Component{
             this.setState({codigo:codigo});
         });
 
-
     }
 
     queryGoodsCode(codeNum){
