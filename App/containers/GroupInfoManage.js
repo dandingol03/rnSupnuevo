@@ -29,7 +29,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import DatePicker from 'react-native-datepicker';
 import CheckBox from 'react-native-check-box';
-
+import Modalbox from 'react-native-modalbox';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
@@ -91,12 +91,12 @@ class GroupInfoManage extends Component{
             chebx=<CheckBox
                 style={{flex: 1, padding: 2}}
                 onClick={()=>{
-                      var relatedGoods=_.cloneDeep(this.state.relatedGoods);
-                      relatedGoods.map(function(good,i) {
+                      var goods=_.cloneDeep(this.state.goods);
+                      goods.map(function(good,i) {
                         if(good.codigo==rowData.codigo)
-                            good.checked=false;
+                            good.checked=!good.checked;
                       });
-                       this.setState({relatedGoods: relatedGoods,dataSource:this.state.dataSource.cloneWithRows(relatedGoods)});
+                       this.setState({goods: goods,dataSource:this.state.dataSource.cloneWithRows(goods)});
                 }}
                 isChecked={true}
                 leftText={null}
@@ -105,12 +105,12 @@ class GroupInfoManage extends Component{
             chebx=<CheckBox
                 style={{flex: 1, padding: 2}}
                 onClick={()=>{
-                      var relatedGoods=_.cloneDeep(this.state.relatedGoods);
-                      relatedGoods.map(function(good,i) {
+                      var goods=_.cloneDeep(this.state.goods);
+                      goods.map(function(good,i) {
                        if(good.codigo==rowData.codigo)
-                            good.checked=false;
+                            good.checked=!good.checked;
                       });
-                       this.setState({relatedGoods: relatedGoods,dataSource:this.state.dataSource.cloneWithRows(relatedGoods)});
+                       this.setState({goods: goods,dataSource:this.state.dataSource.cloneWithRows(goods)});
 
                 }}
                 isChecked={rowData.codigo==this.state.code.codigo?true:false}
@@ -207,14 +207,76 @@ class GroupInfoManage extends Component{
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
-                this.setState({query:query});
             }else{
-               //TODO:
+                //TODO:return to previous page
+                if(json.groupNum!==undefined&&json.groupNum!==null)
+                {
+                    Alert.alert(
+                        '信息',
+                        '商品添加成功',
+                        [
+                            {text: 'OK', onPress: () => this.goBack()},
+                        ]
+                    );
+                }
             }
         }, (err) =>{
             alert(err);
-            this.setState({query:query});
+
         });
+    }
+
+    removeCommodity(){
+
+        var commodityIds=[];
+
+        const {groupInfo}=this.props;
+        var goods=this.state.goods;
+        goods.map(function (good, i) {
+            if(good.checked==true)
+                commodityIds.push(good.commodityId);
+        });
+        Proxy.post({
+            url:Config.server+"supnuevo/supnuevoRemoveSupnuevoCommodityFromGroupMobile.do",
+            headers: {
+                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: "commodityIds=" + commodityIds + "&groupId=" + groupInfo.groupId
+        },(json)=> {
+            var errorMsg=json.errorMsg;
+            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                alert(errorMsg);
+            }else{
+                //TODO:return to previous page
+                if(json.groupNum!==undefined&&json.groupNum!==null)
+                {
+                    Alert.alert(
+                        '信息',
+                        '商品删除成功',
+                        [
+                            {text: 'OK', onPress: () => this.goBack()},
+                        ]
+                    );
+                }
+            }
+        }, (err) =>{
+            alert(err);
+
+        });
+    }
+
+    updateGroupName(groupName)
+    {
+
+    }
+
+    commodityGroupAdd(){
+
+    }
+
+    openGroupNameUpdateModal()
+    {
 
     }
 
@@ -298,11 +360,23 @@ class GroupInfoManage extends Component{
     constructor(props)
     {
         super(props);
+        var groupInfo=props.groupInfo;
+        var goods=groupInfo.array;
+        var code=props.code;
+        goods.map(function (good, i) {
+            if(good.codigo==code.codigo)
+                good.checked=true;
+            else
+                good.checked=false;
+        });
         this.state = {
             merchantId:props.merchantId,
-            groupInfo:props.groupInfo,
-            code:props.code,
+            groupInfo:groupInfo,
+            groupName:null,
+            goods:goods,
+            code:code,
             selectAll:false,
+            containedInGroup:props.containedInGroup,
             dataSource : new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
@@ -320,19 +394,20 @@ class GroupInfoManage extends Component{
         var groupInfo=this.state.groupInfo;
         const {code}=this.props;
         var codigo=code.codigo;
+        const {containedInGroup}=this.props;
+        var goods=this.state.goods;
 
         var listView=null;
-        if(groupInfo.array!==undefined&&groupInfo.array!==null&&Object.prototype.toString.call(groupInfo.array)=='[object Array]')
+        if(goods!==undefined&&goods!==null&&Object.prototype.toString.call(goods)=='[object Array]')
         {
 
-            var data=groupInfo.array;
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
             listView=
                 <ScrollView>
                     <ListView
                         automaticallyAdjustContentInsets={false}
-                        dataSource={ds.cloneWithRows(data)}
+                        dataSource={ds.cloneWithRows(goods)}
                         renderRow={this.renderRow.bind(this)}
                     />
                 </ScrollView>;
@@ -365,46 +440,75 @@ class GroupInfoManage extends Component{
 
                             {/* 条码 */}
                             <View style={[styles.row,{borderBottomWidth:0,marginBottom:8}]}>
-                                <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
+                                <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:0}}>
                                     <Text style={{color:'#222'}}>条码</Text>
                                 </View>
-                                <View style={{flex:4,flexDirection:'row',alignItems:'center',padding:4}}>
+                                <View style={{flex:3,flexDirection:'row',alignItems:'center',padding:4,marginLeft:3}}>
                                     <Text style={{color:'#222'}}>
                                         {codigo} &nbsp;&nbsp;&nbsp;
                                     </Text>
 
                                 </View>
-                                <TouchableOpacity style={{flex:1,flexDirection:'row',alignItems:'center',padding:4,borderRadius:8,
-                                paddingLeft:18,paddingRight:18,paddingTop:4,paddingBottom:4,justifyContent:'center',backgroundColor:'rgb(79,204,0)'}}
-                                                  onPress={()=>{
+
+                                {
+                                    containedInGroup==false?
+                                        <TouchableOpacity style={{flex:1,flexDirection:'row',alignItems:'center',padding:4,borderRadius:8,
+                                              paddingLeft:18,paddingRight:18,paddingTop:4,paddingBottom:4,justifyContent:'center',backgroundColor:'rgb(79,204,0)'}}
+                                                          onPress={()=>{
                                                     this.addCommodity();
                                                   }}>
-                                    <Text style={{fontSize:16,color:'#fff',fontWeight:'bold'}}>添加</Text>
-                                </TouchableOpacity>
+                                            <Text style={{fontSize:16,color:'#fff',fontWeight:'bold'}}>
+                                                添加
+                                            </Text>
+                                        </TouchableOpacity>:
+                                        <TouchableOpacity style={{flex:1,flexDirection:'row',alignItems:'center',padding:4,borderRadius:8,
+                                              paddingLeft:18,paddingRight:18,paddingTop:4,paddingBottom:4,justifyContent:'center',backgroundColor:'rgb(79,204,0)'}}
+                                                          onPress={()=>{
+                                                    this.removeCommodity();
+                                                  }}>
+                                            <Text style={{fontSize:16,color:'#fff',fontWeight:'bold'}}>
+                                                删除
+                                            </Text>
+                                        </TouchableOpacity>
+
+                                }
+
                             </View>
 
                             {/*组特征码*/}
                             <View style={[styles.row,{borderBottomWidth:0,marginBottom:8}]}>
-                                <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
+                                <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:0}}>
                                     <Text style={{color:'#222'}}>组特征码</Text>
                                 </View>
-                                <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
+                                <View style={{flex:4,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:9}}>
                                     <Text style={{color:'#222'}}>
                                         {groupInfo.groupNum}
                                     </Text>
+                                </View>
+
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center',padding:4}}>
                                 </View>
                             </View>
 
                             {/*商品组名*/}
                             <View style={[styles.row,{borderBottomWidth:0}]}>
-                                <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
+                                <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:0}}>
                                     <Text style={{color:'#222'}}>商品组名</Text>
                                 </View>
-                                <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
+                                <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:2}}>
                                     <Text style={{color:'#222'}}>
                                         {groupInfo.groupName}
                                     </Text>
                                 </View>
+                                <TouchableOpacity style={{flex:1,flexDirection:'row',alignItems:'center',padding:4,borderRadius:8,height:30,
+                                              paddingLeft:12,paddingRight:12,paddingTop:0,paddingBottom:0,justifyContent:'center',backgroundColor:'rgb(79,204,0)'}}
+                                                  onPress={()=>{
+                                                    this.openGroupNameUpdateModal();
+                                                  }}>
+                                    <Text style={{fontSize:16,color:'#fff',fontWeight:'bold'}}>
+                                        更新
+                                    </Text>
+                                </TouchableOpacity>
                             </View>
 
                         </View>
@@ -444,6 +548,45 @@ class GroupInfoManage extends Component{
                     </View>
 
                 </ScrollView>
+
+
+                <Modalbox
+                    style={[ styles.modal3,{borderRadius:12,padding:4,paddingLeft:12,paddingRight:12}]} position={"center"} ref={"modal3"}
+                    animationType={"slide"}>
+
+
+                    <View style={[styles.row,{borderWidth:0,borderBottomWidth:1,borderBottomColor:'#ddd'}]}>
+                        <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
+                            <Text style={{color:'#222'}}>组名</Text>
+                        </View>
+                        <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
+                            <TextInput
+                                style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
+                                                flexDirection:'row',alignItems:'center'}}
+                                    onChangeText={(groupName) => {
+                                            this.state.groupName=groupName;
+                                            this.setState({groupName:this.state.groupName});
+                                        }}
+                                value={this.state.groupName}
+                                placeholder='请输入更新的组名'
+                                placeholderTextColor="#aaa"
+                                underlineColorAndroid="transparent"
+                            />
+                        </View>
+                    </View>
+
+
+                    <View style={[styles.row,{borderBottomWidth:0,marginTop:10,justifyContent:'center'}]}>
+                        <TouchableOpacity style={{backgroundColor:'#00f',borderRadius:8,padding:8,paddingLeft:20,paddingRight:20}}
+                                          onPress={()=>{
+                               this.commodityGroupAdd();
+                            }}>
+                            <Text style={{color:'#fff',fontSize:16}}>确认</Text>
+                        </TouchableOpacity>
+                    </View>
+
+                </Modalbox>
+
             </View>
         );
     }
@@ -475,6 +618,14 @@ var styles = StyleSheet.create({
         flexDirection:'row',
         borderBottomWidth:1,
         borderBottomColor:'#222'
+    },
+    modal3: {
+        height: 120,
+        width: 300
+    },
+    modal: {
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 
