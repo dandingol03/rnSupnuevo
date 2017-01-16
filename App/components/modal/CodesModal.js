@@ -31,10 +31,10 @@ class CodesModal extends Component{
         }
     }
 
-    onCodigoSelect(codigo){
+    onCodigoSelect(code){
         if(this.props.onCodigoSelect!==undefined&&this.props.onCodigoSelect!==null)
         {
-            this.props.onCodigoSelect(codigo);
+            this.props.onCodigoSelect(code);
         }
     }
 
@@ -47,7 +47,7 @@ class CodesModal extends Component{
                     function() {
                         //TODO:close this modal
                         this.close();
-                        this.onCodigoSelect(rowData.codigo);
+                        this.onCodigoSelect(rowData);
                     }.bind(this)}>
                     <View style={{flex:1,flexDirection:'row',padding:16,borderBottomWidth:1,borderColor:'#ddd',justifyContent:'center'}}>
                         <Text>{rowData.codigo}</Text>

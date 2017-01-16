@@ -22,50 +22,43 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import DatePicker from 'react-native-datepicker';
+var Popover = require('react-native-popover');
+
+
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../proxy/Proxy');
 import Config from '../../config';
 import CodesModal from '../components/modal/CodesModal';
-import GoodUpdate from './GoodUpdate';
+import Group from './Group';
+import GroupQuery from './GroupQuery';
 
 
 class Query extends Component{
 
-    fetchData(){
-        Proxy.post({
-            url:Config.server+'/svr/request',
-            headers: {
-                'Authorization': "Bearer " + this.state.accessToken,
-                'Content-Type': 'application/json'
-            },
-            body: {
-                request:'fetchInsuranceCarInfoByCustomerId'
-            }
-        },(res)=> {
-            if(res.error)
-            {
-                Alert.alert(
-                    'error',
-                    res.error_description
-                );
-            }else{
-                var data=res.data;
-                var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-                this.setState({dataSource: ds.cloneWithRows(data)});
-            }
-        }, (err) =>{
-        });
-    }
 
 
     closeCodesModal(val){
         this.setState({codesModalVisible:val})
     }
 
-    onCodigoSelect(codigo)
+    showPopover(ref){
+        this.refs[ref].measure((ox, oy, width, height, px, py) => {
+            this.setState({
+                menuVisible: true,
+                buttonRect: {x: px+20, y: py+40, width: width, height: height}
+            });
+        });
+    }
+
+    closePopover(){
+        this.setState({menuVisible: false});
+    }
+
+    onCodigoSelect(code)
     {
         const {merchantId}=this.props;
+        var codigo=code.codigo;
         Proxy.post({
             url:Config.server+"supnuevo/supnuevoGetSupnuevoBuyerPriceFormByCodigoBs.do",
             headers: {
@@ -75,23 +68,21 @@ class Query extends Component{
             body: "codigo=" + codigo + "&supnuevoMerchantId=" + merchantId
         },(json)=> {
             var goodInfo = json.object;
-            this.setState({selectedCodeInfo: goodInfo,codigo:codigo});
 
-            if(this.state.selectedCodeInfo.setSizeValue!=undefined&&this.state.selectedCodeInfo.setSizeValue!=null
-                &&this.state.selectedCodeInfo.sizeUnit!=undefined&&this.state.selectedCodeInfo.sizeUnit!=null)
+            if(goodInfo.setSizeValue!=undefined&&goodInfo.setSizeValue!=null
+                &&goodInfo.sizeUnit!=undefined&&goodInfo.sizeUnit!=null)
             {
-                this.state.selectedCodeInfo.goodName=this.state.selectedCodeInfo.nombre+','+
-                    this.state.selectedCodeInfo.setSizeValue+','+this.state.selectedCodeInfo.sizeUnit;
+                goodInfo.goodName=goodInfo.nombre+','+
+                    goodInfo.setSizeValue+','+goodInfo.sizeUnit;
             }
             else{
-                this.state.selectedCodeInfo.goodName=this.state.selectedCodeInfo.nombre;
+                goodInfo.goodName=goodInfo.nombre;
             }
-
+            this.setState({selectedCodeInfo: goodInfo,codigo:codigo,priceShow:goodInfo.priceShow});
         }, (err) =>{
             alert(err);
             this.setState({codigo:codigo});
         });
-
 
     }
 
@@ -124,13 +115,48 @@ class Query extends Component{
         const { navigator } = this.props;
         if(navigator) {
             navigator.push({
-                name: 'goodUpdate',
-                component: GoodUpdate,
+                name: 'group',
+                component: Group,
                 params: {
                 }
             })
         }
     }
+
+    navigateGroupQuery(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'groupManager',
+                component: GroupQuery,
+                params: {
+                }
+            })
+        }
+    }
+
+    navigate_priceGroupChange(){
+        const { navigator } = this.props;
+        const {merchantId}=this.props;
+        var selectGoodInfo=this.state.selectedCodeInfo;
+        if(selectGoodInfo.groupId!==undefined&&selectGoodInfo.groupId!==null)
+        {
+            if(navigator) {
+                navigator.push({
+                    name: 'group',
+                    component: Group,
+                    params: {
+                        merchantId:merchantId,
+                        goodInfo:this.state.selectedCodeInfo
+                    }
+                })
+            }
+        }else{
+            alert('所选商品无法进行组改价');
+        }
+    }
+
+
 
     constructor(props)
     {
@@ -140,7 +166,8 @@ class Query extends Component{
             goods:{},
             codesModalVisible:false,
             codigo:null,
-            selectedCodeInfo:{}
+            selectedCodeInfo:{},
+            priceShow:null
         };
     }
 
@@ -150,6 +177,10 @@ class Query extends Component{
         var username = this.props.username;
         var codigo = this.state.selectedCodeInfo.codigo;
         var goodName = this.state.selectedCodeInfo.goodName;
+
+        var displayArea = {x: 5, y: 20, width: width - 10, height: height - 25};
+
+
         return (
             <View style={{flex:1}}>
                 <ScrollView>
@@ -159,11 +190,13 @@ class Query extends Component{
                         <View style={{flex:1}}>
 
                         </View>
-                        <Text style={{fontSize:17,flex:3,textAlign:'center',color:'#fff'}}>
+                        <Text style={{fontSize:22,flex:3,textAlign:'center',color:'#fff'}}>
                             {username}
                         </Text>
-                        <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center'}}>
-                        </View>
+                        <TouchableOpacity ref="menu" style={{flex:1,marginRight:2,flexDirection:'row',justifyContent:'center'}}
+                                          onPress={this.showPopover.bind(this, 'menu')}>
+                            <Icon name="chevron-circle-left" color="#fff" size={30}></Icon>
+                        </TouchableOpacity>
                     </View>
 
 
@@ -257,11 +290,11 @@ class Query extends Component{
                                     onChangeText={(priceShow) => {
 
                                         this.state.selectedCodeInfo.priceShow=priceShow;
-                                        this.setState({selectedCodeInfo:this.state.selectedCodeInfo});
+                                        this.setState({priceShow:priceShow});
 
                                 }}
 
-                                    value={this.state.priceShow}
+                                    value={''+(this.state.priceShow!==undefined&&this.state.priceShow!==null?this.state.priceShow.toString():'')}
                                     placeholder='请输入您的价格'
                                     placeholderTextColor="#aaa"
                                     underlineColorAndroid="transparent"
@@ -340,7 +373,7 @@ class Query extends Component{
                                 marginRight:.5,alignItems:'center'}}
                                 onPress={
                                     ()=>{
-                                        this.navigateGoodUpdate();
+                                        this.navigate_priceGroupChange();
                                     }}>
                                 <Text style={{color:'#fff',fontSize:18}}>组改价</Text>
                             </TouchableOpacity>
@@ -367,6 +400,32 @@ class Query extends Component{
                     </View>
 
 
+                    <Popover
+                        isVisible={this.state.menuVisible}
+                        fromRect={this.state.buttonRect}
+                        displayArea={displayArea}
+                        onClose={()=>{this.closePopover()
+                        }}>
+
+                        <TouchableOpacity style={[styles.popoverContent,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
+                                          onPress={()=>{
+                                              console.log('choose add commodity');
+                                              this.closePopover();
+                                          }}>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>添加商品</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={[styles.popoverContent]}
+                                          onPress={()=>{
+                                              this.closePopover();
+                                              this.navigateGroupQuery();
+                                          }}>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>组管理</Text>
+                        </TouchableOpacity>
+
+                    </Popover>
+
+
                     <Modal
                         animationType={"slide"}
                         transparent={false}
@@ -378,12 +437,17 @@ class Query extends Component{
                             this.closeCodesModal(!this.state.codesModalVisible)
                         }}
                             onCodigoSelect={
-                            (codigo)=>{
-                                this.onCodigoSelect(codigo);
+                            (code)=>{
+                                this.onCodigoSelect(code);
                             }}
                             codes={this.state.codes}
                         />
                     </Modal>
+
+
+
+
+
                 </ScrollView>
             </View>);
     }
@@ -416,6 +480,15 @@ var styles = StyleSheet.create({
         flexDirection:'row',
         borderBottomWidth:1,
         borderBottomColor:'#222'
+    },
+    popoverContent: {
+        width: 100,
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    popoverText: {
+        color: '#ccc',
     }
 });
 
