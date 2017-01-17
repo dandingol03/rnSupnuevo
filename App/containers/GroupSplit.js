@@ -41,7 +41,7 @@ import Modalbox from 'react-native-modalbox';
 
 
 
-class GroupQuery extends Component{
+class GroupSplit extends Component{
 
     goBack(){
         const { navigator } = this.props;
@@ -51,28 +51,6 @@ class GroupQuery extends Component{
     }
 
 
-    toggleAll(){
-        if(this.state.relatedGoods!==undefined&&this.state.relatedGoods!==null)
-        {
-            var relatedGoods=_.cloneDeep(this.state.relatedGoods);
-            if(this.state.selectAll!=true)
-            {
-                relatedGoods.map(function (good, i){
-                    good.checked=true;
-                });
-            }else{
-                relatedGoods.map(function (good, i){
-                    good.checked=false;
-                });
-            }
-            var dataSource = this.state.dataSource.cloneWithRows(relatedGoods);
-            this.setState({
-                relatedGoods: relatedGoods,
-                selectAll:!this.state.selectAll,
-                dataSource:dataSource
-            });
-        }
-    }
 
     navigateToGroupInfoManage(groupInfo,code,containedInGroup){
         const { navigator } = this.props;
@@ -121,10 +99,10 @@ class GroupQuery extends Component{
 
 
                         {/*<TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}*/}
-                                          {/*onPress={()=>{*/}
-                                      {/*console.log('...');*/}
-                              {/*}}>*/}
-                            {/*<Icon name='remove' color="#ef473a" size={30}></Icon>*/}
+                        {/*onPress={()=>{*/}
+                        {/*console.log('...');*/}
+                        {/*}}>*/}
+                        {/*<Icon name='remove' color="#ef473a" size={30}></Icon>*/}
                         {/*</TouchableOpacity>*/}
 
                     </View>
@@ -147,6 +125,38 @@ class GroupQuery extends Component{
                 borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#fff'}
         }
 
+        var chebx=null;
+        if(rowData.checked==true)
+        {
+            chebx=  <CheckBox
+                style={{flex: 1, padding: 2,flexDirection:'row',justifyContent:'center'}}
+                onClick={()=>{
+
+                    var groups=_.cloneDeep(this.state.groups);
+                    groups.array.map(function(group,i) {
+                    if(group.groupId==rowData.groupId)
+                        group.checked=false;
+                    });
+                   this.setState({groups: groups,dataSource:this.state.dataSource.cloneWithRows(groups.array)});
+                                }}
+                isChecked={true}
+                leftText={null}
+            />;
+        }else{
+            chebx=  <CheckBox
+                style={{flex: 1, padding: 2,flexDirection:'row',justifyContent:'center'}}
+                onClick={()=>{
+                    var groups=_.cloneDeep(this.state.groups);
+                    groups.array.map(function(group,i) {
+                    if(group.groupId==rowData.groupId)
+                        group.checked=true;
+                    });
+                   this.setState({groups: groups,dataSource:this.state.dataSource.cloneWithRows(groups.array)});
+                                }}
+                isChecked={false}
+                leftText={null}
+            />;
+        }
 
 
         var row=
@@ -154,8 +164,8 @@ class GroupQuery extends Component{
                 <View>
                     <View style={lineStyle}>
 
-                        <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.groupId}</Text>
+                        <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+                            {chebx}
                         </View>
 
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
@@ -164,9 +174,9 @@ class GroupQuery extends Component{
 
                         <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
                                           onPress={()=>{
-                                          this.commodityAddToGroup(rowData.groupId);
+                                          this.removeCommodityGroup(rowData.groupId);
                                                   }}>
-                            <Icon name="plus-square" color="rgb(79, 204, 0)" size={23}></Icon>
+                            <Icon name="remove" color="#f00" size={23}></Icon>
                         </TouchableOpacity>
 
                     </View>
@@ -336,24 +346,28 @@ class GroupQuery extends Component{
     }
 
 
-    queryGoodsCode(codeNum)
+    //按商品组特征码搜索
+    queryGroupsByGroupNum(groupNum)
     {
-        var code = parseInt(codeNum);
+
         const { merchantId } = this.props;
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommonCommodityListByLastFourCodigoMobile.do',
+            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommonCommodityGroupListByGroupNumMobile.do',
             headers: {
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: "codigo=" + code + "&merchantId=" + merchantId
+            body: "groupNum=" + groupNum
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
             }else{
-                var codes=json.array;
-                this.setState({codes: codes,codesModalVisible:true});
+                var groups=json;
+                groups.array.map(function (group,i) {
+                    group.checked=false;
+                })
+                this.setState({groups: groups});
             }
         }, (err) =>{
             alert(err);
@@ -462,6 +476,131 @@ class GroupQuery extends Component{
 
     }
 
+    //合并成为新组
+    mergeToNewGroup()
+    {
+
+        const {merchantId}=this.props;
+
+        var groupName=this.state.query.groupName;
+        if(groupName!==undefined&&groupName!==null&&groupName!='')
+        {
+
+
+            if(this.state.groups&&this.state.groups.array!==undefined&&this.state.groups.array!==null
+                &&Object.prototype.toString.call(this.state.groups.array)=='[object Array]')
+            {
+
+                var groupIds=[];
+                this.state.groups.array.map(function (group, i) {
+                    if(group.checked==true)
+                    {
+                        groupIds.push(group.groupId);
+                    }
+                });
+
+                if(groupIds.length>1)
+                {
+
+                    Proxy.post({
+                        url:Config.server+"supnuevo/supnuevoMergeSupnuevoCommodityGroupMobile.do",
+                        headers: {
+                            'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: "groupIds=" + groupIds.toString() + "&groupName=" + groupName+'&supnuevoMerchantId='+merchantId
+                    },(json)=> {
+                        var errorMsg=json.errorMsg;
+                        if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                            alert(errorMsg);
+                        }else{
+                            //TODO:return to previous page
+                            if(json.groupNum!==undefined&&json.groupNum!==null)
+                            {
+                                Alert.alert(
+                                    '信息',
+                                    '添加到新建组成功',
+                                    [
+                                        {text: 'OK', onPress: () =>  {
+                                            this.state.query.groupName='';
+                                            this.onCodigoSelect(code);
+                                        }},
+                                    ]
+                                );
+                            }
+                        }
+                    }, (err) =>{
+                        alert(err);
+
+                    });
+                }else{
+                    Alert.alert(
+                        '错误',
+                        '请先勾选商品组再点击合并',
+                        [
+                            {text: 'OK',onPress: () =>  console.log('...')}
+                        ]
+                    );
+                }
+            }else{
+                Alert.alert(
+                    '错误',
+                    '您所选的组名无效',
+                    [
+                        {text: 'OK',onPress: () =>  console.log('...')}
+                    ]
+                );
+            }
+        }else{
+            Alert.alert(
+                '错误',
+                '请先输入合并后的组名再点击合并',
+                [
+                    {text: 'OK',onPress: () =>  console.log('...')}
+                ]
+            );
+        }
+
+    }
+
+    //删除组
+    removeCommodityGroup(groupId)
+    {
+
+        var groupNum=this.state.query.groupNum;
+
+        Proxy.post({
+            url:Config.server+"supnuevo/supnuevoDeleteSupnuevoBuyerCommodityGroupMobile.do",
+            headers: {
+                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: "groupId=" +groupId
+        },(json)=> {
+            var errorMsg=json.errorMsg;
+            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                alert(errorMsg);
+            }else{
+
+                Alert.alert(
+                    '信息',
+                    '商品组删除成功',
+                    [
+                        {text: 'OK', onPress: () =>  {
+                            this.queryGroupsByGroupNum(groupNum.toString().substring(0,7));
+                        }},
+                    ]
+                );
+
+            }
+        }, (err) =>{
+            alert(err);
+
+        });
+
+    }
+
+
 
     //添加到新建组
     commodityAddToNewGroup()
@@ -494,9 +633,9 @@ class GroupQuery extends Component{
                                 '添加到新建组成功',
                                 [
                                     {text: 'OK', onPress: () =>  {
-                                    this.state.query.groupName='';
-                                    this.onCodigoSelect(code);
-                                }},
+                                        this.state.query.groupName='';
+                                        this.onCodigoSelect(code);
+                                    }},
                                 ]
                             );
                         }
@@ -577,6 +716,7 @@ class GroupQuery extends Component{
         this.state = {
             merchantId:props.merchantId,
             query:{},
+            groups:null,
             groupArr:{},
             selectAll:false,
             codesModalVisible:false,
@@ -596,13 +736,13 @@ class GroupQuery extends Component{
 
     render(){
 
-        var groupArr=this.state.groupArr;
+        var groups=this.state.groups;
         var groupInfo=this.state.groupInfo;
         var listView=null;
         var queryBox=   (<View style={[styles.card,{marginTop:10,padding:8}]}>
             <View style={{flex:1,padding:8,paddingLeft:10,paddingRight:10,backgroundColor:'#eee',borderRadius:8}}>
 
-                {/* 条码 */}
+                {/* 商品特征码 */}
                 <View style={[styles.row,{borderBottomWidth:0}]}>
                     {/*<View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>*/}
                     {/*<Text style={{color:'#222'}}>条码</Text>*/}
@@ -611,23 +751,20 @@ class GroupQuery extends Component{
                         <TextInput
                             style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
                                                 flexDirection:'row',alignItems:'center'}}
-                            onChangeText={(codeNum) => {
-                                            if(codeNum.toString().length==4)
+                            onChangeText={(groupNum) => {
+                                            if(groupNum.toString().length==7)
                                             {
-                                                this.state.query.codeNum=codeNum;
+                                                this.state.query.groupNum=groupNum;
                                                 this.setState({query:this.state.query});
-                                                this.queryGoodsCode(codeNum.toString().substring(0,4));
-                                            }else if(codeNum.toString().length>4){
-                                                this.state.query.codeNum=codeNum;
-                                                this.setState({query:this.state.query});
-                                            }
+                                                this.queryGroupsByGroupNum(groupNum.toString().substring(0,7));
+                                            }else if(groupNum.toString().length>7){}
                                             else{
-                                                this.state.query.codeNum=codeNum;
+                                                this.state.query.groupNum=groupNum;
                                                 this.setState({query:this.state.query});
                                             }
                                         }}
-                            value={this.state.query.codeNum}
-                            placeholder='请输入条码最后四位'
+                            value={this.state.query.groupNum}
+                            placeholder='请输入商品特征码'
                             placeholderTextColor="#aaa"
                             underlineColorAndroid="transparent"
                         />
@@ -667,7 +804,7 @@ class GroupQuery extends Component{
                                             }
                                         }}
                             value={this.state.query.groupName}
-                            placeholder='请输入新增的商品组名'
+                            placeholder='请输入合并的商品组名'
                             placeholderTextColor="#aaa"
                             underlineColorAndroid="transparent"
                         />
@@ -675,10 +812,10 @@ class GroupQuery extends Component{
 
                     <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
                                       onPress={()=>{
-                                          this.commodityAddToNewGroup();
+                                          this.mergeToNewGroup();
                                                   }}>
                         <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
-                            <Text style={{color:'#fff',fontSize:14}}>添加到新建组</Text>
+                            <Text style={{color:'#fff',fontSize:14}}>合并到新组</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -687,10 +824,10 @@ class GroupQuery extends Component{
         </View>);
 
 
-        if(groupArr.array!==undefined&&groupArr.array!==null&&Object.prototype.toString.call(groupArr.array)=='[object Array]')
+        if(groups&&groups.array!==undefined&&groups.array!==null&&Object.prototype.toString.call(groups.array)=='[object Array]')
         {
 
-            var data=groupArr.array;
+            var data=groups.array;
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 
@@ -699,10 +836,10 @@ class GroupQuery extends Component{
                     <View>
                         <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start'}}>
 
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',
                                             borderColor:'#aaa',borderWidth:1,borderRightWidth:0,padding:8}}>
                                 <Text style={{color:'#222'}}>
-                                    商品组id
+                                    选中
                                 </Text>
                             </View>
 
@@ -713,7 +850,7 @@ class GroupQuery extends Component{
 
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',
                                         borderColor:'#aaa',borderWidth:1,padding:8,paddingLeft:12,paddingRight:12}}>
-                                <Text style={{color:'#222'}}>添加</Text>
+                                <Text style={{color:'#222'}}>操作</Text>
                             </View>
                         </View>
                     </View>
@@ -753,8 +890,8 @@ class GroupQuery extends Component{
                             </View>
 
                             {/*<View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',*/}
-                                        {/*borderColor:'#aaa',borderWidth:1,padding:8}}>*/}
-                                {/*<Text style={{color:'#222'}}>删除</Text>*/}
+                            {/*borderColor:'#aaa',borderWidth:1,padding:8}}>*/}
+                            {/*<Text style={{color:'#222'}}>删除</Text>*/}
                             {/*</View>*/}
                         </View>
                     </View>
@@ -766,89 +903,6 @@ class GroupQuery extends Component{
                             renderRow={this.renderCommodityRow.bind(this)}
                         />
                     </ScrollView>
-                </View>
-            );
-
-
-
-            queryBox=(
-                <View style={[styles.card,{marginTop:10,padding:8}]}>
-                    <View style={{flex:1,padding:8,paddingLeft:10,paddingRight:10,backgroundColor:'#eee',borderRadius:8}}>
-
-                        {/* 条码 */}
-                        <View style={[styles.row,{borderBottomWidth:0}]}>
-                            {/*<View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>*/}
-                            {/*<Text style={{color:'#222'}}>条码</Text>*/}
-                            {/*</View>*/}
-                            <View style={{flex:4,flexDirection:'row',alignItems:'center',padding:4}}>
-                                <TextInput
-                                    style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
-                                    onChangeText={(codeNum) => {
-                                            if(codeNum.toString().length==4)
-                                            {
-                                                this.state.query.codeNum=codeNum;
-                                                this.setState({query:this.state.query});
-                                                this.queryGoodsCode(codeNum.toString().substring(0,4));
-                                            }else if(codeNum.toString().length>4){
-                                                this.state.query.codeNum=codeNum;
-                                                this.setState({query:this.state.query});
-                                            }
-                                            else{
-                                                this.state.query.codeNum=codeNum;
-                                                this.setState({query:this.state.query});
-                                            }
-                                        }}
-                                    value={this.state.query.codeNum}
-                                    placeholder='请输入条码最后四位'
-                                    placeholderTextColor="#aaa"
-                                    underlineColorAndroid="transparent"
-                                />
-                            </View>
-
-                            <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
-                                onPress={()=>{
-                                    this.commodityGroupRemove(this.state.code.commodityId);
-                                }}>
-                                <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>从组中移除</Text>
-                                </View>
-                            </TouchableOpacity>
-
-                        </View>
-
-
-                        {/*组特征码*/}
-                        <View style={[styles.row,{borderBottomWidth:0,marginBottom:8}]}>
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:0}}>
-                                <Text style={{color:'#222'}}>组特征码</Text>
-                            </View>
-                            <View style={{flex:4,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:9}}>
-                                <Text style={{color:'#222'}}>
-                                    {groupInfo.groupNum}
-                                </Text>
-                            </View>
-
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center',padding:4}}>
-                            </View>
-                        </View>
-
-                        {/*商品组名*/}
-                        <View style={[styles.row,{borderBottomWidth:0}]}>
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:0}}>
-                                <Text style={{color:'#222'}}>商品组名</Text>
-                            </View>
-                            <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:2}}>
-                                <Text style={{color:'#222'}}>
-                                    {groupInfo.groupName}
-                                </Text>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center',padding:4,borderRadius:8,height:30,
-                                              paddingLeft:12,paddingRight:12,paddingTop:0,paddingBottom:0,justifyContent:'center'}}>
-                            </View>
-                        </View>
-
-                    </View>
                 </View>
             );
 
@@ -870,10 +924,10 @@ class GroupQuery extends Component{
                             <Icon name="chevron-left" color="#fff" size={25}></Icon>
                         </TouchableOpacity>
                         <Text style={{fontSize:22,flex:3,textAlign:'center',color:'#fff'}}>
-                            添加商品至组
+                            商品组维护
                         </Text>
                         <TouchableOpacity ref="menu" style={{flex:1,marginRight:2,flexDirection:'row',justifyContent:'center'}}
-                                          >
+                        >
                         </TouchableOpacity>
                     </View>
 
@@ -931,7 +985,7 @@ class GroupQuery extends Component{
 
                     <View style={[styles.row,{borderBottomWidth:0,marginTop:10,justifyContent:'center'}]}>
                         <TouchableOpacity style={{backgroundColor:'#00f',borderRadius:8,padding:8,paddingLeft:20,paddingRight:20}}
-                          onPress={()=>{
+                                          onPress={()=>{
                                this.commodityGroupAdd();
                             }}>
                             <Text style={{color:'#fff',fontSize:16}}>确认</Text>
@@ -987,5 +1041,5 @@ var styles = StyleSheet.create({
 module.exports = connect(state=>({
         merchantId:state.user.supnuevoMerchantId
     })
-)(GroupQuery);
+)(GroupSplit);
 
