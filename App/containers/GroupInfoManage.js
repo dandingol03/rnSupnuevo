@@ -20,6 +20,7 @@ import  {
     ListView,
     View,
     Alert,
+    Modal,
     TouchableOpacity
 } from 'react-native';
 
@@ -30,12 +31,13 @@ import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scr
 import DatePicker from 'react-native-datepicker';
 import CheckBox from 'react-native-check-box';
 import Modalbox from 'react-native-modalbox';
+import _ from 'lodash';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../proxy/Proxy');
 import Config from '../../config';
-import _ from 'lodash';
+import CodesModal from '../components/modal/CodesModal';
 
 
 class GroupInfoManage extends Component{
@@ -72,6 +74,10 @@ class GroupInfoManage extends Component{
     }
 
 
+    closeCodesModal(val){
+        this.setState({codesModalVisible:val});
+    }
+
 
     renderRow(rowData,sectionId,rowId){
 
@@ -85,50 +91,13 @@ class GroupInfoManage extends Component{
                 borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#fff'}
         }
 
-        var chebx=null;
-        if(rowData.checked==true)
-        {
-            chebx=<CheckBox
-                style={{flex: 1, padding: 2}}
-                onClick={()=>{
-                      var goods=_.cloneDeep(this.state.goods);
-                      goods.map(function(good,i) {
-                        if(good.codigo==rowData.codigo)
-                            good.checked=!good.checked;
-                      });
-                       this.setState({goods: goods,dataSource:this.state.dataSource.cloneWithRows(goods)});
-                }}
-                isChecked={true}
-                leftText={null}
-            />;
-        }else{
-            chebx=<CheckBox
-                style={{flex: 1, padding: 2}}
-                onClick={()=>{
-                      var goods=_.cloneDeep(this.state.goods);
-                      goods.map(function(good,i) {
-                       if(good.codigo==rowData.codigo)
-                            good.checked=!good.checked;
-                      });
-                       this.setState({goods: goods,dataSource:this.state.dataSource.cloneWithRows(goods)});
-
-                }}
-                isChecked={rowData.codigo==this.state.code.codigo?true:false}
-                leftText={null}
-            />;
-        }
+        if(rowData.codigo==this.state.code.codigo)
+            lineStyle=Object.assign(lineStyle,{borderColor:'#284bff',borderWidth:2,borderBottomWidth:2,borderLeftWidth:2,borderRightWidth:2});
 
         var row=
             <View>
-                <TouchableOpacity onPress={
-                    function() {
-                        //TODO:
-                    }.bind(this)}>
+                <View>
                     <View style={lineStyle}>
-
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
-                            {chebx}
-                        </View>
 
                         <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
                             <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.codigo}</Text>
@@ -138,8 +107,15 @@ class GroupInfoManage extends Component{
                             <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.goodName}</Text>
                         </View>
 
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
+                                          onPress={()=>{
+                                      this.removeCommodity(rowData.commodityId);
+                              }}>
+                            <Icon name='remove' color="#ef473a" size={30}></Icon>
+                        </TouchableOpacity>
+
                     </View>
-                </TouchableOpacity>
+                </View>
 
             </View>;
 
@@ -194,7 +170,7 @@ class GroupInfoManage extends Component{
     addCommodity(){
 
         const {groupInfo}=this.props;
-        const {code}=this.props;
+        var code=this.state.selectedCodeInfo;
 
         Proxy.post({
             url:Config.server+"supnuevo/supnuevoAddSupnuevoCommodityIntoGroupMobile.do",
@@ -215,7 +191,7 @@ class GroupInfoManage extends Component{
                         '信息',
                         '商品添加成功',
                         [
-                            {text: 'OK', onPress: () => this.goBack()},
+                            {text: 'OK', onPress: () => this.setState({selectedCodeInfo:{}})},
                         ]
                     );
                 }
@@ -226,16 +202,11 @@ class GroupInfoManage extends Component{
         });
     }
 
-    removeCommodity(){
+    removeCommodity(commodityId){
 
-        var commodityIds=[];
+        var commodityIds=[commodityId];
 
         const {groupInfo}=this.props;
-        var goods=this.state.goods;
-        goods.map(function (good, i) {
-            if(good.checked==true)
-                commodityIds.push(good.commodityId);
-        });
         Proxy.post({
             url:Config.server+"supnuevo/supnuevoRemoveSupnuevoCommodityFromGroupMobile.do",
             headers: {
@@ -255,7 +226,7 @@ class GroupInfoManage extends Component{
                         '信息',
                         '商品删除成功',
                         [
-                            {text: 'OK', onPress: () => this.goBack()},
+                            {text: 'OK', onPress: () => console.log('...')},
                         ]
                     );
                 }
@@ -317,62 +288,28 @@ class GroupInfoManage extends Component{
         this.refs.modal3.open();
     }
 
-    onCodigoSelect(codigo)
+    onCodigoSelect(code)
     {
 
-
-        const {merchantId}=this.props;
-        var query=this.state.query;
-        query.codeNum=codigo;
-
-
-        Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetSupnuevoCommonCommodityGroupListByCodigoGroupNumMobile.do",
-            headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: "codigo=" + codigo + "&supnuevoMerchantId=" + merchantId
-        },(json)=> {
-            var errorMsg=json.errorMsg;
-            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
-                alert(errorMsg);
-                this.setState({query:query});
-            }else{
-                var groupInfo=json;
-                if(json.groupNum!==undefined&&json.groupNum!==null)
-                {
-                    //同个组的所有商品管理
-                    groupInfo.array.map(function (commodity,i) {
-
-                        if(commodity.setSizeValue!=undefined&&commodity.setSizeValue!=null
-                            &&commodity.sizeUnit!=undefined&&commodity.sizeUnit!=null)
-                        {
-                            commodity.goodName=commodity.nombre+','+
-                                commodity.setSizeValue+','+commodity.sizeUnit;
-                        }
-                        else{
-                            commodity.goodName=commodity.nombre;
-                        }
-                    });
-                    this.navigateToGroupInfoManage(groupInfo,codigo);
-                }else{
-                    //多个组的信息
-                    this.setState({groupInfo: groupInfo,query:query});
-                }
-            }
-        }, (err) =>{
-            alert(err);
-            this.setState({query:query});
-        });
-
-
+        if(code.codigo==this.state.code.codigo)
+        {
+            Alert.alert(
+                '错误',
+                '您不能选择已在组的商品进行添加',
+                [
+                    {text: 'OK', onPress: () => console.log('...')},
+                ]
+            );
+        }else{
+            this.state.selectedCodeInfo=code;
+            this.setState({selectedCodeInfo:this.state.selectedCodeInfo});
+        }
     }
 
 
-    queryGoodsCode(codeNum)
+    queryGoodsCodigo(codigo)
     {
-        var code = parseInt(codeNum);
+        var codigo = parseInt(codigo);
         const { merchantId } = this.props;
         Proxy.post({
             url:Config.server+'supnuevo/supnuevoGetSupnuevoCommonCommodityListByLastFourCodigoMobile.do',
@@ -380,7 +317,7 @@ class GroupInfoManage extends Component{
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: "codigo=" + code + "&merchantId=" + merchantId
+            body: "codigo=" + codigo + "&merchantId=" + merchantId
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -412,7 +349,9 @@ class GroupInfoManage extends Component{
             groupName:null,
             goods:goods,
             code:code,
+            selectedCodeInfo:{},
             selectAll:false,
+            codesModalVisible:false,
             containedInGroup:props.containedInGroup,
             dataSource : new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
@@ -430,7 +369,6 @@ class GroupInfoManage extends Component{
 
         var groupInfo=this.state.groupInfo;
         const {code}=this.props;
-        var codigo=code.codigo;
         const {containedInGroup}=this.props;
         var goods=this.state.goods;
 
@@ -477,38 +415,44 @@ class GroupInfoManage extends Component{
 
                             {/* 条码 */}
                             <View style={[styles.row,{borderBottomWidth:0,marginBottom:8}]}>
-                                <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:0}}>
+                                <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:0}}>
                                     <Text style={{color:'#222'}}>条码</Text>
                                 </View>
-                                <View style={{flex:3,flexDirection:'row',alignItems:'center',padding:4,marginLeft:3}}>
-                                    <Text style={{color:'#222'}}>
-                                        {codigo} &nbsp;&nbsp;&nbsp;
-                                    </Text>
+                                <View style={{flex:6,flexDirection:'row',alignItems:'center',padding:4,marginLeft:0}}>
+
+                                    <TextInput
+                                        style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
+                                                flexDirection:'row',alignItems:'center'}}
+                                        onChangeText={(codigo) => {
+                                             this.state.selectedCodeInfo.codigo=codigo;
+                                            if(codigo.toString().length==4)
+                                            {
+                                                this.setState({selectedCodeInfo:this.state.selectedCodeInfo});
+                                                this.queryGoodsCodigo(codigo.toString().substring(0,4));
+                                            }else if(codigo.toString().length>4){
+                                                this.setState({selectedCodeInfo:this.state.selectedCodeInfo});
+                                            }
+                                            else{
+                                                this.setState({selectedCodeInfo:this.state.selectedCodeInfo});
+                                            }
+                                        }}
+                                        value={this.state.selectedCodeInfo.codigo}
+                                        placeholder='请输入条码最后四位'
+                                        placeholderTextColor="#aaa"
+                                        underlineColorAndroid="transparent"
+                                    />
 
                                 </View>
 
-                                {
-                                    containedInGroup==false?
-                                        <TouchableOpacity style={{flex:1,flexDirection:'row',alignItems:'center',padding:4,borderRadius:8,
-                                              paddingLeft:18,paddingRight:18,paddingTop:4,paddingBottom:4,justifyContent:'center',backgroundColor:'rgb(79,204,0)'}}
-                                                          onPress={()=>{
-                                                    this.addCommodity();
-                                                  }}>
-                                            <Text style={{fontSize:16,color:'#fff',fontWeight:'bold'}}>
-                                                添加
-                                            </Text>
-                                        </TouchableOpacity>:
-                                        <TouchableOpacity style={{flex:1,flexDirection:'row',alignItems:'center',padding:4,borderRadius:8,
-                                              paddingLeft:18,paddingRight:18,paddingTop:4,paddingBottom:4,justifyContent:'center',backgroundColor:'rgb(79,204,0)'}}
-                                                          onPress={()=>{
-                                                    this.removeCommodity();
-                                                  }}>
-                                            <Text style={{fontSize:16,color:'#fff',fontWeight:'bold'}}>
-                                                删除
-                                            </Text>
-                                        </TouchableOpacity>
+                                <TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
+                                                  onPress={()=>{
+                                            this.addCommodity();
+                                          }}>
+                                    <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
+                                        <Text style={{color:'#fff',fontSize:14}}>添加</Text>
+                                    </View>
+                                </TouchableOpacity>
 
-                                }
 
                             </View>
 
@@ -537,15 +481,9 @@ class GroupInfoManage extends Component{
                                         {groupInfo.groupName}
                                     </Text>
                                 </View>
-                                <TouchableOpacity style={{flex:1,flexDirection:'row',alignItems:'center',padding:4,borderRadius:8,height:30,
-                                              paddingLeft:12,paddingRight:12,paddingTop:0,paddingBottom:0,justifyContent:'center',backgroundColor:'rgb(79,204,0)'}}
-                                                  onPress={()=>{
-                                                    this.openGroupNameUpdateModal();
-                                                  }}>
-                                    <Text style={{fontSize:16,color:'#fff',fontWeight:'bold'}}>
-                                        更新
-                                    </Text>
-                                </TouchableOpacity>
+                                <View style={{flex:1,flexDirection:'row',alignItems:'center',padding:4,borderRadius:8,height:30,
+                                              paddingLeft:12,paddingRight:12,paddingTop:0,paddingBottom:0,justifyContent:'center'}}>
+                                </View>
                             </View>
 
                         </View>
@@ -554,18 +492,6 @@ class GroupInfoManage extends Component{
                     <View style={{padding:10}}>
                         <View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start'}}>
-                                <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                backgroundColor:'#90B4FF',borderBottomWidth:1,borderColor:'#aaa',padding:8}}
-                                                  onPress={
-                                                  function() {
-                                                      this.toggleAll();
-                                                  }.bind(this)}>
-
-                                    <Text style={{color:'#fff',fontWeight:'bold'}}>
-                                        { this.state.selectAll!=true?'全选':'全不选'}&nbsp;
-                                    </Text>
-                                    <Icon name='hand-pointer-o' size={20} color="#fff"></Icon>
-                                </TouchableOpacity>
 
 
                                 <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
@@ -574,8 +500,14 @@ class GroupInfoManage extends Component{
                                 </View>
 
                                 <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                            borderColor:'#aaa',borderWidth:1,padding:8}}>
+                                    borderColor:'#aaa',borderWidth:1,padding:8}}>
                                     <Text>名称</Text>
+                                </View>
+                                <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                                           borderColor:'#aaa',borderWidth:1,padding:8}}>
+                                    <Text>
+                                        删除
+                                    </Text>
                                 </View>
                             </View>
                         </View>
@@ -623,6 +555,29 @@ class GroupInfoManage extends Component{
                     </View>
 
                 </Modalbox>
+
+
+                {/*条码模态框*/}
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.codesModalVisible}
+                    onClose={()=>{
+                            this.closeCodesModal(!this.state.codesModalVisible)
+                        }}
+                    onRequestClose={() => {alert("Modal has been closed.")}}>
+
+                    <CodesModal
+                        onClose={()=>{
+                            this.closeCodesModal(!this.state.codesModalVisible)
+                        }}
+                        onCodigoSelect={
+                            (code)=>{
+                                this.onCodigoSelect(code);
+                            }}
+                        codes={this.state.codes}
+                    />
+                </Modal>
 
             </View>
         );
