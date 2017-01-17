@@ -444,7 +444,7 @@ class Query extends Component{
                                               this.closePopover();
                                               this.navigateGroupQuery();
                                           }}>
-                            <Text style={[styles.popoverText,{color:'#444'}]}>组管理</Text>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>添加商品至组</Text>
                         </TouchableOpacity>
 
                     </Popover>
