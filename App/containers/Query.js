@@ -157,6 +157,18 @@ class Query extends Component{
     }
 
 
+    updatePrice(price){
+
+        var goodInfo = this.state.selectedCodeInfo;
+        goodInfo.oldPrice = price;
+        goodInfo.price=price;
+        goodInfo.price1=price;
+        goodInfo.priceShow=price;
+        this.setState({selectedCodeInfo: goodInfo,priceShow:goodInfo.priceShow});
+    }
+
+
+
 
     constructor(props)
     {
@@ -177,9 +189,11 @@ class Query extends Component{
         var username = this.props.username;
         var codigo = this.state.selectedCodeInfo.codigo;
         var goodName = this.state.selectedCodeInfo.goodName;
+        var oldPrice = this.state.selectedCodeInfo.oldPrice;
+        var suggestPrice = this.state.selectedCodeInfo.price;
+        var fixedPrice = this.state.selectedCodeInfo.price1;
 
         var displayArea = {x: 5, y: 20, width: width - 10, height: height - 25};
-
 
         return (
             <View style={{flex:1}}>
@@ -245,13 +259,23 @@ class Query extends Component{
                         <View style={[styles.row,{borderBottomWidth:0,height:50}]}>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4}}>
+
+                                <TouchableOpacity
+                                    onPress={
+                                    ()=>{
+                                        this.updatePrice(oldPrice);
+                                    }}>
+                                    <Text style={{'fontSize':14,color:'#fff'}}>{oldPrice}</Text>
+                                </TouchableOpacity>
+
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5}}>
+                                <Text style={{'fontSize':14,color:'#fff'}}>{suggestPrice}</Text>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 borderTopRightRadius:4,borderBottomRightRadius:4}}>
-
+                                <Text style={{'fontSize':14,color:'#fff'}}>{fixedPrice}</Text>
                             </View>
                         </View>
                         {/*商品概要*/}
