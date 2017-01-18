@@ -32,6 +32,7 @@ import Config from '../../config';
 import CodesModal from '../components/modal/CodesModal';
 import Group from './Group';
 import GroupQuery from './GroupQuery';
+import GroupMaintain from './GroupMaintain';
 
 
 class Query extends Component{
@@ -135,6 +136,20 @@ class Query extends Component{
         }
     }
 
+    navigateGroupMaintain(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'groupMaintain',
+                component: GroupMaintain,
+                params: {
+                }
+            })
+        }
+    }
+
+
+
     navigate_priceGroupChange(){
         const { navigator } = this.props;
         const {merchantId}=this.props;
@@ -157,6 +172,18 @@ class Query extends Component{
     }
 
 
+    updatePrice(price){
+
+        var goodInfo = this.state.selectedCodeInfo;
+        goodInfo.oldPrice = price;
+        goodInfo.price=price;
+        goodInfo.price1=price;
+        goodInfo.priceShow=price;
+        this.setState({selectedCodeInfo: goodInfo,priceShow:goodInfo.priceShow});
+    }
+
+
+
 
     constructor(props)
     {
@@ -177,9 +204,11 @@ class Query extends Component{
         var username = this.props.username;
         var codigo = this.state.selectedCodeInfo.codigo;
         var goodName = this.state.selectedCodeInfo.goodName;
+        var oldPrice = this.state.selectedCodeInfo.oldPrice;
+        var suggestPrice = this.state.selectedCodeInfo.price;
+        var fixedPrice = this.state.selectedCodeInfo.price1;
 
         var displayArea = {x: 5, y: 20, width: width - 10, height: height - 25};
-
 
         return (
             <View style={{flex:1}}>
@@ -245,13 +274,23 @@ class Query extends Component{
                         <View style={[styles.row,{borderBottomWidth:0,height:50}]}>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4}}>
+
+                                <TouchableOpacity
+                                    onPress={
+                                    ()=>{
+                                        this.updatePrice(oldPrice);
+                                    }}>
+                                    <Text style={{'fontSize':14,color:'#fff'}}>{oldPrice}</Text>
+                                </TouchableOpacity>
+
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5}}>
+                                <Text style={{'fontSize':14,color:'#fff'}}>{suggestPrice}</Text>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 borderTopRightRadius:4,borderBottomRightRadius:4}}>
-
+                                <Text style={{'fontSize':14,color:'#fff'}}>{fixedPrice}</Text>
                             </View>
                         </View>
                         {/*商品概要*/}
@@ -412,15 +451,23 @@ class Query extends Component{
                                               console.log('choose add commodity');
                                               this.closePopover();
                                           }}>
-                            <Text style={[styles.popoverText,{color:'#444'}]}>添加新商品</Text>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>添加商品</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={[styles.popoverContent,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
+                                          onPress={()=>{
+                                              this.closePopover();
+                                              this.navigateGroupQuery();
+                                          }}>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>添加商品至组</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={[styles.popoverContent]}
                                           onPress={()=>{
                                               this.closePopover();
-                                              this.navigateGroupQuery();
+                                              this.navigateGroupMaintain();
                                           }}>
-                            <Text style={[styles.popoverText,{color:'#444'}]}>商品组管理</Text>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>商品组维护</Text>
                         </TouchableOpacity>
 
                     </Popover>

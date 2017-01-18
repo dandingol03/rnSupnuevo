@@ -18,8 +18,6 @@ import App from './App/index';
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import Camera from 'react-native-camera';
 
-
-
 class rnSupnuevo extends Component{
 
     takePicture() {
@@ -34,15 +32,11 @@ class rnSupnuevo extends Component{
             })
             .catch(err => console.error(err));
     }
-
     constructor(props)
     {
         super(props);
     }
-
     render(){
-
-
         return (
             <View style={{flex:1}}>
               <ScrollableTabView
@@ -90,7 +84,6 @@ const styles = StyleSheet.create({
         margin: 40
     }
 });
-
 
 
 AppRegistry.registerComponent('rnSupnuevo', () => App);
