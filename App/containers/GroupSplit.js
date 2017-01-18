@@ -132,12 +132,12 @@ class GroupSplit extends Component{
                 style={{flex: 1, padding: 2,flexDirection:'row',justifyContent:'center'}}
                 onClick={()=>{
 
-                    var groups=_.cloneDeep(this.state.groups);
-                    groups.array.map(function(group,i) {
-                    if(group.groupId==rowData.groupId)
-                        group.checked=false;
+                    var productArr=_.cloneDeep(this.state.productArr);
+                    productArr.map(function(commodity,i) {
+                    if(commodity.commodityId==rowData.commodityId)
+                        commodity.checked=false;
                     });
-                   this.setState({groups: groups,dataSource:this.state.dataSource.cloneWithRows(groups.array)});
+                   this.setState({productArr: productArr,dataSource:this.state.dataSource.cloneWithRows(productArr)});
                                 }}
                 isChecked={true}
                 leftText={null}
@@ -146,12 +146,12 @@ class GroupSplit extends Component{
             chebx=  <CheckBox
                 style={{flex: 1, padding: 2,flexDirection:'row',justifyContent:'center'}}
                 onClick={()=>{
-                    var groups=_.cloneDeep(this.state.groups);
-                    groups.array.map(function(group,i) {
-                    if(group.groupId==rowData.groupId)
-                        group.checked=true;
+                    var productArr=_.cloneDeep(this.state.productArr);
+                    productArr.map(function(product,i) {
+                    if(product.commodityId==rowData.commodityId)
+                        product.checked=true;
                     });
-                   this.setState({groups: groups,dataSource:this.state.dataSource.cloneWithRows(groups.array)});
+                   this.setState({productArr: productArr,dataSource:this.state.dataSource.cloneWithRows(productArr)});
                                 }}
                 isChecked={false}
                 leftText={null}
@@ -169,15 +169,12 @@ class GroupSplit extends Component{
                         </View>
 
                         <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.groupName}</Text>
+                            <Text style={{color:'#222'}}>{rowData.codigo}</Text>
                         </View>
 
-                        <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
-                                          onPress={()=>{
-                                          this.removeCommodityGroup(rowData.groupId);
-                                                  }}>
-                            <Icon name="remove" color="#f00" size={23}></Icon>
-                        </TouchableOpacity>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
+                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.goodName}</Text>
+                        </View>
 
                     </View>
                 </View>
@@ -185,50 +182,6 @@ class GroupSplit extends Component{
             </View>;
 
         return row;
-    }
-
-    changePriceRelated()
-    {
-        var selectedRelativePriceIds=[];
-        var relatedGoods=this.state.relatedGoods;
-        relatedGoods.map(function(good,i) {
-            if(good.checked==true){
-                selectedRelativePriceIds.push(good.priceId);
-            }
-        });
-        const {goodInfo}=this.props;
-        const {merchantId}=this.props;
-        //TODO:make a fetch
-
-        Proxy.post({
-            url:Config.server+'supnuevo/supnuevoUpdateSupnuevoBuyerCommodityPriceGroupMobile.do',
-            headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: "priceIds=" + selectedRelativePriceIds.toString() +
-            "&merchantId=" + merchantId+
-            '&priceShow='+goodInfo.priceShow+
-            '&printType='+goodInfo.printType+
-            '&price='+goodInfo.price
-        },(json)=> {
-            var errorMsg=json.errorMsg;
-            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
-                alert(errorMsg);
-
-            }else{
-                Alert.alert(
-                    'Alert Title',
-                    '组改价成功',
-                    [
-                        {text: 'OK', onPress: () => this.goBack()},
-                    ]
-                );
-            }
-        }, (err) =>{
-            alert(err);
-        });
-
     }
 
     closeCodesModal(val){
@@ -477,38 +430,39 @@ class GroupSplit extends Component{
     }
 
     //合并成为新组
-    mergeToNewGroup()
+    splitToNewGroup()
     {
 
         const {merchantId}=this.props;
-
+        const {groupInfo}=this.props;
+        var groupId=groupInfo.groupId;
         var groupName=this.state.query.groupName;
         if(groupName!==undefined&&groupName!==null&&groupName!='')
         {
 
 
-            if(this.state.groups&&this.state.groups.array!==undefined&&this.state.groups.array!==null
-                &&Object.prototype.toString.call(this.state.groups.array)=='[object Array]')
+            if(this.state.productArr&&this.state.productArr!==undefined&&this.state.productArr!==null
+                &&Object.prototype.toString.call(this.state.productArr)=='[object Array]')
             {
 
-                var groupIds=[];
-                this.state.groups.array.map(function (group, i) {
-                    if(group.checked==true)
+                var commodityIds=[];
+                this.state.productArr.map(function (commodity, i) {
+                    if(commodity.checked==true)
                     {
-                        groupIds.push(group.groupId);
+                        commodityIds.push(commodity.commodityId);
                     }
                 });
 
-                if(groupIds.length>1)
+                if(commodityIds.length>1)
                 {
 
                     Proxy.post({
-                        url:Config.server+"supnuevo/supnuevoMergeSupnuevoCommodityGroupMobile.do",
+                        url:Config.server+"supnuevo/supnuevoBreakSupnuevoCommodityGroupMobile.do",
                         headers: {
                             'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                             'Content-Type': 'application/x-www-form-urlencoded'
                         },
-                        body: "groupIds=" + groupIds.toString() + "&groupName=" + groupName+'&supnuevoMerchantId='+merchantId
+                        body: "commodityIds=" + commodityIds.toString() + "&groupName=" + groupName+'&groupId='+groupId+'&supnuevoMerchantId='+merchantId
                     },(json)=> {
                         var errorMsg=json.errorMsg;
                         if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -519,11 +473,10 @@ class GroupSplit extends Component{
                             {
                                 Alert.alert(
                                     '信息',
-                                    '添加到新建组成功',
+                                    '拆分新组成功',
                                     [
                                         {text: 'OK', onPress: () =>  {
-                                            this.state.query.groupName='';
-                                            this.onCodigoSelect(code);
+                                            this.fetchCommodityListByGroupId();
                                         }},
                                     ]
                                 );
@@ -563,151 +516,58 @@ class GroupSplit extends Component{
 
     }
 
-    //删除组
-    removeCommodityGroup(groupId)
-    {
 
-        var groupNum=this.state.query.groupNum;
+    fetchCommodityListByGroupId()
+    {
+        var {groupInfo}=this.props;
+        var groupId=groupInfo.groupId;
+        const {merchantId}=this.props;
 
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoDeleteSupnuevoBuyerCommodityGroupMobile.do",
+            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommonCommodityListOfGroupMobile.do',
             headers: {
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: "groupId=" +groupId
+            body: "&groupId=" + groupId+'&supnuevoMerchantId='+merchantId
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
             }else{
+                if(json.array!==undefined&&json.array!==null&&Object.prototype.toString.call(json.array)=='[object Array]')
+                {
 
-                Alert.alert(
-                    '信息',
-                    '商品组删除成功',
-                    [
-                        {text: 'OK', onPress: () =>  {
-                            this.queryGroupsByGroupNum(groupNum.toString().substring(0,7));
-                        }},
-                    ]
-                );
+                    json.array.map(function (commodity,i) {
 
-            }
-        }, (err) =>{
-            alert(err);
-
-        });
-
-    }
-
-
-
-    //添加到新建组
-    commodityAddToNewGroup()
-    {
-        var groupName=this.state.query.groupName;
-        const {merchantId}=this.props;
-        if(groupName!==undefined&&groupName!==null&&groupName!='')
-        {
-            var code=this.state.code;
-            if(code&&code.codigo)
-            {
-                var codigo=code.codigo;
-                Proxy.post({
-                    url:Config.server+"supnuevo/supnuevoAddSupnuevoBuyerCommodityGroupMobile.do",
-                    headers: {
-                        'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: "codigo=" + codigo + "&groupName=" + groupName+'&supnuevoMerchantId='+merchantId
-                },(json)=> {
-                    var errorMsg=json.errorMsg;
-                    if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
-                        alert(errorMsg);
-                    }else{
-                        //TODO:return to previous page
-                        if(json.groupNum!==undefined&&json.groupNum!==null)
+                        if(commodity.setSizeValue!=undefined&&commodity.setSizeValue!=null
+                            &&commodity.sizeUnit!=undefined&&commodity.sizeUnit!=null)
                         {
-                            Alert.alert(
-                                '信息',
-                                '添加到新建组成功',
-                                [
-                                    {text: 'OK', onPress: () =>  {
-                                        this.state.query.groupName='';
-                                        this.onCodigoSelect(code);
-                                    }},
-                                ]
-                            );
+                            commodity.goodName=commodity.nombre+','+
+                                commodity.setSizeValue+','+commodity.sizeUnit;
                         }
-                    }
-                }, (err) =>{
-                    alert(err);
+                        else{
+                            commodity.goodName=commodity.nombre;
+                        }
+                    });
 
-                });
-            }else{
-                Alert.alert(
-                    '错误',
-                    '请先输入条码',
-                    [
-                        {text: 'OK',onPress: () =>  this.refs.modal3.close()}
-                    ]
-                );
-            }
-        }else{
-            Alert.alert(
-                '错误',
-                '请先填入新建的组名再点击添加',
-                [
-                    {text: 'OK',onPress: () =>  this.refs.modal3.close()}
-                ]
-            );
-        }
-    }
+                    var productArr=json.array;
+                    this.setState({productArr:productArr,dataSource:this.state.dataSource.cloneWithRows(productArr)});
 
-    commodityGroupAdd()
-    {
-        var groupName=this.state.groupName;
-        const {merchantId}=this.props;
-        if(groupName!==undefined&&groupName!==null&&groupName!='')
-        {
-            Proxy.post({
-                url:Config.server+'supnuevo/supnuevoSaveOrUpdateSupnuevoBuyerCommodityGroupMobile.do',
-                headers: {
-                    'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: "groupName=" + groupName + "&groupId=" + ''+'&supnuevoMerchantId='+merchantId
-            },(json)=> {
-                var errorMsg=json.errorMsg;
-                if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
-                    alert(errorMsg);
                 }else{
                     Alert.alert(
                         '信息',
-                        '组添加成功',
+                        '商品组列表为空',
                         [
-                            {text: 'OK',onPress: () =>  this.refs.modal3.close()}
+                            {text: 'OK'}
                         ]
                     );
                 }
-            }, (err) =>{
-                alert(err);
-            });
-        }else {
-            Alert.alert(
-                '错误',
-                '请填写完组名再点击确认',
-                [
-                    {text: 'OK'}
-                ]
-            );
-        }
-    }
+            }
+        }, (err) =>{
+            alert(err);
+        });
 
-
-    openGroupAppendModal()
-    {
-        this.setState({groupAppendModalVisible:!this.state.groupAppendModalVisible});
     }
 
     constructor(props)
@@ -716,12 +576,8 @@ class GroupSplit extends Component{
         this.state = {
             merchantId:props.merchantId,
             query:{},
-            groups:null,
-            groupArr:{},
-            selectAll:false,
-            codesModalVisible:false,
-            groupAppendModalVisible:false,
-            code:null,
+            groupInfo:props.groupInfo,
+            productArr:null,
             dataSource : new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
@@ -736,50 +592,21 @@ class GroupSplit extends Component{
 
     render(){
 
+
+
         var groups=this.state.groups;
         var groupInfo=this.state.groupInfo;
         var listView=null;
+        var productArr=this.state.productArr;
+
+        //拉取商品组列表
+        if(productArr==undefined||productArr==null)
+        {
+            this.fetchCommodityListByGroupId();
+        }
+
         var queryBox=   (<View style={[styles.card,{marginTop:10,padding:8}]}>
             <View style={{flex:1,padding:8,paddingLeft:10,paddingRight:10,backgroundColor:'#eee',borderRadius:8}}>
-
-                {/* 商品特征码 */}
-                <View style={[styles.row,{borderBottomWidth:0}]}>
-                    {/*<View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>*/}
-                    {/*<Text style={{color:'#222'}}>条码</Text>*/}
-                    {/*</View>*/}
-                    <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
-                        <TextInput
-                            style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
-                            onChangeText={(groupNum) => {
-                                            if(groupNum.toString().length==7)
-                                            {
-                                                this.state.query.groupNum=groupNum;
-                                                this.setState({query:this.state.query});
-                                                this.queryGroupsByGroupNum(groupNum.toString().substring(0,7));
-                                            }else if(groupNum.toString().length>7){}
-                                            else{
-                                                this.state.query.groupNum=groupNum;
-                                                this.setState({query:this.state.query});
-                                            }
-                                        }}
-                            value={this.state.query.groupNum}
-                            placeholder='请输入商品特征码'
-                            placeholderTextColor="#aaa"
-                            underlineColorAndroid="transparent"
-                        />
-                    </View>
-
-                    {/*<TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}*/}
-                    {/*onPress={()=>{*/}
-                    {/*this.refs.modal3.open();*/}
-                    {/*}}>*/}
-                    {/*<View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>*/}
-                    {/*<Text style={{color:'#fff',fontSize:14}}>新增组</Text>*/}
-                    {/*</View>*/}
-                    {/*</TouchableOpacity>*/}
-
-                </View>
 
                 {/*组添加*/}
                 <View style={[styles.row,{borderBottomWidth:0}]}>
@@ -788,7 +615,7 @@ class GroupSplit extends Component{
                         <TextInput
                             style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
                                                 flexDirection:'row',alignItems:'center'}}
-                            onChangeText={(groupName) => {
+                                onChangeText={(groupName) => {
                                             if(groupName.toString().length==4)
                                             {
 
@@ -804,7 +631,7 @@ class GroupSplit extends Component{
                                             }
                                         }}
                             value={this.state.query.groupName}
-                            placeholder='请输入合并的商品组名'
+                            placeholder='请输入拆分的商品组名'
                             placeholderTextColor="#aaa"
                             underlineColorAndroid="transparent"
                         />
@@ -812,22 +639,37 @@ class GroupSplit extends Component{
 
                     <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
                                       onPress={()=>{
-                                          this.mergeToNewGroup();
+                                          this.splitToNewGroup();
                                                   }}>
                         <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
-                            <Text style={{color:'#fff',fontSize:14}}>合并到新组</Text>
+                            <Text style={{color:'#fff',fontSize:14}}>拆分到新组</Text>
                         </View>
                     </TouchableOpacity>
+                </View>
+
+                {/*商品组名*/}
+                <View style={[styles.row,{borderBottomWidth:0}]}>
+                    <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:0}}>
+                        <Text style={{color:'#222'}}>商品组名</Text>
+                    </View>
+                    <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:7}}>
+                        <Text style={{color:'#222'}}>
+                            {groupInfo.groupName}
+                        </Text>
+                    </View>
+                    <View style={{flex:1,flexDirection:'row',alignItems:'center',padding:4,borderRadius:8,height:30,
+                                              paddingLeft:12,paddingRight:12,paddingTop:0,paddingBottom:0,justifyContent:'center'}}>
+                    </View>
                 </View>
 
             </View>
         </View>);
 
 
-        if(groups&&groups.array!==undefined&&groups.array!==null&&Object.prototype.toString.call(groups.array)=='[object Array]')
+        if(productArr!==undefined&&productArr!==null&&Object.prototype.toString.call(productArr)=='[object Array]')
         {
 
-            var data=groups.array;
+            var data=productArr;
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
 
@@ -845,13 +687,15 @@ class GroupSplit extends Component{
 
                             <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',
                                         borderColor:'#aaa',borderWidth:1,padding:8}}>
-                                <Text style={{color:'#222'}}>商品组名</Text>
+                                <Text style={{color:'#222'}}>条码</Text>
                             </View>
 
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                        borderColor:'#aaa',borderWidth:1,padding:8,paddingLeft:12,paddingRight:12}}>
-                                <Text style={{color:'#222'}}>操作</Text>
+
+                            <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                                        borderColor:'#aaa',borderWidth:1,padding:8}}>
+                                <Text style={{color:'#222'}}>商品名</Text>
                             </View>
+
                         </View>
                     </View>
 
@@ -866,49 +710,7 @@ class GroupSplit extends Component{
 
 
 
-        }else if(groupInfo&&groupInfo.array!==undefined&&groupInfo.array!==null&&Object.prototype.toString.call(groupInfo.array)=='[object Array]')
-        {
-            var data=groupInfo.array;
-            var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
-
-            listView=(
-                <View style={{padding:10}}>
-                    <View>
-                        <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start'}}>
-
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                            borderColor:'#aaa',borderWidth:1,borderRightWidth:0,padding:8}}>
-                                <Text style={{color:'#222'}}>
-                                    条码
-                                </Text>
-                            </View>
-
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                            borderColor:'#aaa',borderWidth:1,padding:8}}>
-                                <Text style={{color:'#222'}}>名称</Text>
-                            </View>
-
-                            {/*<View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',*/}
-                            {/*borderColor:'#aaa',borderWidth:1,padding:8}}>*/}
-                            {/*<Text style={{color:'#222'}}>删除</Text>*/}
-                            {/*</View>*/}
-                        </View>
-                    </View>
-
-                    <ScrollView>
-                        <ListView
-                            automaticallyAdjustContentInsets={false}
-                            dataSource={ds.cloneWithRows(data)}
-                            renderRow={this.renderCommodityRow.bind(this)}
-                        />
-                    </ScrollView>
-                </View>
-            );
-
-
-        }
-        else{}
+        }else{}
 
 
         return (
@@ -936,63 +738,11 @@ class GroupSplit extends Component{
 
                     {listView}
 
-                    <Modal
-                        animationType={"slide"}
-                        transparent={false}
-                        visible={this.state.codesModalVisible}
-                        onRequestClose={() => {alert("Modal has been closed.")}}>
-
-                        <CodesModal
-                            onClose={()=>{
-                            this.closeCodesModal(!this.state.codesModalVisible)
-                        }}
-                            onCodigoSelect={
-                            (code)=>{
-                                this.onCodigoSelect(code);
-                            }}
-                            codes={this.state.codes}
-                        />
-                    </Modal>
 
 
                 </ScrollView>
 
-                <Modalbox
-                    style={[ styles.modal3,{borderRadius:12,padding:4,paddingLeft:12,paddingRight:12}]} position={"center"} ref={"modal3"}
-                    animationType={"slide"}>
 
-
-                    <View style={[styles.row,{borderWidth:0,borderBottomWidth:1,borderBottomColor:'#ddd'}]}>
-                        <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
-                            <Text style={{color:'#222'}}>组名</Text>
-                        </View>
-                        <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
-                            <TextInput
-                                style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
-                                onChangeText={(groupName) => {
-                                            this.state.groupName=groupName;
-                                            this.setState({groupName:this.state.groupName});
-                                        }}
-                                value={this.state.groupName}
-                                placeholder='请输入新增的组名'
-                                placeholderTextColor="#aaa"
-                                underlineColorAndroid="transparent"
-                            />
-                        </View>
-                    </View>
-
-
-                    <View style={[styles.row,{borderBottomWidth:0,marginTop:10,justifyContent:'center'}]}>
-                        <TouchableOpacity style={{backgroundColor:'#00f',borderRadius:8,padding:8,paddingLeft:20,paddingRight:20}}
-                                          onPress={()=>{
-                               this.commodityGroupAdd();
-                            }}>
-                            <Text style={{color:'#fff',fontSize:16}}>确认</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                </Modalbox>
 
             </View>
         );

@@ -37,7 +37,7 @@ import _ from 'lodash';
 import CodesModal from '../components/modal/CodesModal';
 import GroupInfoManage from './GroupInfoManage';
 import Modalbox from 'react-native-modalbox';
-
+import GroupSplit from './GroupSplit';
 
 
 
@@ -53,16 +53,14 @@ class GroupMaintain extends Component{
 
 
 
-    navigateToGroupSplit(groupInfo,code,containedInGroup){
+    navigateToGroupSplit(groupInfo){
         const { navigator } = this.props;
         if(navigator) {
             navigator.push({
-                name: 'groupInfoManage',
-                component: GroupInfoManage,
+                name: 'groupSplit',
+                component: GroupSplit,
                 params: {
-                    groupInfo:groupInfo,
-                    code:code,
-                    containedInGroup:containedInGroup
+                    groupInfo:groupInfo
                 }
             })
         }
@@ -171,7 +169,7 @@ class GroupMaintain extends Component{
 
                         <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}
                                           onPress={()=>{
-                                          this.navigateToGroupSplit(rowData.groupId);
+                                          this.navigateToGroupSplit(rowData);
                                                   }}>
                             <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.groupName}</Text>
                         </TouchableOpacity>
