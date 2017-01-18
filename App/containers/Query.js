@@ -32,7 +32,11 @@ import Config from '../../config';
 import CodesModal from '../components/modal/CodesModal';
 import Group from './Group';
 import GroupQuery from './GroupQuery';
+
 import GoodUpdate from './GoodUpdate';
+
+import GroupMaintain from './GroupMaintain';
+
 
 
 class Query extends Component{
@@ -184,6 +188,19 @@ class Query extends Component{
 
             }
         });
+    }
+
+
+    navigateGroupMaintain(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'groupMaintain',
+                component: GroupMaintain,
+                params: {
+                }
+            })
+        }
     }
 
 
@@ -638,12 +655,20 @@ class Query extends Component{
                             <Text style={[styles.popoverText,{color:'#444'}]}>添加商品</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={[styles.popoverContent]}
+                        <TouchableOpacity style={[styles.popoverContent,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
                                           onPress={()=>{
                                               this.closePopover();
                                               this.navigateGroupQuery();
                                           }}>
                             <Text style={[styles.popoverText,{color:'#444'}]}>添加商品至组</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={[styles.popoverContent]}
+                                          onPress={()=>{
+                                              this.closePopover();
+                                              this.navigateGroupMaintain();
+                                          }}>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>商品组维护</Text>
                         </TouchableOpacity>
 
                     </Popover>
