@@ -412,7 +412,7 @@ class Query extends Component{
                                               console.log('choose add commodity');
                                               this.closePopover();
                                           }}>
-                            <Text style={[styles.popoverText,{color:'#444'}]}>添加商品</Text>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>添加新商品</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={[styles.popoverContent]}
@@ -420,7 +420,7 @@ class Query extends Component{
                                               this.closePopover();
                                               this.navigateGroupQuery();
                                           }}>
-                            <Text style={[styles.popoverText,{color:'#444'}]}>组管理</Text>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>商品组管理</Text>
                         </TouchableOpacity>
 
                     </Popover>

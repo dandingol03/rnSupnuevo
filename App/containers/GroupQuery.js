@@ -234,15 +234,15 @@ class GroupQuery extends Component{
 
         const {merchantId}=this.props;
         var query=this.state.query;
-        var codigo=code.codigo;
         query.codeNum=codigo;
 
         var body='';
         if(groupNum!==undefined&&groupNum!==null)
             body='groupNum='+groupNum+"&supnuevoMerchantId=" + merchantId;
-        else
-            body="codigo=" + codigo + "&supnuevoMerchantId=" + merchantId;
-
+        else {
+            var codigo = code.codigo;
+            body = "codigo=" + codigo + "&supnuevoMerchantId=" + merchantId;
+        }
         Proxy.post({
             url:Config.server+"supnuevo/supnuevoGetSupnuevoCommonCommodityGroupListByCodigoGroupNumMobile.do",
             headers: {
@@ -428,11 +428,11 @@ class GroupQuery extends Component{
                         <View style={{flex:1,padding:8,paddingLeft:10,paddingRight:10,backgroundColor:'#eee',borderRadius:8}}>
 
                             {/* 条码 */}
-                            <View style={[styles.row,{borderBottomWidth:0}]}>
+                            <View style={[styles.row,{borderBottomWidth:0,marginBottom:8}]}>
                                 <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
-                                    <Text style={{color:'#222'}}>条码</Text>
+                                    <Text style={{color:'#222'}}>商品条码</Text>
                                 </View>
-                                <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
+                                <View style={{flex:3,flexDirection:'row',alignItems:'center',padding:4}}>
                                     <TextInput
                                         style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
                                                 flexDirection:'row',alignItems:'center'}}
@@ -463,10 +463,41 @@ class GroupQuery extends Component{
                                                           this.refs.modal3.open();
                                                   }}>
                                     <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
-                                        <Text style={{color:'#fff',fontSize:14}}>新增组</Text>
+                                        <Text style={{color:'#fff',fontSize:14}}>添加新组</Text>
                                     </View>
                                 </TouchableOpacity>
 
+                            </View>
+                            { /* 特征码 */}
+                            <View style={[styles.row,{borderBottomWidth:0,marginBottom:8}]}>
+                                <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
+                                    <Text style={{color:'#222'}}>组特征码</Text>
+                                </View>
+                                <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
+                                    <TextInput
+                                        style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
+                                                    flexDirection:'row',alignItems:'center'}}
+                                        onChangeText={(groupNum) => {
+                                                if(groupNum.toString().length==7)
+                                                {
+                                                    this.state.query.groupNum=groupNum;
+                                                    this.setState({query:this.state.query});
+                                                    this.onCodigoSelect(null,groupNum.toString().substring(0,7));
+                                                }else if(groupNum.toString().length>7){
+                                                    this.state.query.groupNum=groupNum;
+                                                    this.setState({query:this.state.query});
+                                                }
+                                                else{
+                                                    this.state.query.groupNum=groupNum;
+                                                    this.setState({query:this.state.query});
+                                                }
+                                            }}
+                                        value={this.state.query.groupNum}
+                                        placeholder='请输入7位特征码'
+                                        placeholderTextColor="#aaa"
+                                        underlineColorAndroid="transparent"
+                                    />
+                                </View>
                             </View>
 
 
