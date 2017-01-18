@@ -32,12 +32,14 @@ import Config from '../../config';
 import CodesModal from '../components/modal/CodesModal';
 import Group from './Group';
 import GroupQuery from './GroupQuery';
+
+import GoodUpdate from './GoodUpdate';
+
 import GroupMaintain from './GroupMaintain';
 
 
+
 class Query extends Component{
-
-
 
     closeCodesModal(val){
         this.setState({codesModalVisible:val})
@@ -58,8 +60,11 @@ class Query extends Component{
 
     onCodigoSelect(code)
     {
-        const {merchantId}=this.props;
+        const merchantId=this.props.merchantId;
         var codigo=code.codigo;
+
+
+
         Proxy.post({
             url:Config.server+"supnuevo/supnuevoGetSupnuevoBuyerPriceFormByCodigoBs.do",
             headers: {
@@ -89,6 +94,7 @@ class Query extends Component{
 
     queryGoodsCode(codeNum){
         var code = parseInt(codeNum);
+
         const { merchantId } = this.props;
         Proxy.post({
             url:Config.server+'supnuevo/supnuevoGetQueryDataListByInputStringBs.do',
@@ -112,18 +118,6 @@ class Query extends Component{
 
     }
 
-    navigateGoodUpdate(){
-        const { navigator } = this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'group',
-                component: Group,
-                params: {
-                }
-            })
-        }
-    }
-
     navigateGroupQuery(){
         const { navigator } = this.props;
         if(navigator) {
@@ -136,6 +130,67 @@ class Query extends Component{
         }
     }
 
+    navigateGoodUpdate(){
+        const { navigator } = this.props;
+        const {merchantId}=this.props;
+
+        Proxy.post({
+            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommodityTaxInfoListMobile.do',
+            headers: {
+                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body:"merchantId=" + merchantId
+        },(json)=> {
+
+            var errorMsg=json.errorMsg;
+            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                alert(errorMsg);
+            }else{
+                var taxArr = new Array();
+                var sizeArr = new Array();
+                json.taxArr.map(function(index,i){
+                    taxArr.push(index);
+                })
+                json.sizeArr.map(function(index,i){
+                    sizeArr.push(index);
+                })
+                for(var i = 0 ; i < taxArr.length;i++){
+                    var o = {'value':'','label':''};
+                    o.label = taxArr[i].label;
+                    o.value = taxArr[i].value;
+                    this.state.taxArr.push(o);
+                }
+                for(var i = 0 ; i < sizeArr.length;i++){
+                    var o = {'value':'','label':''};
+                    o.label = sizeArr[i].label;
+                    o.value = sizeArr[i].value;
+                    this.state.sizeArr.push(o);
+                }
+
+                if(this.state.selectedCodeInfo.codigo!=undefined&&this.state.selectedCodeInfo.codigo!=null&&this.state.selectedCodeInfo.codigo!=''){
+                    if(navigator) {
+                        navigator.push({
+                            name: 'group',
+                            component: GoodUpdate,
+                            params: {
+                                merchantId:merchantId,
+                                goodInfo:this.state.selectedCodeInfo,
+                                taxArr:this.state.taxArr,
+                                sizeArr: this.state.sizeArr,
+                                onCodigoSelect:this.onCodigoSelect.bind(this),
+                            }
+                        })
+                    }
+                }else{
+                    alert('请先选择要修改的商品！');
+                }
+
+            }
+        });
+    }
+
+
     navigateGroupMaintain(){
         const { navigator } = this.props;
         if(navigator) {
@@ -147,7 +202,6 @@ class Query extends Component{
             })
         }
     }
-
 
 
     navigate_priceGroupChange(){
@@ -182,7 +236,80 @@ class Query extends Component{
         this.setState({selectedCodeInfo: goodInfo,priceShow:goodInfo.priceShow});
     }
 
+    addIVA(){
+        var taxMark = this.state.taxMark;
 
+        if(taxMark >= 0){
+            taxMark = 1;
+        }else if(taxMark < 0){
+            taxMark = 0;
+        }
+
+        this.state.selectedCodeInfo.price = (Math.round(this.state.selectedCodeInfo.price1 * (1 + taxMark * this.state.selectedCodeInfo.iva)*(1 + this.state.amount) *100))/100;
+        this.state.selectedCodeInfo.priceShow=this.state.selectedCodeInfo.price;
+        var priceShow = this.state.selectedCodeInfo.price;
+        this.setState({taxMark: taxMark,priceShow:priceShow});
+    }
+
+    addPercentage1(){
+        var amount =  this.state.amount + 0.1;
+        this.state.selectedCodeInfo.price = (Math.round(this.state.selectedCodeInfo.price1 * (1 + this.state.taxMark * this.state.selectedCodeInfo.iva)*(1 + amount) *100))/100;
+        this.state.selectedCodeInfo.priceShow= this.state.selectedCodeInfo.price;
+        var priceShow = this.state.selectedCodeInfo.price;
+        this.setState({amount:amount,priceShow:priceShow});
+    }
+
+    addPercentage2(){
+        var amount =  this.state.amount + 0.05;
+        this.state.selectedCodeInfo.price = (Math.round(this.state.selectedCodeInfo.price1 * (1 + this.state.taxMark * this.state.selectedCodeInfo.iva)*(1 + amount) *100))/100;
+        this.state.selectedCodeInfo.priceShow = this.state.selectedCodeInfo.price;
+        var priceShow = this.state.selectedCodeInfo.price;
+        this.setState({amount:amount,priceShow:priceShow});
+    }
+
+    zero(){
+        this.state.selectedCodeInfo.price = parseInt(this.state.selectedCodeInfo.price);
+        this.state.selectedCodeInfo.priceShow = this.state.selectedCodeInfo.price.toFixed(2);
+        var priceShow =  this.state.selectedCodeInfo.priceShow;
+        this.setState({priceShow:priceShow});
+    }
+
+    reduceIVA(){
+        var taxMark = this.state.taxMark;
+
+        if(taxMark <= 0){
+            taxMark = -1;
+        }else if(taxMark > 0){
+            taxMark = 0;
+        }
+        this.state.selectedCodeInfo.price = (Math.round(this.state.selectedCodeInfo.price1 * (1 + taxMark * this.state.selectedCodeInfo.iva)*(1 + this.state.amount) *100))/100;
+        this.state.selectedCodeInfo.priceShow=this.state.selectedCodeInfo.price;
+        var priceShow = this.state.selectedCodeInfo.price;
+        this.setState({taxMark: taxMark,priceShow:priceShow});
+    }
+
+    reducePercentage1(){
+        var amount =  this.state.amount - 0.1;
+        this.state.selectedCodeInfo.price = (Math.round(this.state.selectedCodeInfo.price1 * (1 + this.state.taxMark * this.state.selectedCodeInfo.iva)*(1 + amount) *100))/100;
+        this.state.selectedCodeInfo.priceShow= this.state.selectedCodeInfo.price;
+        var priceShow = this.state.selectedCodeInfo.price;
+        this.setState({amount:amount,priceShow:priceShow});
+    }
+
+    reducePercentage2(){
+        var amount =  this.state.amount - 0.05;
+        this.state.selectedCodeInfo.price = (Math.round(this.state.selectedCodeInfo.price1 * (1 + this.state.taxMark * this.state.selectedCodeInfo.iva)*(1 + amount) *100))/100;
+        this.state.selectedCodeInfo.priceShow = this.state.selectedCodeInfo.price;
+        var priceShow = this.state.selectedCodeInfo.price;
+        this.setState({amount:amount,priceShow:priceShow});
+    }
+
+    zero1(){
+        this.state.selectedCodeInfo.price =parseInt( this.state.selectedCodeInfo.price)+0.50;
+        this.state.selectedCodeInfo.priceShow = this.state.selectedCodeInfo.price.toFixed(2);
+        var priceShow =  this.state.selectedCodeInfo.priceShow ;
+        this.setState({priceShow:priceShow});
+    }
 
 
     constructor(props)
@@ -194,7 +321,11 @@ class Query extends Component{
             codesModalVisible:false,
             codigo:null,
             selectedCodeInfo:{},
-            priceShow:null
+            priceShow:null,
+            taxMark:0,
+            amount:0,
+            taxArr:[],
+            sizeArr:[],
         };
     }
 
@@ -275,7 +406,7 @@ class Query extends Component{
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4}}>
 
-                                <TouchableOpacity
+                                <TouchableOpacity style={{justifyContent:'center'}}
                                     onPress={
                                     ()=>{
                                         this.updatePrice(oldPrice);
@@ -286,11 +417,26 @@ class Query extends Component{
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5}}>
-                                <Text style={{'fontSize':14,color:'#fff'}}>{suggestPrice}</Text>
+
+                                <TouchableOpacity style={{justifyContent:'center'}}
+                                                  onPress={
+                                    ()=>{
+                                        this.updatePrice(suggestPrice);
+                                    }}>
+                                    <Text style={{'fontSize':14,color:'#fff'}}>{suggestPrice}</Text>
+                                </TouchableOpacity>
+
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 borderTopRightRadius:4,borderBottomRightRadius:4}}>
-                                <Text style={{'fontSize':14,color:'#fff'}}>{fixedPrice}</Text>
+
+                                <TouchableOpacity style={{justifyContent:'center'}}
+                                                  onPress={
+                                    ()=>{
+                                        this.updatePrice(fixedPrice);
+                                    }}>
+                                    <Text style={{'fontSize':14,color:'#fff'}}>{fixedPrice}</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                         {/*商品概要*/}
@@ -363,38 +509,93 @@ class Query extends Component{
                         <View style={[styles.row,{borderBottomWidth:0,height:50}]}>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
-                                <Text style={{color:'#fff',fontSize:20}}>+IVA</Text>
+
+                                <TouchableOpacity
+                                    onPress={
+                                    ()=>{
+                                        this.addIVA();
+                                    }}>
+                                    <Text style={{color:'#fff',fontSize:20}}>+IVA</Text>
+                                </TouchableOpacity>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5,alignItems:'center'}}>
-                                <Text style={{color:'#fff',fontSize:20}}>+10%</Text>
+
+                                <TouchableOpacity
+                                    onPress={
+                                    ()=>{
+                                        this.addPercentage1();
+                                    }}>
+                                    <Text style={{color:'#fff',fontSize:20}}>+10%</Text>
+                                </TouchableOpacity>
+
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5,alignItems:'center'}}>
-                                <Text style={{color:'#fff',fontSize:20}}>+5%</Text>
+                                <TouchableOpacity
+                                    onPress={
+                                    ()=>{
+                                        this.addPercentage2();
+                                    }}>
+                                    <Text style={{color:'#fff',fontSize:20}}>+5%</Text>
+                                </TouchableOpacity>
+
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center'}}>
-                                <Text style={{color:'#fff',fontSize:20}}>.00</Text>
+
+                                <TouchableOpacity
+                                    onPress={
+                                    ()=>{
+                                        this.zero();
+                                    }}>
+                                    <Text style={{color:'#fff',fontSize:20}}>.00</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
 
                         <View style={[styles.row,{borderBottomWidth:0,height:50,marginTop:4}]}>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
-                                <Text style={{color:'#fff',fontSize:20}}>-IVA</Text>
+
+                                <TouchableOpacity
+                                    onPress={
+                                    ()=>{
+                                        this.reduceIVA();
+                                    }}>
+                                    <Text style={{color:'#fff',fontSize:20}}>-IVA</Text>
+                                </TouchableOpacity>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5,alignItems:'center'}}>
-                                <Text style={{color:'#fff',fontSize:20}}>-10%</Text>
+                                <TouchableOpacity
+                                    onPress={
+                                    ()=>{
+                                        this.reducePercentage1();
+                                    }}>
+                                    <Text style={{color:'#fff',fontSize:20}}>-10%</Text>
+                                </TouchableOpacity>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5,alignItems:'center'}}>
-                                <Text style={{color:'#fff',fontSize:20}}>-5%</Text>
+                                <TouchableOpacity
+                                    onPress={
+                                    ()=>{
+                                        this.reducePercentage2();
+                                    }}>
+                                    <Text style={{color:'#fff',fontSize:20}}>-5%</Text>
+                                </TouchableOpacity>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center'}}>
-                                <Text style={{color:'#fff',fontSize:20}}>0.50</Text>
+                                <TouchableOpacity
+                                    onPress={
+                                    ()=>{
+                                        this.zero1();
+                                    }}>
+                                    <Text style={{color:'#fff',fontSize:20}}>0.50</Text>
+                                </TouchableOpacity>
+
                             </View>
                         </View>
 
