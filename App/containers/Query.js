@@ -32,6 +32,7 @@ import Config from '../../config';
 import CodesModal from '../components/modal/CodesModal';
 import Group from './Group';
 import GroupQuery from './GroupQuery';
+import GoodUpdate from './GoodUpdate';
 
 
 class Query extends Component{
@@ -55,8 +56,11 @@ class Query extends Component{
 
     onCodigoSelect(code)
     {
-        const {merchantId}=this.props;
+        const merchantId=this.props.merchantId;
         var codigo=code.codigo;
+
+
+
         Proxy.post({
             url:Config.server+"supnuevo/supnuevoGetSupnuevoBuyerPriceFormByCodigoBs.do",
             headers: {
@@ -110,18 +114,6 @@ class Query extends Component{
 
     }
 
-    navigateGoodUpdate(){
-        const { navigator } = this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'group',
-                component: Group,
-                params: {
-                }
-            })
-        }
-    }
-
     navigateGroupQuery(){
         const { navigator } = this.props;
         if(navigator) {
@@ -133,6 +125,67 @@ class Query extends Component{
             })
         }
     }
+
+    navigateGoodUpdate(){
+        const { navigator } = this.props;
+        const {merchantId}=this.props;
+
+        Proxy.post({
+            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommodityTaxInfoListMobile.do',
+            headers: {
+                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body:"merchantId=" + merchantId
+        },(json)=> {
+
+            var errorMsg=json.errorMsg;
+            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                alert(errorMsg);
+            }else{
+                var taxArr = new Array();
+                var sizeArr = new Array();
+                json.taxArr.map(function(index,i){
+                    taxArr.push(index);
+                })
+                json.sizeArr.map(function(index,i){
+                    sizeArr.push(index);
+                })
+                for(var i = 0 ; i < taxArr.length;i++){
+                    var o = {'value':'','label':''};
+                    o.label = taxArr[i].label;
+                    o.value = taxArr[i].value;
+                    this.state.taxArr.push(o);
+                }
+                for(var i = 0 ; i < sizeArr.length;i++){
+                    var o = {'value':'','label':''};
+                    o.label = sizeArr[i].label;
+                    o.value = sizeArr[i].value;
+                    this.state.sizeArr.push(o);
+                }
+
+                if(this.state.selectedCodeInfo.codigo!=undefined&&this.state.selectedCodeInfo.codigo!=null&&this.state.selectedCodeInfo.codigo!=''){
+                    if(navigator) {
+                        navigator.push({
+                            name: 'group',
+                            component: GoodUpdate,
+                            params: {
+                                merchantId:merchantId,
+                                goodInfo:this.state.selectedCodeInfo,
+                                taxArr:this.state.taxArr,
+                                sizeArr: this.state.sizeArr,
+                                onCodigoSelect:this.onCodigoSelect.bind(this),
+                            }
+                        })
+                    }
+                }else{
+                    alert('请先选择要修改的商品！');
+                }
+
+            }
+        });
+    }
+
 
     navigate_priceGroupChange(){
         const { navigator } = this.props;
@@ -165,7 +218,6 @@ class Query extends Component{
         goodInfo.priceShow=price;
         this.setState({selectedCodeInfo: goodInfo,priceShow:goodInfo.priceShow});
     }
-
 
     addIVA(){
         var taxMark = this.state.taxMark;
@@ -255,7 +307,8 @@ class Query extends Component{
             priceShow:null,
             taxMark:0,
             amount:0,
-            printType:{type1:'0',type2:'0',type3:'0',type4:'0'}
+            taxArr:[],
+            sizeArr:[],
         };
     }
 
