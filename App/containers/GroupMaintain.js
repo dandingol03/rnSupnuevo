@@ -337,8 +337,8 @@ class GroupMaintain extends Component{
                                 '合并到新组成功',
                                 [
                                     {text: 'OK', onPress: () =>  {
-                                        var groupNum=this.state.query.groupNum;
-                                        this.queryGroupsByGroupNum(groupNum.toString().substring(0,7));
+                                        this.state.query.groupNum=null;
+                                        this.setState({groups: null,query:this.state.query});
                                     }},
                                 ]
                             );
