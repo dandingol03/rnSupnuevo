@@ -870,7 +870,7 @@ class GroupQuery extends Component{
                             <Icon name="chevron-left" color="#fff" size={25}></Icon>
                         </TouchableOpacity>
                         <Text style={{fontSize:22,flex:3,textAlign:'center',color:'#fff'}}>
-                            添加商品至组
+                            组商品信息
                         </Text>
                         <TouchableOpacity ref="menu" style={{flex:1,marginRight:2,flexDirection:'row',justifyContent:'center'}}
                                           >

@@ -453,7 +453,7 @@ class GroupSplit extends Component{
                     }
                 });
 
-                if(commodityIds.length>1)
+                if(commodityIds.length>=1)
                 {
 
                     Proxy.post({
@@ -469,18 +469,16 @@ class GroupSplit extends Component{
                             alert(errorMsg);
                         }else{
                             //TODO:return to previous page
-                            if(json.groupNum!==undefined&&json.groupNum!==null)
-                            {
-                                Alert.alert(
-                                    '信息',
-                                    '拆分新组成功',
-                                    [
-                                        {text: 'OK', onPress: () =>  {
-                                            this.fetchCommodityListByGroupId();
-                                        }},
-                                    ]
-                                );
-                            }
+
+                            Alert.alert(
+                                '信息',
+                                '拆分新组成功',
+                                [
+                                    {text: 'OK', onPress: () =>  {
+                                        this.goBack();
+                                    }},
+                                ]
+                            );
                         }
                     }, (err) =>{
                         alert(err);
