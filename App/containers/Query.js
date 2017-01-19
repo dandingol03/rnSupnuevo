@@ -34,7 +34,7 @@ import Group from './Group';
 import GroupQuery from './GroupQuery';
 
 import GoodUpdate from './GoodUpdate';
-
+import GoodAdd from './GoodAdd';
 import GroupMaintain from './GroupMaintain';
 
 
@@ -130,6 +130,61 @@ class Query extends Component{
         }
     }
 
+    navigateGoodAdd(){
+        const { navigator } = this.props;
+        const {merchantId}=this.props;
+
+        Proxy.post({
+            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommodityTaxInfoListMobile.do',
+            headers: {
+                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body:"merchantId=" + merchantId
+        },(json)=> {
+
+            var errorMsg=json.errorMsg;
+            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                alert(errorMsg);
+            }else{
+                var taxArr = new Array();
+                var sizeArr = new Array();
+                json.taxArr.map(function(index,i){
+                    taxArr.push(index);
+                })
+                json.sizeArr.map(function(index,i){
+                    sizeArr.push(index);
+                })
+                for(var i = 0 ; i < taxArr.length;i++){
+                    var o = {'value':'','label':''};
+                    o.label = taxArr[i].label;
+                    o.value = taxArr[i].value;
+                    this.state.taxArr.push(o);
+                }
+                for(var i = 0 ; i < sizeArr.length;i++){
+                    var o = {'value':'','label':''};
+                    o.label = sizeArr[i].label;
+                    o.value = sizeArr[i].value;
+                    this.state.sizeArr.push(o);
+                }
+
+                if(navigator) {
+                    navigator.push({
+                        name: 'goodAdd',
+                        component: GoodAdd,
+                        params: {
+                            merchantId:merchantId,
+                            taxArr:this.state.taxArr,
+                            sizeArr: this.state.sizeArr,
+                            onCodigoSelect:this.onCodigoSelect.bind(this),
+                        }
+                    })
+                }
+
+            }
+        });
+    }
+
     navigateGoodUpdate(){
         const { navigator } = this.props;
         const {merchantId}=this.props;
@@ -171,7 +226,7 @@ class Query extends Component{
                 if(this.state.selectedCodeInfo.codigo!=undefined&&this.state.selectedCodeInfo.codigo!=null&&this.state.selectedCodeInfo.codigo!=''){
                     if(navigator) {
                         navigator.push({
-                            name: 'group',
+                            name: 'goodUpdate',
                             component: GoodUpdate,
                             params: {
                                 merchantId:merchantId,
@@ -185,7 +240,6 @@ class Query extends Component{
                 }else{
                     alert('请先选择要修改的商品！');
                 }
-
             }
         });
     }
@@ -310,6 +364,45 @@ class Query extends Component{
         var priceShow =  this.state.selectedCodeInfo.priceShow ;
         this.setState({priceShow:priceShow});
     }
+
+    savePrice(){
+        var priceShow =this.state.selectedCodeInfo.priceShow;
+        var priceId = this.state.selectedCodeInfo.priceId;
+        var codigo = this.state.selectedCodeInfo.codigo;
+        var printType = this.state.selectedCodeInfo.printType;
+        var code = {codigo:codigo};
+
+
+        const {merchantId}=this.props;
+
+        if(priceShow !== null && priceShow !== undefined && priceShow !== ''){
+
+            Proxy.post({
+                url:Config.server+'supnuevo/supnueSaveOrUpdateSupnuevoBuyerCommodityPriceMobile.do?',
+                headers: {
+                    'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body:"merchantId=" + merchantId + "&price=" + priceShow+ "&priceId=" + priceId+ "&printType=" + printType+ "&codigo=" + codigo
+            },(json)=> {
+
+                var errorMsg=json.errorMsg;
+                if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                    alert(errorMsg);
+                }else{
+                    var message = json.message;
+                    alert(message);
+                    this.onCodigoSelect(code);
+                }
+            });
+
+        }else{
+            alert('请输入查询商品后再进行改价!');
+        }
+
+
+    }
+
 
 
     constructor(props)
@@ -604,7 +697,7 @@ class Query extends Component{
                                     marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}
                                 onPress={
                                     ()=>{
-                                        this.navigateGoodUpdate();
+                                        this.savePrice();
                                     }}>
                                     <Text style={{color:'#fff',fontSize:18}}>改价</Text>
                             </TouchableOpacity>
@@ -616,15 +709,6 @@ class Query extends Component{
                                         this.navigate_priceGroupChange();
                                     }}>
                                 <Text style={{color:'#fff',fontSize:18}}>组改价</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity style={{flex:1,flexDirection:'row',backgroundColor:'#387ef5',
-                                    marginRight:.5,alignItems:'center',justifyContent:'center'}}
-                                onPress={
-                                    ()=>{
-                                        this.navigateGoodUpdate();
-                                    }}>
-                                <Text style={{color:'#fff',fontSize:18}}>添加</Text>
                             </TouchableOpacity>
 
                             <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
@@ -651,8 +735,9 @@ class Query extends Component{
                                           onPress={()=>{
                                               console.log('choose add commodity');
                                               this.closePopover();
+                                              this.navigateGoodAdd();
                                           }}>
-                            <Text style={[styles.popoverText,{color:'#444'}]}>添加商品</Text>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>维护商品信息</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={[styles.popoverContent,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}

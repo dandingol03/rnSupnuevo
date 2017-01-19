@@ -410,8 +410,6 @@ class GroupMaintain extends Component{
 
     }
 
-
-
     commodityGroupAdd()
     {
         var groupName=this.state.groupName;
@@ -652,7 +650,6 @@ class GroupMaintain extends Component{
 
         }
         else{}
-
 
         return (
             <View style={{flex:1}}>
