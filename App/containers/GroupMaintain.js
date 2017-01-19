@@ -51,7 +51,17 @@ class GroupMaintain extends Component{
     }
 
 
-
+    splitCb()
+    {
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.pop();
+        }
+        var groups=null;
+        var groupInfo=null;
+        var query={};
+        this.setState({query: query, groups: groups, groupInfo: groupInfo});
+    }
 
     navigateToGroupSplit(groupInfo){
         const { navigator } = this.props;
@@ -60,7 +70,9 @@ class GroupMaintain extends Component{
                 name: 'groupSplit',
                 component: GroupSplit,
                 params: {
-                    groupInfo:groupInfo
+                    groupInfo:groupInfo,
+                    finishCb:this.finishCb,
+                    splitCb:this.splitCb.bind(this)
                 }
             })
         }

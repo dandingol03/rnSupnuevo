@@ -475,7 +475,8 @@ class GroupSplit extends Component{
                                 '拆分新组成功',
                                 [
                                     {text: 'OK', onPress: () =>  {
-                                        this.goBack();
+                                        if(this.state.splitCb!==undefined&&this.state.splitCb!==null)
+                                            this.state.splitCb();
                                     }},
                                 ]
                             );
@@ -576,6 +577,7 @@ class GroupSplit extends Component{
             query:{},
             groupInfo:props.groupInfo,
             productArr:null,
+            splitCb:props.splitCb,
             dataSource : new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
