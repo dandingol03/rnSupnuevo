@@ -24,8 +24,6 @@ import  {
 import { connect } from 'react-redux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scrollable-tab-view';
-import DatePicker from 'react-native-datepicker';
 import CheckBox from 'react-native-check-box';
 
 
@@ -35,7 +33,6 @@ var Proxy = require('../proxy/Proxy');
 import Config from '../../config';
 import _ from 'lodash';
 import CodesModal from '../components/modal/CodesModal';
-import GroupInfoManage from './GroupInfoManage';
 import Modalbox from 'react-native-modalbox';
 import GroupSplit from './GroupSplit';
 
@@ -45,13 +42,36 @@ class GroupMaintain extends Component{
 
     goBack(){
         const { navigator } = this.props;
-        if(navigator) {
-            navigator.pop();
+
+        var groups=this.state.groups;
+        var groupInfo=this.state.groupInfo;
+        var query={};
+        if(groups&&groups.array)
+        {
+            groups=null;
+            this.setState({groups: groups, query: query});
+        }else if(groupInfo&&groupInfo.array){
+            groupInfo=null;
+            this.setState({groupInfo: groupInfo, query: query});
+        }else{
+            if(navigator) {
+                navigator.pop();
+            }
         }
     }
 
 
-
+    splitCb()
+    {
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.pop();
+        }
+        var groups=null;
+        var groupInfo=null;
+        var query={};
+        this.setState({query: query, groups: groups, groupInfo: groupInfo});
+    }
 
     navigateToGroupSplit(groupInfo){
         const { navigator } = this.props;
@@ -60,7 +80,9 @@ class GroupMaintain extends Component{
                 name: 'groupSplit',
                 component: GroupSplit,
                 params: {
-                    groupInfo:groupInfo
+                    groupInfo:groupInfo,
+                    finishCb:this.finishCb,
+                    splitCb:this.splitCb.bind(this)
                 }
             })
         }

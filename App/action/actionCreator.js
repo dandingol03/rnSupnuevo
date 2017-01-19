@@ -66,6 +66,17 @@ let getSession= (ob)=>{
         }
 }
 
+export let changeRoute=(navigator)=>{
+    if(navigator!==undefined&&navigator!==null)
+    {
+
+        return {
+            type: types.ROUTE_CHANGE,
+            navigator:navigator
+        };
+    }
+}
+
 export let selectCarAction=function(car){
     return {
         type:types.SELECT_CUSTOMER_CAR,

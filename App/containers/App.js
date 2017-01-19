@@ -4,7 +4,9 @@ import {
     StyleSheet,
     Text,
     TabBarIOS,
-    Navigator
+    Navigator,
+    BackAndroid,
+    Platform
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -82,6 +84,30 @@ class App extends React.Component {
             return (<Login/>);
         }
     }
+
+    componentWillMount()
+    {
+        if (Platform.OS === 'android') {
+            BackAndroid.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackAndroid.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length ==0) {
+            BackAndroid.exitApp();
+            return true;
+        }
+
+    };
+
 }
 
 var styles = StyleSheet.create({
