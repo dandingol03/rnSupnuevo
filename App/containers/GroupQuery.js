@@ -380,18 +380,20 @@ class GroupQuery extends Component{
                     alert(errorMsg);
                 }else{
                     //TODO:return to previous page
-                    if(json.groupNum!==undefined&&json.groupNum!==null)
-                    {
-                        Alert.alert(
-                            '信息',
-                            '商品删除成功',
-                            [
-                                {text: 'OK', onPress: () => {
-                                    this.onCodigoSelect(code);
-                                }},
-                            ]
-                        );
-                    }
+
+                    Alert.alert(
+                        '信息',
+                        '商品删除成功',
+                        [
+                            {text: 'OK', onPress: () => {
+                                var query={};
+                                var groupInfo=null;
+                                var code=null;
+                                this.setState({query:query,groupInfo:groupInfo,code:code});
+                            }},
+                        ]
+                    );
+
                 }
             }, (err) =>{
                 alert(err);
@@ -440,7 +442,10 @@ class GroupQuery extends Component{
                             '添加到商品组成功',
                             [
                                 {text: 'OK', onPress: () =>  {
-                                    this.onCodigoSelect(code);
+                                    var query={};
+                                    var groupArr={};
+                                    var code=null;
+                                    this.setState({query:query,groupArr:groupArr,code:code});
                                 }},
                             ]
                         );
@@ -487,15 +492,18 @@ class GroupQuery extends Component{
                         alert(errorMsg);
                     }else{
                         //TODO:return to previous page
-                        if(json.groupNum!==undefined&&json.groupNum!==null)
+                        if(json.groupId!==undefined&&json.groupId!==null)
                         {
                             Alert.alert(
                                 '信息',
                                 '添加到新建组成功',
                                 [
                                     {text: 'OK', onPress: () =>  {
-                                    this.state.query.groupName='';
-                                    this.onCodigoSelect(code);
+
+                                        var query={};
+                                        var groupArr={};
+                                        var code=null;
+                                        this.setState({query:query,groupArr:groupArr,code:code});
                                 }},
                                 ]
                             );
