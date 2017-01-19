@@ -35,7 +35,6 @@ var Proxy = require('../proxy/Proxy');
 import Config from '../../config';
 import _ from 'lodash';
 import CodesModal from '../components/modal/CodesModal';
-import GroupInfoManage from './GroupInfoManage';
 import Modalbox from 'react-native-modalbox';
 
 
@@ -45,8 +44,24 @@ class GroupQuery extends Component{
 
     goBack(){
         const { navigator } = this.props;
-        if(navigator) {
-            navigator.pop();
+
+        var groupArr=this.state.groupArr;
+        var groupInfo=this.state.groupInfo;
+        var query={};
+        var code=null;
+
+        //当前处于多个组的界面
+        if(groupArr&&groupArr.array)
+        {
+            groupArr={};
+            this.setState({query:query,groupArr:groupArr,code:code});
+        }else if(groupInfo&&groupInfo.array){
+            groupInfo=null;
+            this.setState({query:query,groupInfo:groupInfo,code:code});
+        }else{
+            if(navigator) {
+                navigator.pop();
+            }
         }
     }
 
@@ -74,20 +89,7 @@ class GroupQuery extends Component{
         }
     }
 
-    navigateToGroupInfoManage(groupInfo,code,containedInGroup){
-        const { navigator } = this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'groupInfoManage',
-                component: GroupInfoManage,
-                params: {
-                    groupInfo:groupInfo,
-                    code:code,
-                    containedInGroup:containedInGroup
-                }
-            })
-        }
-    }
+
 
 
     renderCommodityRow(rowData,sectionId,rowId)
@@ -177,102 +179,12 @@ class GroupQuery extends Component{
         return row;
     }
 
-    changePriceRelated()
-    {
-        var selectedRelativePriceIds=[];
-        var relatedGoods=this.state.relatedGoods;
-        relatedGoods.map(function(good,i) {
-            if(good.checked==true){
-                selectedRelativePriceIds.push(good.priceId);
-            }
-        });
-        const {goodInfo}=this.props;
-        const {merchantId}=this.props;
-        //TODO:make a fetch
-
-        Proxy.post({
-            url:Config.server+'supnuevo/supnuevoUpdateSupnuevoBuyerCommodityPriceGroupMobile.do',
-            headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: "priceIds=" + selectedRelativePriceIds.toString() +
-            "&merchantId=" + merchantId+
-            '&priceShow='+goodInfo.priceShow+
-            '&printType='+goodInfo.printType+
-            '&price='+goodInfo.price
-        },(json)=> {
-            var errorMsg=json.errorMsg;
-            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
-                alert(errorMsg);
-
-            }else{
-                Alert.alert(
-                    'Alert Title',
-                    '组改价成功',
-                    [
-                        {text: 'OK', onPress: () => this.goBack()},
-                    ]
-                );
-            }
-        }, (err) =>{
-            alert(err);
-        });
-
-    }
 
     closeCodesModal(val){
         this.setState({codesModalVisible:val});
     }
 
-    closeGroupAppendModal(val)
-    {
-        this.setState({groupAppendModalVisible:val});
-    }
 
-    queryCommodityListByGroupId(groupId,groupNum,groupName,code)
-    {
-
-        const groupInfo=this.state.groupInfo;
-
-        Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetSupnuevoCommonCommodityListOfGroupMobile.do",
-            headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: 'groupId='+groupId
-        },(json)=> {
-            var errorMsg=json.errorMsg;
-            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
-                alert(errorMsg);
-            }else{
-                var info=json;
-                if(info.array!==undefined&&info.array!==null)
-                {
-                    //同个组的所有商品信息
-                    info.array.map(function (commodity,i) {
-
-                        if(commodity.setSizeValue!=undefined&&commodity.setSizeValue!=null
-                            &&commodity.sizeUnit!=undefined&&commodity.sizeUnit!=null)
-                        {
-                            commodity.goodName=commodity.nombre+','+
-                                commodity.setSizeValue+','+commodity.sizeUnit;
-                        }
-                        else{
-                            commodity.goodName=commodity.nombre;
-                        }
-                    });
-                    info.groupId=groupId;
-                    info.groupNum=groupNum;
-                    info.groupName=groupName;
-                    this.navigateToGroupInfoManage(info,code,false);
-                }else{}
-            }
-        }, (err) =>{
-            alert(err);
-        });
-    }
 
     onCodigoSelect(code,groupNum)
     {
