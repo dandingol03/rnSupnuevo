@@ -6,7 +6,8 @@ import {
     TabBarIOS,
     Navigator,
     BackAndroid,
-    Platform
+    Platform,
+    ToastAndroid
 } from 'react-native';
 
 import { connect } from 'react-redux';
@@ -62,6 +63,7 @@ class App extends React.Component {
                       }}
                     renderScene={(route, navigator) => {
                         let Component = route.component;
+                        this.navigator=navigator;
                         return <Component {...route.params} navigator={navigator} />
                       }} />
             </TabNavigator.Item>
@@ -87,21 +89,39 @@ class App extends React.Component {
     componentWillMount()
     {
         if (Platform.OS === 'android') {
-            BackAndroid.addEventListener('hardwareBackPress', this.onBackAndroid);
+            BackAndroid.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
         }
     }
 
     componentWillUnmount() {
         if (Platform.OS === 'android') {
-            BackAndroid.removeEventListener('hardwareBackPress', this.onBackAndroid);
+            BackAndroid.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
         }
     }
 
     onBackAndroid = () => {
         const nav = this.navigator;
         const routers = nav.getCurrentRoutes();
-        if (routers.length ==0) {
-            BackAndroid.exitApp();
+        var route=routers[routers.length-1];
+        if (routers.length ==1) {
+            if(this.lastBackPressed&&this.lastBackPressed+4000>=Date.now())
+            {
+                //BackAndroid.exitApp();
+                return false;
+            }else{
+                this.lastBackPressed = Date.now();
+                ToastAndroid.show('再按一次退出应用', ToastAndroid.SHORT);
+                return true;
+            }
+        }else{
+
+            if(route.params&&route.params.handleBack)
+            {
+                //执行组件自定义的回调
+                route.params.handleBack();
+            }else{
+                nav.pop();
+            }
             return true;
         }
 

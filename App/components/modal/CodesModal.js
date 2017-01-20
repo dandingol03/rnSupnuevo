@@ -118,7 +118,8 @@ class CodesModal extends Component{
                 {/*条型码列表*/}
                 <View style={{padding:10}}>
                     {listView}
-                    <View style={{height:50,width:width}}></View>
+                    <View style={{height:50,width:width}}>
+                    </View>
                 </View>
 
 

@@ -61,6 +61,12 @@ class GroupMaintain extends Component{
     }
 
 
+    handleBack()
+    {
+        console.log('it is groupMaintain');
+    }
+
+
     splitCb()
     {
         const { navigator } = this.props;
@@ -193,7 +199,7 @@ class GroupMaintain extends Component{
                                           onPress={()=>{
                                           this.navigateToGroupSplit(rowData);
                                                   }}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.groupName}</Text>
+                            <Text style={{color:'#111',fontWeight:'bold',fontSize:24}}>{rowData.groupName}</Text>
                         </TouchableOpacity>
 
                         {
@@ -499,8 +505,17 @@ class GroupMaintain extends Component{
                 }
             })
         };
+
     }
 
+    static defaultProps = {
+        handleBack:this.handleBack
+    }
+
+
+    static propTypes = {
+        handleBack: React.PropTypes.func
+    }
 
     render(){
 

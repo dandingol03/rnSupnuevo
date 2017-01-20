@@ -11,8 +11,7 @@ export const AUTH_ACCESS__ACK = 'AUTH_ACCESS__ACK';
 export const SELECT_CUSTOMER_CAR='SELECT_CUSTOMER_CAR';
 export const FETCH_CAR_ORDERS='FETCH_CAR_ORDERS';
 
-//navigaotr change
-export const ROUTE_CHANGE='ROUTE_CHANGE';
+
 
 
 
