@@ -429,8 +429,8 @@ class Query extends Component{
         var codigo = this.state.selectedCodeInfo.codigo;
         var goodName = this.state.selectedCodeInfo.goodName;
         var oldPrice = this.state.selectedCodeInfo.oldPrice;
-        var suggestPrice = this.state.selectedCodeInfo.price;
-        var fixedPrice = this.state.selectedCodeInfo.price1;
+        var suggestPrice = this.state.selectedCodeInfo.suggestPrice==undefined||this.state.selectedCodeInfo.suggestPrice==null?this.state.selectedCodeInfo.suggestPrice:null;
+        var fixedPrice =null;
 
         var displayArea = {x: 5, y: 20, width: width - 10, height: height - 25};
 
@@ -508,32 +508,41 @@ class Query extends Component{
                                 </TouchableOpacity>
 
                             </View>
+
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 marginRight:.5}}>
-
-                                <TouchableOpacity style={{justifyContent:'center'}}
-                                                  onPress={
+                                {
+                                    suggestPrice==undefined||suggestPrice==null?
+                                        <Text style={{'fontSize':14,color:'#fff'}}></Text>:
+                                        <TouchableOpacity style={{justifyContent:'center'}}
+                                                          onPress={
                                     ()=>{
                                         this.updatePrice(suggestPrice);
                                     }}>
-                                    <Text style={{'fontSize':14,color:'#fff'}}>{suggestPrice}</Text>
-                                </TouchableOpacity>
+                                            <Text style={{'fontSize':14,color:'#fff'}}>{suggestPrice}</Text>
+                                        </TouchableOpacity>
 
+
+                                }
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
                                 borderTopRightRadius:4,borderBottomRightRadius:4}}>
-
-                                <TouchableOpacity style={{justifyContent:'center'}}
-                                                  onPress={
+                                {
+                                    fixedPrice==undefined||fixedPrice==null?
+                                        <Text style={{'fontSize':14,color:'#fff'}}></Text>:
+                                        <TouchableOpacity style={{justifyContent:'center'}}
+                                                          onPress={
                                     ()=>{
                                         this.updatePrice(fixedPrice);
                                     }}>
-                                    <Text style={{'fontSize':14,color:'#fff'}}>{fixedPrice}</Text>
-                                </TouchableOpacity>
+                                            <Text style={{'fontSize':14,color:'#fff'}}>{fixedPrice}</Text>
+                                        </TouchableOpacity>
+
+                                }
                             </View>
                         </View>
-                        {/*商品概要*/}
 
+                        {/*商品概要*/}
                         <View style={[styles.row,{borderTopWidth:1,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:0,borderColor:'#aaa',
                                 padding:12,marginBottom:1}]}>
                             <View style={{flex:3,flexDirection:'row',justifyContent:'center',
