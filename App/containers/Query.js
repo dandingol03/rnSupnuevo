@@ -247,13 +247,28 @@ class Query extends Component{
 
     navigateGroupMaintain(){
         const { navigator } = this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'groupMaintain',
-                component: GroupMaintain,
-                params: {
-                }
-            })
+        var defaultProps=GroupMaintain.WrappedComponent.defaultProps;
+        var {handleBack}=defaultProps;
+        if(handleBack!==undefined&&handleBack!==null)
+        {
+            if(navigator) {
+                navigator.push({
+                    name: 'groupMaintain',
+                    component: GroupMaintain,
+                    params: {
+                        handleBack:handleBack
+                    }
+                })
+            }
+        }else{
+            if(navigator) {
+                navigator.push({
+                    name: 'groupMaintain',
+                    component: GroupMaintain,
+                    params: {
+                    }
+                })
+            }
         }
     }
 

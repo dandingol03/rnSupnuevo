@@ -61,6 +61,12 @@ class GroupMaintain extends Component{
     }
 
 
+    handleBack()
+    {
+        console.log('it is groupMaintain');
+    }
+
+
     splitCb()
     {
         const { navigator } = this.props;
@@ -499,8 +505,17 @@ class GroupMaintain extends Component{
                 }
             })
         };
+
     }
 
+    static defaultProps = {
+        handleBack:this.handleBack
+    }
+
+
+    static propTypes = {
+        handleBack: React.PropTypes.func
+    }
 
     render(){
 
