@@ -4,3 +4,4 @@
 module.exports={
     server:'http://202.194.14.73/'
 }
+
