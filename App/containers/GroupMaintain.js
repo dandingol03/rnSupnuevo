@@ -199,7 +199,7 @@ class GroupMaintain extends Component{
                                           onPress={()=>{
                                           this.navigateToGroupSplit(rowData);
                                                   }}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.groupName}</Text>
+                            <Text style={{color:'#111',fontWeight:'bold',fontSize:24}}>{rowData.groupName}</Text>
                         </TouchableOpacity>
 
                         {

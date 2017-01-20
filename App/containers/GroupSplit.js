@@ -168,12 +168,8 @@ class GroupSplit extends Component{
                             {chebx}
                         </View>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222'}}>{rowData.codigo}</Text>
-                        </View>
-
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.goodName}</Text>
+                        <View style={{flex:6,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
+                            <Text style={{color:'#111',fontSize:24,fontWeight:'bold'}}>{rowData.codigo+'\n'+rowData.goodName}</Text>
                         </View>
 
                     </View>
@@ -685,15 +681,9 @@ class GroupSplit extends Component{
                                 </Text>
                             </View>
 
-                            <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            <View style={{flex:6,flexDirection:'row',justifyContent:'center',alignItems:'center',
                                         borderColor:'#aaa',borderWidth:1,padding:8}}>
-                                <Text style={{color:'#222'}}>条码</Text>
-                            </View>
-
-
-                            <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                        borderColor:'#aaa',borderWidth:1,padding:8}}>
-                                <Text style={{color:'#222'}}>商品名</Text>
+                                <Text style={{color:'#222'}}>商品信息</Text>
                             </View>
 
                         </View>

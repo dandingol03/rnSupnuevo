@@ -169,12 +169,8 @@ class Group extends Component{
                             {chebx}
                         </View>
 
-                        <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.codigo}</Text>
-                        </View>
-
-                        <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.goodName}</Text>
+                        <View style={{flex:10,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
+                            <Text style={{color:'#000',fontWeight:'bold',fontSize:18}}>{rowData.codigo+'\n'+rowData.goodName}</Text>
                         </View>
 
                     </View>
@@ -351,15 +347,11 @@ class Group extends Component{
                             </TouchableOpacity>
 
 
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            <View style={{flex:10,flexDirection:'row',justifyContent:'center',alignItems:'center',
                                         borderColor:'#aaa',borderWidth:1,borderRightWidth:0,padding:8}}>
-                                <Text>条码</Text>
+                                <Text>商品信息</Text>
                             </View>
 
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                            borderColor:'#aaa',borderWidth:1,padding:8}}>
-                                <Text>名称</Text>
-                            </View>
 
                         </View>
                         <ScrollView>

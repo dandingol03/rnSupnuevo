@@ -49,8 +49,8 @@ class CodesModal extends Component{
                         this.close();
                         this.onCodigoSelect(rowData);
                     }.bind(this)}>
-                    <View style={{flex:1,flexDirection:'row',padding:16,borderBottomWidth:1,borderColor:'#ddd',justifyContent:'center'}}>
-                        <Text>{rowData.codigo}</Text>
+                    <View style={{flex:1,flexDirection:'row',padding:13,borderBottomWidth:1,borderColor:'#ddd',justifyContent:'flex-start'}}>
+                        <Text style={{fontSize:20,color:'#323232'}}>{rowData.codigo}</Text>
                     </View>
                 </TouchableOpacity>
 
@@ -87,6 +87,7 @@ class CodesModal extends Component{
                         automaticallyAdjustContentInsets={false}
                         dataSource={ds.cloneWithRows(data)}
                         renderRow={this.renderRow.bind(this)}
+
                     />
                 </ScrollView>;
         }else{}
@@ -117,7 +118,8 @@ class CodesModal extends Component{
                 {/*条型码列表*/}
                 <View style={{padding:10}}>
                     {listView}
-                    <View style={{height:50,width:width}}></View>
+                    <View style={{height:50,width:width}}>
+                    </View>
                 </View>
 
 

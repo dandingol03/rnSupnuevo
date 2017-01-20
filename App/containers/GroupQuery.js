@@ -113,14 +113,8 @@ class GroupQuery extends Component{
                     <View style={lineStyle}>
 
                         <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.codigo}</Text>
+                            <Text style={{color:'#000',fontWeight:'bold',fontSize:24}}>{rowData.codigo+'\n'+rowData.goodName}</Text>
                         </View>
-
-                        <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.goodName}</Text>
-                        </View>
-
-
 
                         {/*<TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}*/}
                                           {/*onPress={()=>{*/}
@@ -156,12 +150,9 @@ class GroupQuery extends Component{
                 <View>
                     <View style={lineStyle}>
 
-                        <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.groupId}</Text>
-                        </View>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.groupName}</Text>
+                        <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
+                            <Text style={{color:'#222',fontWeight:'bold',fontSize:24}}>{rowData.groupName}</Text>
                         </View>
 
                         <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
@@ -619,14 +610,8 @@ class GroupQuery extends Component{
                     <View>
                         <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start'}}>
 
-                            <View style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                            borderColor:'#aaa',borderWidth:1,borderRightWidth:0,padding:8}}>
-                                <Text style={{color:'#222'}}>
-                                    商品组id
-                                </Text>
-                            </View>
 
-                            <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
                                         borderColor:'#aaa',borderWidth:1,padding:8}}>
                                 <Text style={{color:'#222'}}>商品组名</Text>
                             </View>
@@ -660,17 +645,13 @@ class GroupQuery extends Component{
                     <View>
                         <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start'}}>
 
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            <View style={{flex:10,flexDirection:'row',justifyContent:'center',alignItems:'center',
                                             borderColor:'#aaa',borderWidth:1,borderRightWidth:0,padding:8}}>
                                 <Text style={{color:'#222'}}>
-                                    条码
+                                    商品信息
                                 </Text>
                             </View>
 
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                            borderColor:'#aaa',borderWidth:1,padding:8}}>
-                                <Text style={{color:'#222'}}>名称</Text>
-                            </View>
 
                             {/*<View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',*/}
                                         {/*borderColor:'#aaa',borderWidth:1,padding:8}}>*/}
