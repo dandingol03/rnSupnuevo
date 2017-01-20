@@ -453,7 +453,7 @@ class GroupSplit extends Component{
                     }
                 });
 
-                if(commodityIds.length>1)
+                if(commodityIds.length>=1)
                 {
 
                     Proxy.post({
@@ -469,18 +469,17 @@ class GroupSplit extends Component{
                             alert(errorMsg);
                         }else{
                             //TODO:return to previous page
-                            if(json.groupNum!==undefined&&json.groupNum!==null)
-                            {
-                                Alert.alert(
-                                    '信息',
-                                    '拆分新组成功',
-                                    [
-                                        {text: 'OK', onPress: () =>  {
-                                            this.fetchCommodityListByGroupId();
-                                        }},
-                                    ]
-                                );
-                            }
+
+                            Alert.alert(
+                                '信息',
+                                '拆分新组成功',
+                                [
+                                    {text: 'OK', onPress: () =>  {
+                                        if(this.state.splitCb!==undefined&&this.state.splitCb!==null)
+                                            this.state.splitCb();
+                                    }},
+                                ]
+                            );
                         }
                     }, (err) =>{
                         alert(err);
@@ -578,6 +577,7 @@ class GroupSplit extends Component{
             query:{},
             groupInfo:props.groupInfo,
             productArr:null,
+            splitCb:props.splitCb,
             dataSource : new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {

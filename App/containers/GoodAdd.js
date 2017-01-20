@@ -129,6 +129,7 @@ class GoodAdd extends Component{
         this.state = {
             onCodigoSelect:props.onCodigoSelect,
             merchantId:props.merchantId,
+
             newGoodInfo:{codigo:'',nombre:'',setSizeValue:'',sizeUnit:'',scaleUnit:'',selectTax:'',taxId:''},
             taxArr:props.taxArr,
             sizeArr:props.sizeArr,
@@ -236,7 +237,12 @@ class GoodAdd extends Component{
                 {/* header bar */}
                 <View style={[{backgroundColor:'#387ef5',padding: 12,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
                     <View style={{flex:1}}>
-
+                        <TouchableOpacity style={{flex:1}}
+                                          onPress={()=>{
+                                                this.cancel();
+                                          }}>
+                            <Icon name="chevron-left" color="#fff" size={25}></Icon>
+                        </TouchableOpacity>
                     </View>
                     <Text style={{fontSize:17,flex:3,textAlign:'center',color:'#fff'}}>
                         添加商品
@@ -433,18 +439,6 @@ class GoodAdd extends Component{
                             <Text style={{color:'#fff',fontSize:18}}>确认</Text>
                         </TouchableOpacity>
                     </View>
-
-                    <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:10}}>
-                        <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#ef473a',
-                                    borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center',padding:8,borderRadius:4}}
-                                          onPress={
-                                            ()=>{
-                                                  this.cancel();
-                                            }}>
-                            <Text style={{color:'#fff',fontSize:18}}>取消</Text>
-                        </TouchableOpacity>
-                    </View>
-
 
                 </View>
 

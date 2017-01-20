@@ -160,8 +160,6 @@ class GoodUpdate extends Component{
         }, (err) =>{
             alert(err);
         });
-
-
     }
 
     _handlePress2(index) {
@@ -232,17 +230,22 @@ class GoodUpdate extends Component{
                 {/* header bar */}
                 <View style={[{backgroundColor:'#387ef5',padding: 12,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
                     <View style={{flex:1}}>
-
+                        <TouchableOpacity style={{flex:1}}
+                                          onPress={()=>{
+                                                this.cancel();
+                                          }}>
+                            <Icon name="chevron-left" color="#fff" size={25}></Icon>
+                        </TouchableOpacity>
                     </View>
                     <Text style={{fontSize:17,flex:3,textAlign:'center',color:'#fff'}}>
-                        添加或修改商品
+                        修改商品
                     </Text>
                     <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center'}}>
                     </View>
                 </View>
 
                 {/* body */}
-                <View style={{padding:10}}>
+                <View style={{padding:10,marginTop:20}}>
 
 
                     {/*表单*/}
@@ -323,7 +326,7 @@ class GoodUpdate extends Component{
                         <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                             <Text >含量单位:</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',paddingLeft:12}}>
                             <Text >{sizeUnit}</Text>
                         </View>
 
@@ -331,7 +334,7 @@ class GoodUpdate extends Component{
 
                             <TouchableOpacity style={{justifyContent:'center'}}
                                               onPress={()=>{ this.show('actionSheet1'); }}>
-                                <Icon name="chevron-circle-down" color="blue" size={30}></Icon>
+                                <Icon name="chevron-circle-down" color="#aaa" size={30}></Icon>
                                 <ActionSheet
                                     ref={(o) => {
                                         this.actionSheet1 = o;
@@ -354,7 +357,7 @@ class GoodUpdate extends Component{
                         <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                             <Text >比价单位:</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',paddingLeft:12}}>
                             <Text >{scaleUnit}</Text>
                         </View>
                         <View style={{flex:3,padding:5}}>
@@ -364,7 +367,7 @@ class GoodUpdate extends Component{
                                     ()=>{
                                         this.show('actionSheet2');
                                     }}>
-                                <Icon name="chevron-circle-down" color="blue" size={30}></Icon>
+                                <Icon name="chevron-circle-down" color="#aaa" size={30}></Icon>
                                 <ActionSheet
                                     ref={(p) => this.actionSheet2 = p}
                                     title="请选择比价单位"
@@ -385,7 +388,7 @@ class GoodUpdate extends Component{
                         <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                             <Text >商品税类:</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',paddingLeft:12}}>
                             <Text >{selectTax}</Text>
                         </View>
                         <View style={{flex:3,padding:5}}>
@@ -395,7 +398,7 @@ class GoodUpdate extends Component{
                                     ()=>{
                                         this.show('actionSheet3');
                                     }}>
-                                <Icon name="chevron-circle-down" color="blue" size={30}></Icon>
+                                <Icon name="chevron-circle-down" color="#aaa" size={30}></Icon>
                                 <ActionSheet
                                     ref={(q) => this.actionSheet3 = q}
                                     title="请选择商品税类"
@@ -410,7 +413,7 @@ class GoodUpdate extends Component{
                         </View>
                     </View>
 
-                    <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:10}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:40}}>
                         <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#11c1f3',
                                     borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center',padding:8,borderRadius:4}}
                                           onPress={
@@ -420,18 +423,6 @@ class GoodUpdate extends Component{
                             <Text style={{color:'#fff',fontSize:18}}>确认</Text>
                         </TouchableOpacity>
                     </View>
-
-                    <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:10}}>
-                        <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#ef473a',
-                                    borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center',padding:8,borderRadius:4}}
-                                          onPress={
-                                            ()=>{
-                                                  this.cancel();
-                                            }}>
-                            <Text style={{color:'#fff',fontSize:18}}>取消</Text>
-                        </TouchableOpacity>
-                    </View>
-
 
                 </View>
 
@@ -464,6 +455,7 @@ var styles = StyleSheet.create({
     },
     row:{
         flexDirection:'row',
+        height: 50,
         borderBottomWidth:1,
         borderBottomColor:'#222'
     },

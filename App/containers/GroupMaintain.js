@@ -24,8 +24,6 @@ import  {
 import { connect } from 'react-redux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scrollable-tab-view';
-import DatePicker from 'react-native-datepicker';
 import CheckBox from 'react-native-check-box';
 
 
@@ -35,7 +33,6 @@ var Proxy = require('../proxy/Proxy');
 import Config from '../../config';
 import _ from 'lodash';
 import CodesModal from '../components/modal/CodesModal';
-import GroupInfoManage from './GroupInfoManage';
 import Modalbox from 'react-native-modalbox';
 import GroupSplit from './GroupSplit';
 
@@ -45,13 +42,36 @@ class GroupMaintain extends Component{
 
     goBack(){
         const { navigator } = this.props;
-        if(navigator) {
-            navigator.pop();
+
+        var groups=this.state.groups;
+        var groupInfo=this.state.groupInfo;
+        var query={};
+        if(groups&&groups.array)
+        {
+            groups=null;
+            this.setState({groups: groups, query: query});
+        }else if(groupInfo&&groupInfo.array){
+            groupInfo=null;
+            this.setState({groupInfo: groupInfo, query: query});
+        }else{
+            if(navigator) {
+                navigator.pop();
+            }
         }
     }
 
 
-
+    splitCb()
+    {
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.pop();
+        }
+        var groups=null;
+        var groupInfo=null;
+        var query={};
+        this.setState({query: query, groups: groups, groupInfo: groupInfo});
+    }
 
     navigateToGroupSplit(groupInfo){
         const { navigator } = this.props;
@@ -60,7 +80,9 @@ class GroupMaintain extends Component{
                 name: 'groupSplit',
                 component: GroupSplit,
                 params: {
-                    groupInfo:groupInfo
+                    groupInfo:groupInfo,
+                    finishCb:this.finishCb,
+                    splitCb:this.splitCb.bind(this)
                 }
             })
         }
@@ -174,12 +196,18 @@ class GroupMaintain extends Component{
                             <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.groupName}</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
-                                          onPress={()=>{
+                        {
+                            rowData.groupNum!==undefined&&rowData.groupNum!==null?
+                                <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+                                </View>:
+                                <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
+                                                  onPress={()=>{
                                           this.removeCommodityGroup(rowData.groupId);
                                                   }}>
-                            <Icon name="remove" color="#f00" size={23}></Icon>
-                        </TouchableOpacity>
+                                    <Icon name="remove" color="#f00" size={23}></Icon>
+                                </TouchableOpacity>
+
+                        }
 
                     </View>
                 </View>
@@ -325,19 +353,18 @@ class GroupMaintain extends Component{
                             alert(errorMsg);
                         }else{
                             //TODO:return to previous page
-                            if(json.groupNum!==undefined&&json.groupNum!==null)
-                            {
-                                Alert.alert(
-                                    '信息',
-                                    '添加到新建组成功',
-                                    [
-                                        {text: 'OK', onPress: () =>  {
-                                            this.state.query.groupName='';
-                                            this.onCodigoSelect(code);
-                                        }},
-                                    ]
-                                );
-                            }
+
+                            Alert.alert(
+                                '信息',
+                                '合并到新组成功',
+                                [
+                                    {text: 'OK', onPress: () =>  {
+                                        this.state.query.groupNum=null;
+                                        this.setState({groups: null,query:this.state.query});
+                                    }},
+                                ]
+                            );
+
                         }
                     }, (err) =>{
                         alert(err);
@@ -522,14 +549,63 @@ class GroupMaintain extends Component{
 
                 </View>
 
-                {/*组添加*/}
-                <View style={[styles.row,{borderBottomWidth:0}]}>
+            </View>
+        </View>);
 
-                    <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
-                        <TextInput
-                            style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
+
+        if(groups&&groups.array!==undefined&&groups.array!==null&&Object.prototype.toString.call(groups.array)=='[object Array]')
+        {
+
+            queryBox=   (<View style={[styles.card,{marginTop:10,padding:8}]}>
+                <View style={{flex:1,padding:8,paddingLeft:10,paddingRight:10,backgroundColor:'#eee',borderRadius:8}}>
+
+                    {/* 商品特征码 */}
+                    <View style={[styles.row,{borderBottomWidth:0}]}>
+                        {/*<View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>*/}
+                        {/*<Text style={{color:'#222'}}>条码</Text>*/}
+                        {/*</View>*/}
+                        <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
+                            <TextInput
+                                style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
                                                 flexDirection:'row',alignItems:'center'}}
-                            onChangeText={(groupName) => {
+                                onChangeText={(groupNum) => {
+                                            if(groupNum.toString().length==7)
+                                            {
+                                                this.state.query.groupNum=groupNum;
+                                                this.setState({query:this.state.query});
+                                                this.queryGroupsByGroupNum(groupNum.toString().substring(0,7));
+                                            }else if(groupNum.toString().length>7){}
+                                            else{
+                                                this.state.query.groupNum=groupNum;
+                                                this.setState({query:this.state.query});
+                                            }
+                                        }}
+                                value={this.state.query.groupNum}
+                                placeholder='请输入商品特征码'
+                                placeholderTextColor="#aaa"
+                                underlineColorAndroid="transparent"
+                            />
+                        </View>
+
+                        {/*<TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}*/}
+                        {/*onPress={()=>{*/}
+                        {/*this.refs.modal3.open();*/}
+                        {/*}}>*/}
+                        {/*<View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>*/}
+                        {/*<Text style={{color:'#fff',fontSize:14}}>新增组</Text>*/}
+                        {/*</View>*/}
+                        {/*</TouchableOpacity>*/}
+
+                    </View>
+
+                    {/*组添加*/}
+                    <View style={[styles.row,{borderBottomWidth:0}]}>
+
+                        <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
+                            <TextInput
+                                style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
+                                                flexDirection:'row',alignItems:'center'}}
+                                onChangeText={(groupName) => {
                                             if(groupName.toString().length==4)
                                             {
 
@@ -544,29 +620,28 @@ class GroupMaintain extends Component{
                                                 this.setState({query:this.state.query});
                                             }
                                         }}
-                            value={this.state.query.groupName}
-                            placeholder='请输入合并的商品组名'
-                            placeholderTextColor="#aaa"
-                            underlineColorAndroid="transparent"
-                        />
-                    </View>
+                                value={this.state.query.groupName}
+                                placeholder='请输入合并的商品组名'
+                                placeholderTextColor="#aaa"
+                                underlineColorAndroid="transparent"
+                            />
+                        </View>
 
-                    <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
-                                      onPress={()=>{
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
+                                          onPress={()=>{
                                           this.mergeToNewGroup();
                                                   }}>
-                        <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
-                            <Text style={{color:'#fff',fontSize:14}}>合并到新组</Text>
-                        </View>
-                    </TouchableOpacity>
+                            <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
+                                <Text style={{color:'#fff',fontSize:14}}>合并到新组</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+
                 </View>
-
-            </View>
-        </View>);
+            </View>);
 
 
-        if(groups&&groups.array!==undefined&&groups.array!==null&&Object.prototype.toString.call(groups.array)=='[object Array]')
-        {
+
 
             var data=groups.array;
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
