@@ -50,7 +50,7 @@ class CodesModal extends Component{
                         this.onCodigoSelect(rowData);
                     }.bind(this)}>
                     <View style={{flex:1,flexDirection:'row',padding:16,borderBottomWidth:1,borderColor:'#ddd',justifyContent:'center'}}>
-                        <Text style={{color:'#000',fontWeight:'bold',fontSize:28}}>{rowData.codigo}</Text>
+                        <Text style={{color:'#000',fontWeight:'bold',fontSize:24}}>{rowData.codigo}</Text>
                     </View>
                 </TouchableOpacity>
 
