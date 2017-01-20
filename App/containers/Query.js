@@ -84,7 +84,19 @@ class Query extends Component{
             else{
                 goodInfo.goodName=goodInfo.nombre;
             }
-            this.setState({selectedCodeInfo: goodInfo,codigo:codigo,priceShow:goodInfo.priceShow});
+
+            var printType = goodInfo.printType;
+            for(var i = 0 ; i < printType.length; i++){
+                var j = i + 1;
+                var type = "type" + j;
+               this.state.printType[type]=printType.charAt(i);
+
+            }
+            var newPrintType = this.state.printType;
+            this.state.goods.codeNum = 0;
+            var goods = this.state.goods;
+            this.setState({selectedCodeInfo: goodInfo,codigo:codigo,priceShow:goodInfo.priceShow,printType:newPrintType,goods:goods,hasCodigo:true});
+
         }, (err) =>{
             alert(err);
             this.setState({codigo:codigo});
@@ -419,6 +431,38 @@ class Query extends Component{
     }
 
 
+    updatePrintType1(printType1){
+        this.state.printType.type1 = printType1;
+        var printType =  this.state.printType;
+        this.state.selectedCodeInfo.printType = printType.type1+printType.type2+printType.type3+printType.type4;
+        var selectCodeInfo = this.state.selectedCodeInfo.printType;
+        this.setState({printType:printType,selectCodeInfo:selectCodeInfo});
+    }
+
+    updatePrintType2(printType2){
+        this.state.printType.type2 = printType2;
+        var printType =  this.state.printType;
+        this.state.selectedCodeInfo.printType = printType.type1+printType.type2+printType.type3+printType.type4;
+        var selectCodeInfo = this.state.selectedCodeInfo.printType;
+        this.setState({printType:printType,selectCodeInfo:selectCodeInfo});
+    }
+
+    updatePrintType3(printType3){
+        this.state.printType.type3 = printType3;
+        var printType =  this.state.printType;
+        this.state.selectedCodeInfo.printType = printType.type1+printType.type2+printType.type3+printType.type4;
+        var selectCodeInfo = this.state.selectedCodeInfo.printType;
+        this.setState({printType:printType,selectCodeInfo:selectCodeInfo});
+    }
+
+    updatePrintType4(printType4){
+        this.state.printType.type4 = printType4;
+        var printType =  this.state.printType;
+        this.state.selectedCodeInfo.printType = printType.type1+printType.type2+printType.type3+printType.type4;
+        var selectCodeInfo = this.state.selectedCodeInfo.printType;
+        this.setState({printType:printType,selectCodeInfo:selectCodeInfo});
+    }
+
 
     constructor(props)
     {
@@ -434,6 +478,8 @@ class Query extends Component{
             amount:0,
             taxArr:[],
             sizeArr:[],
+            printType:{type1:'0',type2:'0',type3:'0',type4:'0'},
+            hasCodigo:false
         };
     }
 
@@ -446,6 +492,7 @@ class Query extends Component{
         var oldPrice = this.state.selectedCodeInfo.oldPrice;
         var suggestPrice = this.state.selectedCodeInfo.suggestPrice==undefined||this.state.selectedCodeInfo.suggestPrice==null?this.state.selectedCodeInfo.suggestPrice:null;
         var fixedPrice =null;
+        var prientType = this.state.printType;
 
         var displayArea = {x: 5, y: 20, width: width - 10, height: height - 25};
 
@@ -497,15 +544,17 @@ class Query extends Component{
                         </View>
 
                         {/* 价位横幅 */}
-                        <View style={[styles.row,{borderBottomWidth:0,padding:18,backgroundColor:'#eee'}]}>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
+                        <View style={[styles.row,{borderBottomWidth:0,height:50,backgroundColor:'#eee',marginTop:12,marginBottom:5}]}>
+                            <View style={{flex:1,flexDirection:'row',justifyContent:'center', marginRight:.5,alignItems:'center',
+                            borderWidth:1,borderTopLeftRadius:4,borderBottomLeftRadius:4}}>
                                 <Text style={{'fontSize':14,color:'#444'}}>原价位</Text>
                             </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
-                                <Text style={{'fontSize':14,color:'#444'}}>建议改位</Text>
+                            <View style={{flex:1,flexDirection:'row',justifyContent:'center', marginRight:.5,alignItems:'center', borderWidth:1,borderRightWidth:0,borderLeftWidth:0}}>
+                                <Text style={{'fontSize':14,color:'#444'}}>建议价位</Text>
                             </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
-                                <Text style={{'fontSize':14,color:'#444'}}>固定改位</Text>
+                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center', borderWidth:1,
+                            borderTopRightRadius:4,borderBottomRightRadius:4}}>
+                                <Text style={{'fontSize':14,color:'#444'}}>固定价位</Text>
                             </View>
                         </View>
 
@@ -606,20 +655,116 @@ class Query extends Component{
 
 
 
-                        <View style={[styles.row,{borderBottomWidth:0,padding:18,backgroundColor:'#eee',borderRadius:8,
-                            marginTop:10,marginBottom:4}]}>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
-                                <Text style={{'fontSize':14,color:'#444'}}>标签</Text>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
-                                <Text style={{'fontSize':14,color:'#444'}}>大折扣</Text>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
-                                <Text style={{'fontSize':14,color:'#444'}}>中折扣</Text>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center'}}>
-                                <Text style={{'fontSize':14,color:'#444'}}>小折扣</Text>
-                            </View>
+                        <View style={[styles.row,{borderBottomWidth:0,height:50,marginTop:12,marginBottom:12}]}>
+
+                            {/*标签*/}
+                            {
+                                prientType.type1==0?
+                                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#eee',
+                                marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
+                                        <TouchableOpacity style={{justifyContent:'center'}}
+                                                          onPress={
+                                    ()=>{
+                                        this.updatePrintType1(1);
+                                    }}>
+                                            <Text style={{'fontSize':14,color:'#444'}}>标签</Text>
+                                        </TouchableOpacity>
+                                    </View>:
+                                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
+                                marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
+                                        <TouchableOpacity style={{justifyContent:'center'}}
+                                                          onPress={
+                                    ()=>{
+                                        this.updatePrintType1(0);
+                                    }}>
+                                            <Text style={{'fontSize':14,color:'#fff'}}>标签</Text>
+                                        </TouchableOpacity>
+
+                                    </View>
+
+                            }
+
+                            {/*大折扣*/}
+                            {
+                                prientType.type2==0?
+                                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#eee',
+                                marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
+                                        <TouchableOpacity style={{justifyContent:'center'}}
+                                                          onPress={
+                                    ()=>{
+                                        this.updatePrintType2(1);
+                                    }}>
+                                            <Text style={{'fontSize':14,color:'#444'}}>大折扣</Text>
+                                        </TouchableOpacity>
+                                    </View>:
+                                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
+                                marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
+                                        <TouchableOpacity style={{justifyContent:'center'}}
+                                                          onPress={
+                                    ()=>{
+                                        this.updatePrintType2(0);
+                                    }}>
+                                            <Text style={{'fontSize':14,color:'#fff'}}>大折扣</Text>
+                                        </TouchableOpacity>
+
+                                    </View>
+
+                            }
+
+                            {/*中折扣*/}
+                            {
+                                prientType.type3==0?
+                                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#eee',
+                                marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
+                                        <TouchableOpacity style={{justifyContent:'center'}}
+                                                          onPress={
+                                    ()=>{
+                                        this.updatePrintType3(1);
+                                    }}>
+                                            <Text style={{'fontSize':14,color:'#444'}}>中折扣</Text>
+                                        </TouchableOpacity>
+                                    </View>:
+                                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
+                                marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
+                                        <TouchableOpacity style={{justifyContent:'center'}}
+                                                          onPress={
+                                    ()=>{
+                                        this.updatePrintType3(0);
+                                    }}>
+                                            <Text style={{'fontSize':14,color:'#fff'}}>中折扣</Text>
+                                        </TouchableOpacity>
+
+                                    </View>
+
+                            }
+
+                            {/*小折扣*/}
+                            {
+                                prientType.type4==0?
+                                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#eee',
+                                marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
+                                        <TouchableOpacity style={{justifyContent:'center'}}
+                                                          onPress={
+                                    ()=>{
+                                        this.updatePrintType4(1);
+                                    }}>
+                                            <Text style={{'fontSize':14,color:'#444'}}>小折扣</Text>
+                                        </TouchableOpacity>
+                                    </View>:
+                                    <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
+                                marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
+                                        <TouchableOpacity style={{justifyContent:'center'}}
+                                                          onPress={
+                                    ()=>{
+                                        this.updatePrintType4(0);
+                                    }}>
+                                            <Text style={{'fontSize':14,color:'#fff'}}>小折扣</Text>
+                                        </TouchableOpacity>
+
+                                    </View>
+
+                            }
+
                         </View>
 
                         {/*包含8个按钮的按钮组*/}
@@ -755,14 +900,26 @@ class Query extends Component{
                         onClose={()=>{this.closePopover()
                         }}>
 
-                        <TouchableOpacity style={[styles.popoverContent,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
-                                          onPress={()=>{
+                        {
+                            this.state.hasCodigo==false?
+                                <TouchableOpacity style={[styles.popoverContent,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
+                                                  onPress={()=>{
                                               console.log('choose add commodity');
                                               this.closePopover();
                                               this.navigateGoodAdd();
                                           }}>
-                            <Text style={[styles.popoverText,{color:'#444'}]}>维护商品信息</Text>
-                        </TouchableOpacity>
+                                    <Text style={[styles.popoverText,{color:'#444'}]}>维护商品信息</Text>
+                                </TouchableOpacity>:
+                                <TouchableOpacity style={[styles.popoverContent,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
+                                                  onPress={()=>{
+                                              console.log('choose add commodity');
+                                              this.closePopover();
+                                              this.navigateGoodUpdate();
+                                          }}>
+                                    <Text style={[styles.popoverText,{color:'#444'}]}>维护商品信息</Text>
+                                </TouchableOpacity>
+
+                        }
 
                         <TouchableOpacity style={[styles.popoverContent,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
                                           onPress={()=>{
@@ -837,6 +994,24 @@ var styles = StyleSheet.create({
         flexDirection:'row',
         borderBottomWidth:1,
         borderBottomColor:'#222'
+    },
+    discountUnselected:{
+        flex:1,flexDirection:'row',
+        justifyContent:'center',
+        backgroundColor:'#eee',
+        marginRight:.5,
+        borderTopLeftRadius:4,
+        borderBottomLeftRadius:4,
+        alignItems:'center'
+    },
+    discountSelected:{
+        flex:1,flexDirection:'row',
+        justifyContent:'center',
+        backgroundColor:'#387ef5',
+        marginRight:.5,
+        borderTopLeftRadius:4,
+        borderBottomLeftRadius:4,
+        alignItems:'center'
     },
     popoverContent: {
         width: 100,

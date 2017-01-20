@@ -123,21 +123,6 @@ class GoodAdd extends Component{
 
     }
 
-    constructor(props)
-    {
-        super(props);
-        this.state = {
-            onCodigoSelect:props.onCodigoSelect,
-            merchantId:props.merchantId,
-
-            newGoodInfo:{codigo:'',nombre:'',setSizeValue:'',sizeUnit:'',scaleUnit:'',selectTax:'',taxId:''},
-            taxArr:props.taxArr,
-            sizeArr:props.sizeArr,
-            scaleArr:[],
-        };
-
-    }
-
     _handlePress1(index) {
 
         if(index>0){
@@ -193,6 +178,23 @@ class GoodAdd extends Component{
             this[actionSheet].show();
         }
     }
+
+
+    constructor(props)
+    {
+        super(props);
+        this.state = {
+            onCodigoSelect:props.onCodigoSelect,
+            merchantId:props.merchantId,
+
+            newGoodInfo:{codigo:'',nombre:'',setSizeValue:'',sizeUnit:'',scaleUnit:'',selectTax:'',taxId:null},
+            taxArr:props.taxArr,
+            sizeArr:props.sizeArr,
+            scaleArr:[],
+        };
+
+    }
+
 
 
     render(){
@@ -342,7 +344,7 @@ class GoodAdd extends Component{
                         <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                             <Text >含量单位:</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center'}}>
                             <Text >{sizeUnit}</Text>
                         </View>
 
@@ -350,7 +352,7 @@ class GoodAdd extends Component{
 
                             <TouchableOpacity style={{justifyContent:'center'}}
                                               onPress={()=>{ this.show('actionSheet1'); }}>
-                                <Icon name="chevron-circle-down" color="blue" size={30}></Icon>
+                                <Icon name="chevron-circle-down" color="#aaa" size={30}></Icon>
                                 <ActionSheet
                                     ref={(o) => {
                                         this.actionSheet1 = o;
@@ -373,7 +375,7 @@ class GoodAdd extends Component{
                         <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                             <Text >比价单位:</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center'}}>
                             <Text >{scaleUnit}</Text>
                         </View>
                         <View style={{flex:3,padding:5}}>
@@ -383,7 +385,7 @@ class GoodAdd extends Component{
                                     ()=>{
                                         this.show('actionSheet2');
                                     }}>
-                                <Icon name="chevron-circle-down" color="blue" size={30}></Icon>
+                                <Icon name="chevron-circle-down" color="#aaa" size={30}></Icon>
                                 <ActionSheet
                                     ref={(p) => this.actionSheet2 = p}
                                     title="请选择比价单位"
@@ -404,7 +406,7 @@ class GoodAdd extends Component{
                         <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                             <Text >商品税类:</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center'}}>
                             <Text >{selectTax}</Text>
                         </View>
                         <View style={{flex:3,padding:5}}>
@@ -414,7 +416,7 @@ class GoodAdd extends Component{
                                     ()=>{
                                         this.show('actionSheet3');
                                     }}>
-                                <Icon name="chevron-circle-down" color="blue" size={30}></Icon>
+                                <Icon name="chevron-circle-down" color="#aaa" size={30}></Icon>
                                 <ActionSheet
                                     ref={(q) => this.actionSheet3 = q}
                                     title="请选择商品税类"
@@ -429,7 +431,7 @@ class GoodAdd extends Component{
                         </View>
                     </View>
 
-                    <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:10}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:40}}>
                         <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#11c1f3',
                                     borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center',padding:8,borderRadius:4}}
                                           onPress={
@@ -471,6 +473,7 @@ var styles = StyleSheet.create({
     },
     row:{
         flexDirection:'row',
+        height: 50,
         borderBottomWidth:1,
         borderBottomColor:'#222'
     },
