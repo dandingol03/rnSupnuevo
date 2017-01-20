@@ -24,9 +24,9 @@ var t=require('tcomb-form-native');
 var Form = t.form.Form;
 
 var Person = t.struct({
-    'username': t.String,   // a required string
-    'password': t.String,   // an optional string
-    rememberMe: t.Boolean   // a boolean
+    '用户名': t.String,   // a required string
+    '密码': t.String,   // an optional string
+    '保存密码': t.Boolean   // a boolean
 });
 
 var options = {};
@@ -48,7 +48,7 @@ var  Login =React.createClass({
         console.log('struct=\r\n'+form);
         this.setState({showProgress: true});
         const {dispatch} = this.props;
-        dispatch(loginAction(form.username,form.password));
+        dispatch(loginAction(form.用户名,form.密码));
     },
     getInitialState:function(){
         return ({showPregress: true});

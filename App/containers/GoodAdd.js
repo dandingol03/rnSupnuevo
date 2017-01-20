@@ -129,7 +129,8 @@ class GoodAdd extends Component{
         this.state = {
             onCodigoSelect:props.onCodigoSelect,
             merchantId:props.merchantId,
-            newGoodInfo:{codigo:'',nombre:'',setSizeValue:'',sizeUnit:'',scaleUnit:'',selectTax:'',taxId:null},
+
+            newGoodInfo:{codigo:'',nombre:'',setSizeValue:'',sizeUnit:'',scaleUnit:'',selectTax:'',taxId:''},
             taxArr:props.taxArr,
             sizeArr:props.sizeArr,
             scaleArr:[],

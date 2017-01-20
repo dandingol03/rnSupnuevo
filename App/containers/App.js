@@ -78,7 +78,6 @@ class App extends React.Component {
             return(
                 <TabNavigator>
                     {this._createNavigatorItem('query','home','改价')}
-                    {this._createNavigatorItem('group','group','组改价')}
                 </TabNavigator>
             );
         }
