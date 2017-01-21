@@ -22,7 +22,8 @@ let user = (state = initialState, action) => {
                 supnuevoMerchantId:action.supnuevoMerchantId,
                 merchantStates:action.merchantStates,
                 username:action.username
-            })
+            });
+            break;
         default:
             return state;
     }

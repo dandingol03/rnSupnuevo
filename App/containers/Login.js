@@ -75,7 +75,9 @@ var  Login =React.createClass({
                     600,
                 );
                 dispatch(setTimerAction(this.timer));
-                dispatch(loginAction(username,password));
+                dispatch(loginAction(username,password,function () {
+                    this.setState({showProgress: false});
+                }.bind(this)));
 
             }else{
                 Alert.alert(
@@ -117,78 +119,6 @@ var  Login =React.createClass({
 
     render:function () {
 
-
-        var t1=(
-            <View>
-            </View>
-
-            );
-
-        var t2=(
-            <View style={styles.container}>
-                <Form
-                    ref="form"
-                    type={Person}
-                    options={options}
-                />
-                <TouchableHighlight style={styles.button} onPress={this.onPress} underlayColor='#99d9f4'>
-                    <Text style={styles.buttonText}>登录</Text>
-                </TouchableHighlight>
-            </View>
-        );
-
-        var remain=(
-            <View>
-                <Image style={styles.logo} source={require('../img/Octocat.png')} />
-
-                <View style={{justifyContent:'center',alignItems:'center'}}>
-                    <TextInput
-                        onChangeText={(text) => this.setState({username: text})}
-                        style={styles.input}
-                        placeholder='请输入用户名'
-                        placeholderTextColor="#aaa"
-                        underlineColorAndroid="transparent"
-                    />
-                </View>
-
-                <View style={{justifyContent:'center',alignItems:'center'}}>
-                    <TextInput
-                        onChangeText={(text) => this.setState({password: text})}
-                        style={styles.input}
-                        placeholder="input password"
-                        secureTextEntry={true} />
-                </View>
-
-                <View style={{justifyContent:'center',alignItems:'center'}}>
-                    <TouchableHighlight
-                        onPress={this.onLoginPressed}
-                        style={styles.button}>
-                        <Text style={styles.buttonText}>
-                            登录
-                        </Text>
-                    </TouchableHighlight>
-                </View>
-
-                <ActivityIndicator
-                    animating={this.state.showProgress}
-                    style={[styles.loader, {height: 80}]}
-                    size="large"
-                />
-            </View>
-        );
-
-
-
-        var t4=(
-            <View style={styles.container}>
-                <View style={[{backgroundColor:'#387ef5',padding:10,justifyContent:'center',flexDirection:'row'}]}>
-                    <Text style={{color:'#fff',fontSize:22}}>supnuevo</Text>
-                </View>
-                <View style={{padding:10,flexDirection:'row',justifyContent:'center'}}>
-                    <Image style={styles.logo} source={require('../img/cart.png')} />
-                </View>
-            </View>
-        );
 
 
         const shadowOpt = {
