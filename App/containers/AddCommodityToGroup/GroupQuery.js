@@ -156,15 +156,12 @@ class GroupQuery extends Component{
                     <View style={lineStyle}>
 
 
-                        <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold',fontSize:24}}>{rowData.groupName}</Text>
-                        </View>
 
                         <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
                                           onPress={()=>{
                                           this.commodityAddToGroup(rowData.groupId);
                                                   }}>
-                            <Icon name="plus-square" color="rgb(79, 204, 0)" size={23}></Icon>
+                            <Text style={{color:'#222',fontWeight:'bold',fontSize:24}}>{rowData.groupName}</Text>
                         </TouchableOpacity>
 
                     </View>
@@ -665,15 +662,11 @@ class GroupQuery extends Component{
                         <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start'}}>
 
 
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            <View style={{flex:6,flexDirection:'row',justifyContent:'center',alignItems:'center',
                                         borderColor:'#aaa',borderWidth:1,padding:8}}>
-                                <Text style={{color:'#222'}}>商品组名</Text>
+                                <Text style={{color:'#222'}}>请选择要添加到的组名</Text>
                             </View>
 
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                        borderColor:'#aaa',borderWidth:1,padding:8,paddingLeft:12,paddingRight:12}}>
-                                <Text style={{color:'#222'}}>添加</Text>
-                            </View>
                         </View>
                     </View>
 
