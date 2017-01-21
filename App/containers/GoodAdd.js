@@ -254,7 +254,7 @@ class GoodAdd extends Component{
                 </View>
 
                 {/* body */}
-                <View style={{padding:10}}>
+                <View style={{padding:10,marginTop:20}}>
 
 
                     {/*表单*/}

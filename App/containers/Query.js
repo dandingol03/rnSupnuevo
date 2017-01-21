@@ -522,7 +522,7 @@ class Query extends Component{
 
                             <View style={{flex:1,borderWidth:1,borderColor:'#ddd'}}>
                                 <TextInput
-                                    style={{height: 46,paddingLeft:10,paddingRight:10,paddingTop:6,paddingBottom:6}}
+                                    style={{height: 50,paddingLeft:10,paddingRight:10,paddingTop:6,paddingBottom:6}}
                                     onChangeText={(codeNum) => {
                                     if(codeNum.toString().length==4)
                                     {
@@ -608,23 +608,23 @@ class Query extends Component{
 
                         {/*商品概要*/}
                         <View style={[styles.row,{borderTopWidth:1,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:0,borderColor:'#aaa',
-                                padding:12,marginBottom:1}]}>
-                            <View style={{flex:3,flexDirection:'row',justifyContent:'center',
+                                padding:12,marginBottom:1,marginTop:8}]}>
+                            <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',
                                 marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4}}>
                                 <Text>商品条码:</Text>
                             </View>
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start'}}>
+                            <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center'}}>
                                 <Text>{codigo}</Text>
                             </View>
                         </View>
 
                         <View style={[styles.row,{borderTopWidth:1,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:0,borderColor:'#aaa',
                                 padding:12,marginBottom:1}]}>
-                            <View style={{flex:3,flexDirection:'row',justifyContent:'center',
+                            <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',
                                 marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4}}>
                                 <Text>商品名称:</Text>
                             </View>
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start'}}>
+                            <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center'}}>
                                 <Text>{goodName}</Text>
                             </View>
                         </View>
@@ -637,7 +637,7 @@ class Query extends Component{
                             </View>
                             <View style={{flex:5}}>
                                 <TextInput
-                                    style={{height: 40}}
+                                    style={{height: 50,alignItems:'center'}}
                                     onChangeText={(priceShow) => {
 
                                         this.state.selectedCodeInfo.priceShow=priceShow;
@@ -992,6 +992,7 @@ var styles = StyleSheet.create({
     },
     row:{
         flexDirection:'row',
+        height:50,
         borderBottomWidth:1,
         borderBottomColor:'#222'
     },
