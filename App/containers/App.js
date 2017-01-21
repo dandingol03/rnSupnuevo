@@ -76,9 +76,21 @@ class App extends React.Component {
         {
 
             return(
-                <TabNavigator>
-                    {this._createNavigatorItem('query','home','改价')}
-                </TabNavigator>
+                // <TabNavigator>
+                //     {this._createNavigatorItem('query','home','改价')}
+                // </TabNavigator>
+
+                <Navigator
+                    initialRoute={{ name: 'query', component:Query }}
+                    configureScene={(route) => {
+                        return Navigator.SceneConfigs.HorizontalSwipeJumpFromRight;
+                      }}
+                    renderScene={(route, navigator) => {
+                        let Component = route.component;
+                        this.navigator=navigator;
+                        return <Component {...route.params} navigator={navigator} />
+                      }} />
+
             );
         }
         else{
