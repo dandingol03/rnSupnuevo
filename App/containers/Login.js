@@ -21,6 +21,7 @@ import {
     Button,
     ScrollView,
     Alert,
+    Modal,
     TouchableOpacity
 } from 'react-native';
 
@@ -42,7 +43,7 @@ var Person = t.struct({
 var options = {};
 
 
-import {loginAction} from '../action/actionCreator';
+import {loginAction,setTimerAction} from '../action/actionCreator';
 var Proxy = require('../proxy/Proxy');
 
 
@@ -55,9 +56,27 @@ var  Login =React.createClass({
         {
             if(password!==undefined&&password!==null&&password!='')
             {
-                this.setState({showProgress: true});
+                this.setState({showProgress: true,modalVisible:true});
                 const {dispatch} = this.props;
+                this.timer= setInterval(
+
+                    function () {
+
+                        var loginDot=this.state.loginDot;
+                        if(loginDot=='......')
+                            loginDot='.';
+                        else
+                            loginDot+='.';
+
+                        this.setState({loginDot:loginDot});
+
+                    }.bind(this)
+                    ,
+                    600,
+                );
+                dispatch(setTimerAction(this.timer));
                 dispatch(loginAction(username,password));
+
             }else{
                 Alert.alert(
                     '错误',
@@ -87,7 +106,12 @@ var  Login =React.createClass({
         dispatch(loginAction(form.用户名,form.密码));
     },
     getInitialState:function(){
-        return ({showPregress: true,user:{}});
+        return ({
+            user:{},
+            modalVisible:false,
+            showProgress:false,
+            loginDot:'.'
+        });
     },
 
 
@@ -181,10 +205,11 @@ var  Login =React.createClass({
 
         return (
             <View style={[styles.container]}>
+
+
                 <View style={[{backgroundColor:'#387ef5',padding:10,justifyContent:'center',flexDirection:'row'}]}>
                     <Text style={{color:'#fff',fontSize:22}}>supnuevo</Text>
                 </View>
-
 
                 <View style={{justifyContent:'center',flexDirection:'row',padding:10,marginTop:10}}>
                     <BoxShadow setting={shadowOpt}>
@@ -270,6 +295,33 @@ var  Login =React.createClass({
                         </TouchableOpacity>
                     </View>
 
+
+
+
+                    <Modal
+                        animationType={"fade"}
+                        transparent={true}
+                        visible={this.state.showProgress}
+                        onRequestClose={() => {alert("Modal has been closed.")}}
+                    >
+                        <View style={[styles.modalContainer,styles.modalBackgroundStyle]}>
+                            <ActivityIndicator
+                                animating={true}
+                                style={[styles.loader, {height: 80}]}
+                                size="large"
+                                color="#fff"
+                            />
+                            <View style={{flexDirection:'row',justifyContent:'center'}}>
+                                <Text style={{color:'#fff',fontSize:18,alignItems:'center'}}>
+                                    登录中
+                                </Text>
+                                <Text style={{color:'#fff',fontSize:24,alignItems:'center'}}>
+                                    {this.state.loginDot}
+                                </Text>
+                            </View>
+                        </View>
+                    </Modal>
+
                 </View>
 
             </View>
@@ -280,12 +332,23 @@ var  Login =React.createClass({
 
 
 export default connect(
+    (state) => ({
+        auth: state.user.auth
+    })
 )(Login);
 
 
 var styles = StyleSheet.create({
     container: {
         flex:1
+    },
+    modalContainer:{
+        flex:1,
+        justifyContent: 'center',
+        padding: 20
+    },
+    modalBackgroundStyle:{
+        backgroundColor:'rgba(0,0,0,0.3)'
     },
     logo: {
         width: width/2,

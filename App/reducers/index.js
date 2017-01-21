@@ -6,9 +6,11 @@ import { combineReducers } from 'redux';
 
 import carInfo from './carInfo';
 import user from './user';
+import  timer from './timer';
 
 export default rootReducer = combineReducers({
     carInfo,
-    user
+    user,
+    timer
 })
 

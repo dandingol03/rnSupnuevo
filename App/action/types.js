@@ -11,8 +11,9 @@ export const AUTH_ACCESS__ACK = 'AUTH_ACCESS__ACK';
 export const SELECT_CUSTOMER_CAR='SELECT_CUSTOMER_CAR';
 export const FETCH_CAR_ORDERS='FETCH_CAR_ORDERS';
 
-
-
+//timer action
+export const TIMER_SET='TIMER_SET';
+export const TIMER_CLEAR='TIMER_CLEAR';
 
 
 
