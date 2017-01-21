@@ -164,12 +164,12 @@ var  Login =React.createClass({
 
                         <View style={{flex:1,borderWidth:1,borderColor:'#ddd',flexDirection:'row'}}>
 
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-start',padding:16,
+                            <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-start',padding:16,
                                 paddingLeft:20,paddingRight:15,marginLeft:10}}>
                                 <Text style={{fontSize:16,color:'#444'}}>用户名</Text>
                             </View>
 
-                            <View style={{flex:5,flexDirection:'row',alignItems:'center'}}>
+                            <View style={{flex:4,flexDirection:'row',alignItems:'center'}}>
                                 <TextInput
                                     style={{height: 46,flex:1,paddingLeft:20,paddingRight:10,paddingTop:2,paddingBottom:2,fontSize:16}}
                                     onChangeText={(username) => {
@@ -192,12 +192,12 @@ var  Login =React.createClass({
 
                         <View style={{flex:1,borderWidth:1,borderColor:'#ddd',flexDirection:'row'}}>
 
-                            <View style={{flex:1,flexDirection:'row',alignItems:'center',justifyContent:'flex-start',padding:16,
+                            <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-start',padding:16,
                                     paddingLeft:20,paddingRight:15,marginLeft:10}}>
                                 <Text style={{fontSize:16,color:'#444'}}>密码</Text>
                             </View>
 
-                            <View style={{flex:5,flexDirection:'row',alignItems:'center'}}>
+                            <View style={{flex:4,flexDirection:'row',alignItems:'center'}}>
                                 <TextInput
                                     style={{height: 46,flex:1,paddingLeft:20,paddingRight:10,paddingTop:2,paddingBottom:2,fontSize:16}}
                                     onChangeText={(password) => {
