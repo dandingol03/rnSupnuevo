@@ -25,28 +25,39 @@ export let loginAction=function(username,password){
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
                 dispatch(getSession(null));
+                dispatch(clearTimerAction());
             }else{
 
-
-                // if(json.merchantStates[0]==1){
-                //     $state.go("query");
-                // }else{
-                //     $state.go("thefifth");
-                // }
-
                 dispatch(getSession({username:username,merchantStates:json.merchantStates,supnuevoMerchantId:json.merchantId}));
-
+                dispatch(clearTimerAction());
             }
 
 
         }, (err) =>{
                 dispatch(getSession(null));
+            dispatch(clearTimerAction());
             });
     };
 
 
 }
 
+export let setTimerAction=function (timer) {
+    return dispatch=>{
+        dispatch({
+            type: types.TIMER_SET,
+            timer:timer
+        });
+    };
+}
+
+export let clearTimerAction=function () {
+    return dispatch=>{
+        dispatch({
+            type: types.TIMER_CLEAR
+        });
+    };
+}
 
 
 let getSession= (ob)=>{
@@ -76,6 +87,20 @@ export let changeRoute=(navigator)=>{
         };
     }
 }
+
+
+export let setTimer=(timer)=>{
+    if(timer!==undefined&&timer!==null)
+    {
+
+        return {
+            type: types.TIMER_SET,
+            timer:timer
+        };
+    }
+}
+
+
 
 export let selectCarAction=function(car){
     return {
