@@ -880,14 +880,14 @@ class Query extends Component{
                                 <Text style={{color:'#fff',fontSize:18}}>组改价</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                    borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center'}}
-                                onPress={
-                                    ()=>{
-                                        this.navigateGoodUpdate();
-                                    }}>
-                                    <Text style={{color:'#fff',fontSize:18}}>修改</Text>
-                            </TouchableOpacity>
+                            {/*<TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',*/}
+                                    {/*borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center'}}*/}
+                                {/*onPress={*/}
+                                    {/*()=>{*/}
+                                        {/*this.navigateGoodUpdate();*/}
+                                    {/*}}>*/}
+                                    {/*<Text style={{color:'#fff',fontSize:18}}>修改</Text>*/}
+                            {/*</TouchableOpacity>*/}
                         </View>
 
                     </View>
