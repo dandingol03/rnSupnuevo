@@ -437,7 +437,7 @@ class GroupInfoManage extends Component{
                                             }
                                         }}
                                         value={this.state.selectedCodeInfo.codigo}
-                                        placeholder='请输入条码最后四位'
+                                        placeholder='在此输入条码最后四位'
                                         placeholderTextColor="#aaa"
                                         underlineColorAndroid="transparent"
                                     />
@@ -537,7 +537,7 @@ class GroupInfoManage extends Component{
                                             this.setState({groupName:this.state.groupName});
                                         }}
                                 value={this.state.groupName}
-                                placeholder='请输入更新的组名'
+                                placeholder='在此输入更新的组名'
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"
                             />

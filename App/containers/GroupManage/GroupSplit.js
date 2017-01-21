@@ -632,7 +632,7 @@ class GroupSplit extends Component{
                                             }
                                         }}
                             value={this.state.query.groupName}
-                            placeholder='请输入拆分的商品组名'
+                            placeholder='在此输入拆分的商品组名'
                             placeholderTextColor="#aaa"
                             underlineColorAndroid="transparent"
                         />

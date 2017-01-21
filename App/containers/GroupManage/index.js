@@ -559,7 +559,7 @@ class GroupManage extends Component{
                                             }
                                         }}
                             value={this.state.query.groupNum}
-                            placeholder='请输入商品特征码'
+                            placeholder='在此输入商品特征码'
                             placeholderTextColor="#aaa"
                             underlineColorAndroid="transparent"
                         />
@@ -608,7 +608,7 @@ class GroupManage extends Component{
                                             }
                                         }}
                                 value={this.state.query.groupNum}
-                                placeholder='请输入商品特征码'
+                                placeholder='在此输入商品特征码'
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"
                             />
@@ -648,7 +648,7 @@ class GroupManage extends Component{
                                             }
                                         }}
                                 value={this.state.query.groupName}
-                                placeholder='请输入合并的商品组名'
+                                placeholder='在此输入合并的商品组名'
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"
                             />
@@ -817,7 +817,7 @@ class GroupManage extends Component{
                                             this.setState({groupName:this.state.groupName});
                                         }}
                                 value={this.state.groupName}
-                                placeholder='请输入新增的组名'
+                                placeholder='在此输入新增的组名'
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"
                             />

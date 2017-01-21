@@ -178,7 +178,7 @@ var  Login =React.createClass({
                                     this.setState({user:this.state.user});
                                 }}
                                     value={this.state.user.username}
-                                    placeholder='请输入用户名'
+                                    placeholder='在此输入用户名'
                                     placeholderTextColor="#aaa"
                                     underlineColorAndroid="transparent"
                                 />
@@ -206,7 +206,7 @@ var  Login =React.createClass({
                                 }}
                                     secureTextEntry={true}
                                     value={this.state.user.password}
-                                    placeholder='请输入密码'
+                                    placeholder='在此输入密码'
                                     placeholderTextColor="#aaa"
                                     underlineColorAndroid="transparent"
                                 />

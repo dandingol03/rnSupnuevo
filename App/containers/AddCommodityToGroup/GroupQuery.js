@@ -591,7 +591,7 @@ class GroupQuery extends Component{
                                             }
                                         }}
                             value={this.state.query.codeNum}
-                            placeholder='请输入条码最后四位'
+                            placeholder='在此输入条码最后四位'
                             placeholderTextColor="#aaa"
                             underlineColorAndroid="transparent"
                         />
@@ -631,7 +631,7 @@ class GroupQuery extends Component{
                                             {/*}*/}
                                         {/*}}*/}
                             {/*value={this.state.query.groupName}*/}
-                            {/*placeholder='请输入新增的商品组名'*/}
+                            {/*placeholder='在此输入新增的组名'*/}
                             {/*placeholderTextColor="#aaa"*/}
                             {/*underlineColorAndroid="transparent"*/}
                         {/*/>*/}
@@ -755,7 +755,7 @@ class GroupQuery extends Component{
                                             }
                                         }}
                                     value={this.state.query.codeNum}
-                                    placeholder='请输入条码最后四位'
+                                    placeholder='在此输入条码最后四位'
                                     placeholderTextColor="#aaa"
                                     underlineColorAndroid="transparent"
                                 />
@@ -876,7 +876,7 @@ class GroupQuery extends Component{
                                             this.setState({groupName:this.state.groupName});
                                         }}
                                 value={this.state.groupName}
-                                placeholder='请输入新增的组名'
+                                placeholder='在此输入新增的组名'
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"
                             />

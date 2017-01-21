@@ -524,7 +524,7 @@ class Query extends Component{
                                     }
                                 }}
                                     value={this.state.goods.codeNum}
-                                    placeholder='请输入条码最后四位'
+                                    placeholder='在此输入条码最后四位'
                                     placeholderTextColor="#aaa"
                                     underlineColorAndroid="transparent"
                                 />
@@ -634,7 +634,7 @@ class Query extends Component{
                                 }}
 
                                     value={''+(this.state.priceShow!==undefined&&this.state.priceShow!==null?this.state.priceShow.toString():'')}
-                                    placeholder='请输入您的价格'
+                                    placeholder='在此输入您的价格'
                                     placeholderTextColor="#aaa"
                                     underlineColorAndroid="transparent"
                                 />
