@@ -31,13 +31,13 @@ import CheckBox from 'react-native-check-box';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../proxy/Proxy');
-import Config from '../../config';
+var Proxy = require('../../proxy/Proxy');
+import Config from '../../../config';
 import _ from 'lodash';
-import CodesModal from '../components/modal/CodesModal';
+import CodesModal from '../../components/modal/CodesModal';
 import Modalbox from 'react-native-modalbox';
-
-
+import GroupQueryInGroup from './GroupQueryInGroup';
+import GroupQueryNotInGroup from './GroupQueryNotInGroup';
 
 
 class GroupQuery extends Component{
@@ -63,6 +63,11 @@ class GroupQuery extends Component{
                 navigator.pop();
             }
         }
+    }
+
+    reset()
+    {
+        this.setState({query: {},code:null});
     }
 
 
@@ -175,6 +180,39 @@ class GroupQuery extends Component{
         this.setState({codesModalVisible:val});
     }
 
+    //跳转匹配组界面
+    redirect2groupQueryInGroup(groupInfo,code)
+    {
+        const { navigator } = this.props;
+        if(navigator&&groupInfo&&code) {
+            navigator.push({
+                name: 'groupQueryInGroup',
+                component: GroupQueryInGroup,
+                params: {
+                    groupInfo:groupInfo,
+                    code:code,
+                    reset:this.reset.bind(this)
+                }
+            })
+        }
+    }
+
+    redirect2groupQueryNotInGroup(groupArr,code)
+    {
+        const { navigator } = this.props;
+        if(navigator&&groupArr&&code) {
+            navigator.push({
+                name: 'groupQueryNotInGroup',
+                component: GroupQueryNotInGroup,
+                params: {
+                    groupArr:groupArr,
+                    code:code,
+                    reset:this.reset.bind(this)
+                }
+            })
+        }
+    }
+
 
 
     onCodigoSelect(code,groupNum)
@@ -223,11 +261,26 @@ class GroupQuery extends Component{
                             commodity.goodName=commodity.nombre;
                         }
                     });
-                    this.setState({groupInfo:json,query:query,code:code});
-                    //this.navigateToGroupInfoManage(groupInfo,code,true);
+
+                    //this.setState({groupInfo:json,query:query,code:code});
+                    this.redirect2groupQueryInGroup(json,code);
                 }else{
                     //多个组的信息
-                    this.setState({groupArr: data,query:query,code:code});
+                    if(data.array.length==0)
+                    {
+                        Alert.alert(
+                            '错误',
+                            '该商品没有匹配的组信息',
+                            [
+                                {text: 'OK', onPress: () => {
+
+                                }},
+                            ]
+                        );
+                        this.setState({groupArr: data,query:query,code:code});
+                    }else{
+                        this.redirect2groupQueryNotInGroup(data,code);
+                    }
                 }
             }
         }, (err) =>{
@@ -556,49 +609,50 @@ class GroupQuery extends Component{
                 </View>
 
                 {/*组添加*/}
-                <View style={[styles.row,{borderBottomWidth:0}]}>
+                {/*<View style={[styles.row,{borderBottomWidth:0}]}>*/}
 
-                    <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
-                        <TextInput
-                            style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
-                            onChangeText={(groupName) => {
-                                            if(groupName.toString().length==4)
-                                            {
+                    {/*<View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>*/}
+                        {/*<TextInput*/}
+                            {/*style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,*/}
+                                                {/*flexDirection:'row',alignItems:'center'}}*/}
+                            {/*onChangeText={(groupName) => {*/}
+                                            {/*if(groupName.toString().length==4)*/}
+                                            {/*{*/}
 
-                                                this.state.query.groupName=groupName;
-                                                this.setState({query:this.state.query});
-                                            }else if(groupName.toString().length>4){
-                                                this.state.query.groupName=groupName;
-                                                this.setState({query:this.state.query});
-                                            }
-                                            else{
-                                                this.state.query.groupName=groupName;
-                                                this.setState({query:this.state.query});
-                                            }
-                                        }}
-                            value={this.state.query.groupName}
-                            placeholder='请输入新增的商品组名'
-                            placeholderTextColor="#aaa"
-                            underlineColorAndroid="transparent"
-                        />
-                    </View>
+                                                {/*this.state.query.groupName=groupName;*/}
+                                                {/*this.setState({query:this.state.query});*/}
+                                            {/*}else if(groupName.toString().length>4){*/}
+                                                {/*this.state.query.groupName=groupName;*/}
+                                                {/*this.setState({query:this.state.query});*/}
+                                            {/*}*/}
+                                            {/*else{*/}
+                                                {/*this.state.query.groupName=groupName;*/}
+                                                {/*this.setState({query:this.state.query});*/}
+                                            {/*}*/}
+                                        {/*}}*/}
+                            {/*value={this.state.query.groupName}*/}
+                            {/*placeholder='请输入新增的商品组名'*/}
+                            {/*placeholderTextColor="#aaa"*/}
+                            {/*underlineColorAndroid="transparent"*/}
+                        {/*/>*/}
+                    {/*</View>*/}
 
-                    <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
-                                      onPress={()=>{
-                                          this.commodityAddToNewGroup();
-                                                  }}>
-                        <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
-                            <Text style={{color:'#fff',fontSize:14}}>添加到新建组</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
+                    {/*<TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}*/}
+                                      {/*onPress={()=>{*/}
+                                          {/*this.commodityAddToNewGroup();*/}
+                                                  {/*}}>*/}
+                        {/*<View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>*/}
+                            {/*<Text style={{color:'#fff',fontSize:14}}>添加到新建组</Text>*/}
+                        {/*</View>*/}
+                    {/*</TouchableOpacity>*/}
+                {/*</View>*/}
 
             </View>
         </View>);
 
 
-        if(groupArr.array!==undefined&&groupArr.array!==null&&Object.prototype.toString.call(groupArr.array)=='[object Array]')
+        if(groupArr.array!==undefined&&groupArr.array!==null&&Object.prototype.toString.call(groupArr.array)=='[object Array]'
+            &&groupArr.array.length>0)
         {
 
             var data=groupArr.array;

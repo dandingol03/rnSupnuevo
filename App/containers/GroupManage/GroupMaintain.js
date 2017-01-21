@@ -29,10 +29,10 @@ import CheckBox from 'react-native-check-box';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../proxy/Proxy');
-import Config from '../../config';
+var Proxy = require('../../proxy/Proxy');
+import Config from '../../../config';
 import _ from 'lodash';
-import CodesModal from '../components/modal/CodesModal';
+import CodesModal from '../../components/modal/CodesModal';
 import Modalbox from 'react-native-modalbox';
 import GroupSplit from './GroupSplit';
 
@@ -43,40 +43,35 @@ class GroupMaintain extends Component{
     goBack(){
         const { navigator } = this.props;
 
-        var groups=this.state.groups;
-        var groupInfo=this.state.groupInfo;
-        var query={};
-        if(groups&&groups.array)
-        {
-            groups=null;
-            this.setState({groups: groups, query: query});
-        }else if(groupInfo&&groupInfo.array){
-            groupInfo=null;
-            this.setState({groupInfo: groupInfo, query: query});
-        }else{
-            if(navigator) {
-                navigator.pop();
-            }
+        if(navigator) {
+            if(this.props.reset)
+                this.props.reset();
+            navigator.pop();
         }
+
     }
 
 
     handleBack()
     {
-        console.log('it is groupMaintain');
     }
 
 
+    reset()
+    {
+    }
+
+    //浏览历史栈连续pop2次
     splitCb()
     {
         const { navigator } = this.props;
         if(navigator) {
-            navigator.pop();
+            const routers = navigator.getCurrentRoutes();
+            var route=routers[routers.length-3];
+            if(this.props.reset)
+                this.props.reset();
+            navigator.popToRoute(route);
         }
-        var groups=null;
-        var groupInfo=null;
-        var query={};
-        this.setState({query: query, groups: groups, groupInfo: groupInfo});
     }
 
     navigateToGroupSplit(groupInfo){
@@ -490,7 +485,8 @@ class GroupMaintain extends Component{
         this.state = {
             merchantId:props.merchantId,
             query:{},
-            groups:null,
+            groups:props.groups,
+            groupNum:props.groupNum,
             groupArr:{},
             selectAll:false,
             codesModalVisible:false,
@@ -521,6 +517,7 @@ class GroupMaintain extends Component{
 
         var groups=this.state.groups;
         var groupInfo=this.state.groupInfo;
+        const {groupNum}=this.props;
         var listView=null;
         var queryBox=   (<View style={[styles.card,{marginTop:10,padding:8}]}>
             <View style={{flex:1,padding:8,paddingLeft:10,paddingRight:10,backgroundColor:'#eee',borderRadius:8}}>
@@ -531,26 +528,9 @@ class GroupMaintain extends Component{
                     {/*<Text style={{color:'#222'}}>条码</Text>*/}
                     {/*</View>*/}
                     <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
-                        <TextInput
-                            style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
-                            onChangeText={(groupNum) => {
-                                            if(groupNum.toString().length==7)
-                                            {
-                                                this.state.query.groupNum=groupNum;
-                                                this.setState({query:this.state.query});
-                                                this.queryGroupsByGroupNum(groupNum.toString().substring(0,7));
-                                            }else if(groupNum.toString().length>7){}
-                                            else{
-                                                this.state.query.groupNum=groupNum;
-                                                this.setState({query:this.state.query});
-                                            }
-                                        }}
-                            value={this.state.query.groupNum}
-                            placeholder='请输入商品特征码'
-                            placeholderTextColor="#aaa"
-                            underlineColorAndroid="transparent"
-                        />
+                       <Text style={{color:'#222'}}>
+                           {groupNum}
+                       </Text>
                     </View>
 
                     {/*<TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}*/}
@@ -579,27 +559,17 @@ class GroupMaintain extends Component{
                         {/*<View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>*/}
                         {/*<Text style={{color:'#222'}}>条码</Text>*/}
                         {/*</View>*/}
-                        <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
-                            <TextInput
-                                style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
-                                onChangeText={(groupNum) => {
-                                            if(groupNum.toString().length==7)
-                                            {
-                                                this.state.query.groupNum=groupNum;
-                                                this.setState({query:this.state.query});
-                                                this.queryGroupsByGroupNum(groupNum.toString().substring(0,7));
-                                            }else if(groupNum.toString().length>7){}
-                                            else{
-                                                this.state.query.groupNum=groupNum;
-                                                this.setState({query:this.state.query});
-                                            }
-                                        }}
-                                value={this.state.query.groupNum}
-                                placeholder='请输入商品特征码'
-                                placeholderTextColor="#aaa"
-                                underlineColorAndroid="transparent"
-                            />
+                        <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4,marginBottom:10}}>
+                            <View style={{flex:2}}>
+                                <Text style={{color:'#222',fontSize:18}}>
+                                    条码
+                                </Text>
+                            </View>
+                            <View style={{flex:4}}>
+                                <Text style={{color:'#222',fontSize:18}}>
+                                    {groupNum}
+                                </Text>
+                            </View>
                         </View>
 
                         {/*<TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}*/}
@@ -694,48 +664,6 @@ class GroupMaintain extends Component{
                         />
                     </ScrollView>
                 </View>);
-
-
-
-        }else if(groupInfo&&groupInfo.array!==undefined&&groupInfo.array!==null&&Object.prototype.toString.call(groupInfo.array)=='[object Array]')
-        {
-            var data=groupInfo.array;
-            var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-
-
-            listView=(
-                <View style={{padding:10}}>
-                    <View>
-                        <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start'}}>
-
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                            borderColor:'#aaa',borderWidth:1,borderRightWidth:0,padding:8}}>
-                                <Text style={{color:'#222'}}>
-                                    条码
-                                </Text>
-                            </View>
-
-                            <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                            borderColor:'#aaa',borderWidth:1,padding:8}}>
-                                <Text style={{color:'#222'}}>名称</Text>
-                            </View>
-
-                            {/*<View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',*/}
-                            {/*borderColor:'#aaa',borderWidth:1,padding:8}}>*/}
-                            {/*<Text style={{color:'#222'}}>删除</Text>*/}
-                            {/*</View>*/}
-                        </View>
-                    </View>
-
-                    <ScrollView>
-                        <ListView
-                            automaticallyAdjustContentInsets={false}
-                            dataSource={ds.cloneWithRows(data)}
-                            renderRow={this.renderCommodityRow.bind(this)}
-                        />
-                    </ScrollView>
-                </View>
-            );
 
 
         }

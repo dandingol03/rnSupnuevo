@@ -31,11 +31,11 @@ var Proxy = require('../proxy/Proxy');
 import Config from '../../config';
 import CodesModal from '../components/modal/CodesModal';
 import Group from './Group';
-import GroupQuery from './GroupQuery';
+import GroupQuery from './AddCommodityToGroup/GroupQuery';
 
 import GoodUpdate from './GoodUpdate';
 import GoodAdd from './GoodAdd';
-import GroupMaintain from './GroupMaintain';
+import GroupManage from './GroupManage/index';
 
 
 
@@ -259,29 +259,17 @@ class Query extends Component{
 
     navigateGroupMaintain(){
         const { navigator } = this.props;
-        var defaultProps=GroupMaintain.WrappedComponent.defaultProps;
-        var {handleBack}=defaultProps;
-        if(handleBack!==undefined&&handleBack!==null)
-        {
-            if(navigator) {
-                navigator.push({
-                    name: 'groupMaintain',
-                    component: GroupMaintain,
-                    params: {
-                        handleBack:handleBack
-                    }
-                })
-            }
-        }else{
-            if(navigator) {
-                navigator.push({
-                    name: 'groupMaintain',
-                    component: GroupMaintain,
-                    params: {
-                    }
-                })
-            }
+
+
+        if(navigator) {
+            navigator.push({
+                name: 'groupMaintain',
+                component: GroupManage,
+                params: {
+                }
+            })
         }
+
     }
 
 
