@@ -70,33 +70,6 @@ class GroupQuery extends Component{
         this.setState({query: {},code:null});
     }
 
-
-    toggleAll(){
-        if(this.state.relatedGoods!==undefined&&this.state.relatedGoods!==null)
-        {
-            var relatedGoods=_.cloneDeep(this.state.relatedGoods);
-            if(this.state.selectAll!=true)
-            {
-                relatedGoods.map(function (good, i){
-                    good.checked=true;
-                });
-            }else{
-                relatedGoods.map(function (good, i){
-                    good.checked=false;
-                });
-            }
-            var dataSource = this.state.dataSource.cloneWithRows(relatedGoods);
-            this.setState({
-                relatedGoods: relatedGoods,
-                selectAll:!this.state.selectAll,
-                dataSource:dataSource
-            });
-        }
-    }
-
-
-
-
     renderCommodityRow(rowData,sectionId,rowId)
     {
         var lineStyle=null;
@@ -241,8 +214,7 @@ class GroupQuery extends Component{
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
-                this.state.query.codeNum=null;
-                this.setState({query:this.state.query});
+                this.setState({query:{}});
             }else{
                 var data=json;
                 if(json.groupNum!==undefined&&json.groupNum!==null)
@@ -277,7 +249,7 @@ class GroupQuery extends Component{
                                 }},
                             ]
                         );
-                        this.setState({groupArr: data,query:query,code:code});
+                        this.setState({groupArr: data,query:{},code:null});
                     }else{
                         this.redirect2groupQueryNotInGroup(data,code);
                     }
@@ -424,71 +396,6 @@ class GroupQuery extends Component{
     }
 
 
-    //添加到新建组
-    commodityAddToNewGroup()
-    {
-        var groupName=this.state.query.groupName;
-        const {merchantId}=this.props;
-        if(groupName!==undefined&&groupName!==null&&groupName!='')
-        {
-            var code=this.state.code;
-            if(code&&code.codigo)
-            {
-                var codigo=code.codigo;
-                Proxy.post({
-                    url:Config.server+"supnuevo/supnuevoAddSupnuevoBuyerCommodityGroupMobile.do",
-                    headers: {
-                        'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: "codigo=" + codigo + "&groupName=" + groupName+'&supnuevoMerchantId='+merchantId
-                },(json)=> {
-                    var errorMsg=json.errorMsg;
-                    if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
-                        alert(errorMsg);
-                    }else{
-                        //TODO:return to previous page
-                        if(json.groupId!==undefined&&json.groupId!==null)
-                        {
-                            Alert.alert(
-                                '信息',
-                                '添加到新建组成功',
-                                [
-                                    {text: 'OK', onPress: () =>  {
-
-                                        var query={};
-                                        var groupArr={};
-                                        var code=null;
-                                        this.setState({query:query,groupArr:groupArr,code:code});
-                                }},
-                                ]
-                            );
-                        }
-                    }
-                }, (err) =>{
-                    alert(err);
-
-                });
-            }else{
-                Alert.alert(
-                    '错误',
-                    '请先输入条码',
-                    [
-                        {text: 'OK',onPress: () =>  this.refs.modal3.close()}
-                    ]
-                );
-            }
-        }else{
-            Alert.alert(
-                '错误',
-                '请先填入新建的组名再点击添加',
-                [
-                    {text: 'OK',onPress: () =>  this.refs.modal3.close()}
-                ]
-            );
-        }
-    }
-
     commodityGroupAdd()
     {
         var groupName=this.state.groupName;
@@ -529,11 +436,6 @@ class GroupQuery extends Component{
         }
     }
 
-
-    openGroupAppendModal()
-    {
-        this.setState({groupAppendModalVisible:!this.state.groupAppendModalVisible});
-    }
 
     constructor(props)
     {

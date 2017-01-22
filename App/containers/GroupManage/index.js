@@ -316,6 +316,7 @@ class GroupManage extends Component{
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                this.setState({query:{}});
                 alert(errorMsg);
             }else{
                 var groups=json;

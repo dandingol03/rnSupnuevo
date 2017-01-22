@@ -28,19 +28,8 @@ import {
 
 
 import { connect } from 'react-redux';
-var t=require('tcomb-form-native');
 var {height, width} = Dimensions.get('window');
 import {BoxShadow} from 'react-native-shadow'
-
-var Form = t.form.Form;
-
-var Person = t.struct({
-    '用户名': t.String,   // a required string
-    '密码': t.String,   // an optional string
-    '保存密码': t.Boolean   // a boolean
-});
-
-var options = {};
 
 
 import {loginAction,setTimerAction} from '../action/actionCreator';
@@ -76,7 +65,7 @@ var  Login =React.createClass({
                 );
                 dispatch(setTimerAction(this.timer));
                 dispatch(loginAction(username,password,function () {
-                    this.setState({showProgress: false});
+                    this.setState({showProgress: false,user:{}});
                 }.bind(this)));
 
             }else{
