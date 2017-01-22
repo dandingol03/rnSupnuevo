@@ -758,7 +758,7 @@ class Query extends Component{
                         {/*包含8个按钮的按钮组*/}
                         <View style={[styles.row,{borderBottomWidth:0,height:50}]}>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
+                                borderRightWidth:1,borderRightColor:'#fff',marginRight:1,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
 
                                 <TouchableOpacity
                                     onPress={
@@ -769,7 +769,7 @@ class Query extends Component{
                                 </TouchableOpacity>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                marginRight:.5,alignItems:'center'}}>
+                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}>
 
                                 <TouchableOpacity
                                     onPress={
@@ -781,7 +781,7 @@ class Query extends Component{
 
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                marginRight:.5,alignItems:'center'}}>
+                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}>
                                 <TouchableOpacity
                                     onPress={
                                     ()=>{
@@ -806,7 +806,7 @@ class Query extends Component{
 
                         <View style={[styles.row,{borderBottomWidth:0,height:50,marginTop:4}]}>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
+                                borderRightWidth:1,borderRightColor:'#fff',marginRight:1,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
 
                                 <TouchableOpacity
                                     onPress={
@@ -817,7 +817,7 @@ class Query extends Component{
                                 </TouchableOpacity>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                marginRight:.5,alignItems:'center'}}>
+                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}>
                                 <TouchableOpacity
                                     onPress={
                                     ()=>{
@@ -827,7 +827,7 @@ class Query extends Component{
                                 </TouchableOpacity>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                marginRight:.5,alignItems:'center'}}>
+                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}>
                                 <TouchableOpacity
                                     onPress={
                                     ()=>{
