@@ -49,7 +49,7 @@ class Query extends Component{
         this.refs[ref].measure((ox, oy, width, height, px, py) => {
             this.setState({
                 menuVisible: true,
-                buttonRect: {x: px+20, y: py+40, width: width, height: height}
+                buttonRect: {x: px+20, y: py+40, width: 200, height: height}
             });
         });
     }
@@ -482,7 +482,7 @@ class Query extends Component{
         var fixedPrice =null;
         var prientType = this.state.printType;
 
-        var displayArea = {x: 5, y: 20, width: width - 10, height: height - 25};
+        var displayArea = {x: 5, y: 20, width:width, height: height - 25};
 
         return (
             <View style={{flex:1}}>
@@ -1003,13 +1003,14 @@ var styles = StyleSheet.create({
         alignItems:'center'
     },
     popoverContent: {
-        width: 100,
-        height: 30,
+        width: 140,
+        height: 40,
         justifyContent: 'center',
         alignItems: 'center',
     },
     popoverText: {
         color: '#ccc',
+        fontSize:18
     }
 });
 
