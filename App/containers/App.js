@@ -126,14 +126,10 @@ class App extends React.Component {
                 return true;
             }
         }else{
-
-            if(route.params&&route.params.handleBack)
-            {
-                //执行组件自定义的回调
-                route.params.handleBack();
-            }else{
-                nav.pop();
-            }
+            //执行浏览历史的回退
+            if(route.params.reset)
+                route.params.reset();
+            nav.pop();
             return true;
         }
 

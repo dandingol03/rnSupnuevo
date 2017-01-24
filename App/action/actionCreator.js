@@ -9,7 +9,7 @@ import Config from '../../config';
 var Proxy = require('../proxy/Proxy');
 
 
-export let loginAction=function(username,password){
+export let loginAction=function(username,password,cb){
 
     return dispatch=>{
 
@@ -26,6 +26,8 @@ export let loginAction=function(username,password){
                 alert(errorMsg);
                 dispatch(getSession(null));
                 dispatch(clearTimerAction());
+                if(cb)
+                    cb();
             }else{
 
                 dispatch(getSession({username:username,merchantStates:json.merchantStates,supnuevoMerchantId:json.merchantId}));
@@ -36,6 +38,8 @@ export let loginAction=function(username,password){
         }, (err) =>{
                 dispatch(getSession(null));
             dispatch(clearTimerAction());
+            if(cb)
+                cb();
             });
     };
 
@@ -60,6 +64,9 @@ export let clearTimerAction=function () {
 }
 
 
+
+
+
 let getSession= (ob)=>{
     if(ob!==null)
         return {
@@ -76,6 +83,9 @@ let getSession= (ob)=>{
             auth:false
         }
 }
+
+
+
 
 export let changeRoute=(navigator)=>{
     if(navigator!==undefined&&navigator!==null)

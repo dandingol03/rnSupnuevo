@@ -31,11 +31,11 @@ import CheckBox from 'react-native-check-box';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../proxy/Proxy');
-import Config from '../../config';
+var Proxy = require('../../proxy/Proxy');
+import Config from '../../../config';
 import _ from 'lodash';
-import CodesModal from '../components/modal/CodesModal';
-import GroupInfoManage from './GroupInfoManage';
+import CodesModal from '../../components/modal/CodesModal';
+import GroupInfoManage from '../GroupInfoManage';
 import Modalbox from 'react-native-modalbox';
 
 
@@ -50,6 +50,12 @@ class GroupSplit extends Component{
         }
     }
 
+
+    splitCb()
+    {
+        if(this.props.splitCb)
+            this.props.splitCb();
+    }
 
 
     navigateToGroupInfoManage(groupInfo,code,containedInGroup){
@@ -471,8 +477,7 @@ class GroupSplit extends Component{
                                 '拆分新组成功',
                                 [
                                     {text: 'OK', onPress: () =>  {
-                                        if(this.state.splitCb!==undefined&&this.state.splitCb!==null)
-                                            this.state.splitCb();
+                                            this.splitCb();
                                     }},
                                 ]
                             );

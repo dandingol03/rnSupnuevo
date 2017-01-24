@@ -31,11 +31,11 @@ var Proxy = require('../proxy/Proxy');
 import Config from '../../config';
 import CodesModal from '../components/modal/CodesModal';
 import Group from './Group';
-import GroupQuery from './GroupQuery';
+import GroupQuery from './AddCommodityToGroup/GroupQuery';
 
 import GoodUpdate from './GoodUpdate';
 import GoodAdd from './GoodAdd';
-import GroupMaintain from './GroupMaintain';
+import GroupManage from './GroupManage/index';
 
 
 
@@ -49,7 +49,7 @@ class Query extends Component{
         this.refs[ref].measure((ox, oy, width, height, px, py) => {
             this.setState({
                 menuVisible: true,
-                buttonRect: {x: px+20, y: py+40, width: width, height: height}
+                buttonRect: {x: px+20, y: py+40, width: 200, height: height}
             });
         });
     }
@@ -259,29 +259,17 @@ class Query extends Component{
 
     navigateGroupMaintain(){
         const { navigator } = this.props;
-        var defaultProps=GroupMaintain.WrappedComponent.defaultProps;
-        var {handleBack}=defaultProps;
-        if(handleBack!==undefined&&handleBack!==null)
-        {
-            if(navigator) {
-                navigator.push({
-                    name: 'groupMaintain',
-                    component: GroupMaintain,
-                    params: {
-                        handleBack:handleBack
-                    }
-                })
-            }
-        }else{
-            if(navigator) {
-                navigator.push({
-                    name: 'groupMaintain',
-                    component: GroupMaintain,
-                    params: {
-                    }
-                })
-            }
+
+
+        if(navigator) {
+            navigator.push({
+                name: 'groupMaintain',
+                component: GroupManage,
+                params: {
+                }
+            })
         }
+
     }
 
 
@@ -494,7 +482,7 @@ class Query extends Component{
         var fixedPrice =null;
         var prientType = this.state.printType;
 
-        var displayArea = {x: 5, y: 20, width: width - 10, height: height - 25};
+        var displayArea = {x: 5, y: 20, width:width, height: height - 25};
 
         return (
             <View style={{flex:1}}>
@@ -770,7 +758,7 @@ class Query extends Component{
                         {/*包含8个按钮的按钮组*/}
                         <View style={[styles.row,{borderBottomWidth:0,height:50}]}>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
+                                borderRightWidth:1,borderRightColor:'#fff',marginRight:1,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
 
                                 <TouchableOpacity
                                     onPress={
@@ -781,7 +769,7 @@ class Query extends Component{
                                 </TouchableOpacity>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                marginRight:.5,alignItems:'center'}}>
+                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}>
 
                                 <TouchableOpacity
                                     onPress={
@@ -793,7 +781,7 @@ class Query extends Component{
 
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                marginRight:.5,alignItems:'center'}}>
+                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}>
                                 <TouchableOpacity
                                     onPress={
                                     ()=>{
@@ -818,7 +806,7 @@ class Query extends Component{
 
                         <View style={[styles.row,{borderBottomWidth:0,height:50,marginTop:4}]}>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
+                                borderRightWidth:1,borderRightColor:'#fff',marginRight:1,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
 
                                 <TouchableOpacity
                                     onPress={
@@ -829,7 +817,7 @@ class Query extends Component{
                                 </TouchableOpacity>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                marginRight:.5,alignItems:'center'}}>
+                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}>
                                 <TouchableOpacity
                                     onPress={
                                     ()=>{
@@ -839,7 +827,7 @@ class Query extends Component{
                                 </TouchableOpacity>
                             </View>
                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                marginRight:.5,alignItems:'center'}}>
+                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}>
                                 <TouchableOpacity
                                     onPress={
                                     ()=>{
@@ -1015,13 +1003,14 @@ var styles = StyleSheet.create({
         alignItems:'center'
     },
     popoverContent: {
-        width: 100,
-        height: 30,
+        width: 140,
+        height: 40,
         justifyContent: 'center',
         alignItems: 'center',
     },
     popoverText: {
         color: '#ccc',
+        fontSize:18
     }
 });
 
