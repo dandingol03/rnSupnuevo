@@ -661,7 +661,7 @@ class GroupQuery extends Component{
                                     this.commodityGroupRemove(this.state.code.commodityId);
                                 }}>
                                 <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
-                                    <Text style={{color:'#fff',fontSize:14}}>从组中移除</Text>
+                                    <Text style={{color:'#fff',fontSize:14}}>移除</Text>
                                 </View>
                             </TouchableOpacity>
 
