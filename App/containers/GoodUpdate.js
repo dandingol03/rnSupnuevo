@@ -312,8 +312,9 @@ class GoodUpdate extends Component{
                                     var selectedCodeInfo = this.state.selectedCodeInfo;
                                     this.setState({selectedCodeInfo:selectedCodeInfo});
                                 }}
-                                value={this.state.selectedCodeInfo.setSizeValue.toString()}
-                                placeholder={sizeValue.toString()}
+                                value={(this.state.selectedCodeInfo.setSizeValue!==undefined&&this.state.selectedCodeInfo.setSizeValue!==null)
+                                ?this.state.selectedCodeInfo.setSizeValue:''}
+                                placeholder={sizeValue}
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"
                             />
