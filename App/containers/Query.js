@@ -37,6 +37,8 @@ import GoodUpdate from './GoodUpdate';
 import GoodAdd from './GoodAdd';
 import GroupManage from './GroupManage/index';
 
+import PriceSurvey from './PriceSurvey/PriceSurvey';
+
 
 
 class Query extends Component{
@@ -62,8 +64,6 @@ class Query extends Component{
     {
         const merchantId=this.props.merchantId;
         var codigo=code.codigo;
-
-
 
         Proxy.post({
             url:Config.server+"supnuevo/supnuevoGetSupnuevoBuyerPriceFormByCodigoBs.do",
@@ -96,18 +96,16 @@ class Query extends Component{
             this.state.goods.codeNum = 0;
             var goods = this.state.goods;
             this.setState({selectedCodeInfo: goodInfo,codigo:codigo,priceShow:goodInfo.priceShow,printType:newPrintType,goods:goods,hasCodigo:true});
-
         }, (err) =>{
             alert(err);
             this.setState({codigo:codigo});
         });
-
     }
 
     queryGoodsCode(codeNum){
         var code = parseInt(codeNum);
-
         const { merchantId } = this.props;
+
         Proxy.post({
             url:Config.server+'supnuevo/supnuevoGetQueryDataListByInputStringBs.do',
             headers: {
@@ -122,7 +120,16 @@ class Query extends Component{
 
             }else{
                 var codes=json.array;
-                this.setState({codes: codes,codesModalVisible:true});
+                if(codeNum.toString().length==13){
+                    if(codes.length!==null){
+                        this.onCodigoSelect(codeNum);
+                    }
+
+                }
+                else{
+
+                    this.setState({codes: codes,codesModalVisible:true});
+                }
             }
         }, (err) =>{
             alert(err);
@@ -269,7 +276,19 @@ class Query extends Component{
                 }
             })
         }
+    }
 
+
+    navigatePriceSurvey(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'priceSurvey',
+                component: PriceSurvey,
+                params: {
+                }
+            })
+        }
     }
 
 
@@ -508,26 +527,58 @@ class Query extends Component{
                         {/*输入条码*/}
                         <View style={[styles.row,{borderBottomWidth:0}]}>
 
-                            <View style={{flex:1,borderWidth:1,borderColor:'#ddd'}}>
+                            <View style={{flex:1,borderWidth:1,borderColor:'#ddd',flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                                 <TextInput
-                                    style={{height: 50,paddingLeft:10,paddingRight:10,paddingTop:6,paddingBottom:6}}
+                                    style={{flex:8,height: 50,paddingLeft:10,paddingRight:10,paddingTop:6,paddingBottom:6}}
                                     onChangeText={(codeNum) => {
-                                    if(codeNum.toString().length==4)
+                                    {/*如果输入13位查询，不弹出模态框，直接显示商品信息*/}
+                                    if(codeNum.toString().length==13)
                                     {
                                         this.state.goods.codeNum=codeNum;
                                         this.setState({goods:this.state.goods});
-                                        this.queryGoodsCode(codeNum.toString().substring(0,4));
-                                    }else if(codeNum.toString().length>4){}
-                                    else{
+                                    }
+
+                                    else if(codeNum.toString().length>=4&&codeNum.toString().length<13){
                                         this.state.goods.codeNum=codeNum;
                                         this.setState({goods:this.state.goods});
                                     }
+                                    else{
+                                      this.state.goods.codeNum=codeNum;
+                                      this.setState({goods:this.state.goods});
+                                    }
                                 }}
                                     value={this.state.goods.codeNum}
-                                    placeholder='请输入条码最后四位'
+                                    placeholder='请输入条码'
                                     placeholderTextColor="#aaa"
                                     underlineColorAndroid="transparent"
                                 />
+
+                                <TouchableOpacity style={{flex:2,height: 40,marginRight:10,paddingTop:6,paddingBottom:6,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            marginBottom:0,borderRadius:4,backgroundColor:'rgba(17, 17, 17, 0.6)'}}
+                                                  onPress={()=>{
+                                                      var codeNum = this.state.goods.codeNum;
+                                                if(codeNum.toString().length==13){
+
+                                                }
+                                                else if(codeNum.toString().length>=4&&codeNum.toString().length<13){
+                                                      this.queryGoodsCode(this.state.goods.codeNum.toString());
+                                                }
+                                                else{
+                                                    Alert.alert(
+                                                    '提示信息',
+                                                    '请输入4-13位的商品条码进行查询',
+                                                        [
+                                                        {text: 'OK', onPress: () => console.log('OK Pressed!')},
+                                                        ]
+                                                    )
+                                                }
+
+                                                  }}>
+                                    <View>
+                                        <Text style={{color:'#fff',fontSize:12}}>查询</Text>
+                                    </View>
+                                </TouchableOpacity>
+
                             </View>
                         </View>
 
@@ -917,12 +968,20 @@ class Query extends Component{
                             <Text style={[styles.popoverText,{color:'#444'}]}>添加商品至组</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={[styles.popoverContent]}
+                        <TouchableOpacity style={[styles.popoverContent,,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
                                           onPress={()=>{
                                               this.closePopover();
                                               this.navigateGroupMaintain();
                                           }}>
                             <Text style={[styles.popoverText,{color:'#444'}]}>商品组维护</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={[styles.popoverContent]}
+                                          onPress={()=>{
+                                              this.closePopover();
+                                              this.navigatePriceSurvey();
+                                          }}>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>商品价格调查</Text>
                         </TouchableOpacity>
 
                     </Popover>

@@ -13,13 +13,15 @@ export let loginAction=function(username,password,cb){
 
     return dispatch=>{
 
+        var versionName = "3.0";
+
         Proxy.post({
             url:Config.server+'supnuevo/supnuevoGetUserLoginJSONObjectMobile.do',
             headers: {
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: "password=" + password + "&loginName=" + username
+            body: "password=" + password + "&loginName=" + username + "&appVersion" + versionName
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
