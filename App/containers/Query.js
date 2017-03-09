@@ -114,21 +114,18 @@ class Query extends Component{
             },
             body: "codigo=" + code + "&merchantId=" + merchantId
         },(json)=> {
-            var errorMsg=json.errorMsg;
+            var errorMsg=json.message;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
 
             }else{
-                var codes=json.array;
-                if(codeNum.toString().length==13){
-                    if(codes.length!==null){
-                        this.onCodigoSelect(codeNum);
-                    }
-
+                if(json.array!==undefined&&json.array!==null&&json.array.length>0){
+                    var codes=json.array;
+                    this.setState({codes: codes,codesModalVisible:true});
                 }
                 else{
-
-                    this.setState({codes: codes,codesModalVisible:true});
+                    var code = {codigo:json.object.codigo,commodityId:json.object.commodityId}
+                    this.onCodigoSelect(code);
                 }
             }
         }, (err) =>{
@@ -263,7 +260,6 @@ class Query extends Component{
         });
     }
 
-
     navigateGroupMaintain(){
         const { navigator } = this.props;
 
@@ -278,7 +274,6 @@ class Query extends Component{
         }
     }
 
-
     navigatePriceSurvey(){
         const { navigator } = this.props;
         if(navigator) {
@@ -290,7 +285,6 @@ class Query extends Component{
             })
         }
     }
-
 
     navigate_priceGroupChange(){
         const { navigator } = this.props;
@@ -312,7 +306,6 @@ class Query extends Component{
             alert('所选商品无法进行组改价');
         }
     }
-
 
     updatePrice(price){
 
@@ -437,7 +430,6 @@ class Query extends Component{
 
     }
 
-
     updatePrintType1(printType1){
         this.state.printType.type1 = printType1;
         var printType =  this.state.printType;
@@ -469,7 +461,6 @@ class Query extends Component{
         var selectCodeInfo = this.state.selectedCodeInfo.printType;
         this.setState({printType:printType,selectCodeInfo:selectCodeInfo});
     }
-
 
     constructor(props)
     {
@@ -531,20 +522,17 @@ class Query extends Component{
                                 <TextInput
                                     style={{flex:8,height: 50,paddingLeft:10,paddingRight:10,paddingTop:6,paddingBottom:6}}
                                     onChangeText={(codeNum) => {
-                                    {/*如果输入13位查询，不弹出模态框，直接显示商品信息*/}
                                     if(codeNum.toString().length==13)
                                     {
                                         this.state.goods.codeNum=codeNum;
                                         this.setState({goods:this.state.goods});
+                                        this.queryGoodsCode(codeNum.toString());
                                     }
 
-                                    else if(codeNum.toString().length>=4&&codeNum.toString().length<13){
-                                        this.state.goods.codeNum=codeNum;
-                                        this.setState({goods:this.state.goods});
-                                    }
                                     else{
                                       this.state.goods.codeNum=codeNum;
                                       this.setState({goods:this.state.goods});
+
                                     }
                                 }}
                                     value={this.state.goods.codeNum}
@@ -557,23 +545,21 @@ class Query extends Component{
                             marginBottom:0,borderRadius:4,backgroundColor:'rgba(17, 17, 17, 0.6)'}}
                                                   onPress={()=>{
                                                       var codeNum = this.state.goods.codeNum;
-                                                if(codeNum.toString().length==13){
-
-                                                }
-                                                else if(codeNum.toString().length>=4&&codeNum.toString().length<13){
-                                                      this.queryGoodsCode(this.state.goods.codeNum.toString());
-                                                }
-                                                else{
-                                                    Alert.alert(
-                                                    '提示信息',
-                                                    '请输入4-13位的商品条码进行查询',
-                                                        [
-                                                        {text: 'OK', onPress: () => console.log('OK Pressed!')},
-                                                        ]
-                                                    )
-                                                }
+                                                      if(codeNum.toString().length>=4&&codeNum.toString().length<=13){
+                                                        this.queryGoodsCode(this.state.goods.codeNum.toString());
+                                                        }
+                                                      else{
+                                                         Alert.alert(
+                                                            '提示信息',
+                                                            '请输入4-13位的商品条码进行查询',
+                                                                [
+                                                                {text: 'OK', onPress: () => console.log('OK Pressed!')},
+                                                                ]
+                                                            )
+                                                          }
 
                                                   }}>
+
                                     <View>
                                         <Text style={{color:'#fff',fontSize:12}}>查询</Text>
                                     </View>

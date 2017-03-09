@@ -221,8 +221,17 @@ class PriceSurvey extends Component{
                                 <TextInput
                                     style={{flex:8,height: 50,paddingLeft:10,paddingRight:10,paddingTop:6,paddingBottom:6}}
                                     onChangeText={(codeNum) => {
+                                    if(codeNum.toString().length==13)
+                                    {
                                         this.state.goods.codeNum=codeNum;
                                         this.setState({goods:this.state.goods});
+                                        this.queryGoodsCode(codeNum.toString());
+                                    }
+                                    else{
+                                      this.state.goods.codeNum=codeNum;
+                                      this.setState({goods:this.state.goods});
+
+                                    }
 
                                 }}
                                     value={this.state.goods.codeNum}
@@ -234,23 +243,20 @@ class PriceSurvey extends Component{
                                 <TouchableOpacity style={{flex:2,height: 40,marginRight:10,paddingTop:6,paddingBottom:6,flexDirection:'row',justifyContent:'center',alignItems:'center',
                             marginBottom:0,borderRadius:4,backgroundColor:'rgba(17, 17, 17, 0.6)'}}
                                                   onPress={()=>{
-                                                      var codeNum = this.state.goods.codeNum;
-                                                if(codeNum.toString().length==13){
-                                                     this.queryGoodsCode(this.state.goods.codeNum.toString());
-                                                }
-                                                else if(codeNum.toString().length>=1&&codeNum.toString().length<13){
-                                                      this.queryGoodsCode(this.state.goods.codeNum.toString());
-                                                }
-                                                else{
-                                                    Alert.alert(
-                                                    '提示信息',
-                                                    '请输入4-13位的商品条码进行查询',
-                                                        [
-                                                        {text: 'OK', onPress: () => console.log('OK Pressed!')},
-                                                        ]
-                                                    )
-                                                }
 
+                                                       var codeNum = this.state.goods.codeNum;
+                                                      if(codeNum.toString().length>=4&&codeNum.toString().length<=13){
+                                                        this.queryGoodsCode(this.state.goods.codeNum.toString());
+                                                        }
+                                                      else{
+                                                         Alert.alert(
+                                                            '提示信息',
+                                                            '请输入4-13位的商品条码进行查询',
+                                                                [
+                                                                {text: 'OK', onPress: () => console.log('OK Pressed!')},
+                                                                ]
+                                                            )
+                                                          }
                                                   }}>
                                     <View>
                                         <Text style={{color:'#fff',fontSize:12}}>查询</Text>

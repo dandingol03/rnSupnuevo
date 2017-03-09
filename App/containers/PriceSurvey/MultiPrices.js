@@ -184,6 +184,7 @@ class MultiPrices extends Component{
         var username = this.props.username;
 
         var surveyDetail = this.props.surveyDetail;
+
         var priceCount = this.props.priceCount;
 
         const CANCEL_INDEX = 0;
