@@ -124,7 +124,6 @@ class GoodAdd extends Component{
     }
 
     _handlePress1(index) {
-
         if(index>0){
             this.state.newGoodInfo.sizeUnit = this.state.sizeArr[index-1].label;
             var newGoodInfo = this.state.newGoodInfo;
@@ -192,13 +191,9 @@ class GoodAdd extends Component{
             sizeArr:props.sizeArr,
             scaleArr:[],
         };
-
     }
 
-
-
     render(){
-
         var newGoodInfo = this.state.newGoodInfo;
         var codigo =newGoodInfo.codigo;
         var name = newGoodInfo.nombre;

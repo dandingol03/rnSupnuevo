@@ -35,7 +35,6 @@ import {BoxShadow} from 'react-native-shadow'
 import {loginAction,setTimerAction} from '../action/actionCreator';
 var Proxy = require('../proxy/Proxy');
 
-
 var  Login =React.createClass({
     onLoginPressed:function () {
         var user=this.state.user;
@@ -89,6 +88,7 @@ var  Login =React.createClass({
             );
         }
     },
+
     onPress:function () {
         var form = this.refs.form.getValue();
         console.log('struct=\r\n'+form);
@@ -96,6 +96,7 @@ var  Login =React.createClass({
         const {dispatch} = this.props;
         dispatch(loginAction(form.用户名,form.密码));
     },
+
     getInitialState:function(){
         return ({
             user:{},
@@ -107,8 +108,6 @@ var  Login =React.createClass({
 
 
     render:function () {
-
-
 
         const shadowOpt = {
             width:width-20,
@@ -158,7 +157,8 @@ var  Login =React.createClass({
                                 <Text style={{fontSize:16,color:'#444'}}>用户名</Text>
                             </View>
 
-                            <View style={{flex:4,flexDirection:'row',alignItems:'center'}}>
+
+                            <View style={{flex:6,flexDirection:'row',alignItems:'center'}}>
                                 <TextInput
                                     style={{height: 46,flex:1,paddingLeft:20,paddingRight:10,paddingTop:2,paddingBottom:2,fontSize:16}}
                                     onChangeText={(username) => {
@@ -186,7 +186,8 @@ var  Login =React.createClass({
                                 <Text style={{fontSize:16,color:'#444'}}>密码</Text>
                             </View>
 
-                            <View style={{flex:4,flexDirection:'row',alignItems:'center'}}>
+
+                            <View style={{flex:6,flexDirection:'row',alignItems:'center'}}>
                                 <TextInput
                                     style={{height: 46,flex:1,paddingLeft:20,paddingRight:10,paddingTop:2,paddingBottom:2,fontSize:16}}
                                     onChangeText={(password) => {
