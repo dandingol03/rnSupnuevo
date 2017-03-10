@@ -31,6 +31,8 @@ var Proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import ActionSheet from 'react-native-actionsheet';
 
+import PriceSurvey from './PriceSurvey';
+
 
 class MultiPrices extends Component{
 
@@ -38,6 +40,18 @@ class MultiPrices extends Component{
         const { navigator } = this.props;
         if(navigator) {
             navigator.pop();
+        }
+    }
+
+    navigatePriceSurvey(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'priceSurvey',
+                component: PriceSurvey,
+                params: {
+                }
+            })
         }
     }
 
@@ -101,7 +115,7 @@ class MultiPrices extends Component{
             var message=json.message;
             if(message !== null && message !== undefined && message !== ""){
                 alert(message);
-                this.goBack();
+                this.navigatePriceSurvey();
             }
 
 
@@ -184,18 +198,26 @@ class MultiPrices extends Component{
         var username = this.props.username;
 
         var surveyDetail = this.props.surveyDetail;
-
-        var priceCount = this.props.priceCount;
+        var price = this.props.surveyDetail.price;
+        var price1 = this.props.surveyDetail.price1;
+        var price2 = this.props.surveyDetail.price2;
 
         const CANCEL_INDEX = 0;
         const DESTRUCTIVE_INDEX = 1;
-        var regionButtons = ['取消','11','22','33','44'];
+
         var internetArray = ['取消'];
         var storeArray =  ['取消'];
         var merchantArray = ['取消'];
-        var modifyerId = surveyDetail.modifyerId;
-        var modifyerId1 = surveyDetail.modifyerId1;
-        var modifyerId2 = surveyDetail.modifyerId2;
+
+        if(this.state.price1==undefined){
+            this.state.price1 = '';
+        }
+        if(this.state.price2==undefined){
+            this.state.price2 = '';
+        }
+        if(this.state.price3==undefined){
+            this.state.price3 = '';
+        }
 
 
         if( surveyDetail.internetArray!==undefined&&surveyDetail.internetArray!==null&&surveyDetail.internetArray.length>0)
@@ -307,7 +329,7 @@ class MultiPrices extends Component{
                     </View>
 
                     {
-                        priceCount==0||(priceCount==1&&surveyDetail.modifyerId==merchantId)?
+                        (price==undefined&&price1==undefined&&price2==undefined)||(price!==undefined&&surveyDetail.modifyerId==merchantId)?
                             <View style={[styles.row,{marginBottom:5,paddingLeft:5,paddingRight:5,borderWidth:0}]}>
 
                                 <View style={{flex:4,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
@@ -341,7 +363,7 @@ class MultiPrices extends Component{
                     }
 
                     {
-                        priceCount==0||(priceCount==1&&surveyDetail.modifyerId==merchantId)?
+                        (price==undefined&&price1==undefined&&price2==undefined)||(price!==undefined&&surveyDetail.modifyerId==merchantId)?
                             <View style={[styles.row,{marginBottom:5,paddingLeft:5,paddingRight:5}]}>
 
                                 <View style={{flex:4,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
@@ -389,7 +411,7 @@ class MultiPrices extends Component{
                     }
 
                     {
-                        priceCount==0||(priceCount==1&&surveyDetail.modifyerId==merchantId)?
+                        (price==undefined&&price1==undefined&&price2==undefined)||(price!==undefined&&surveyDetail.modifyerId==merchantId)?
                             <View style={[styles.row,{marginBottom:5,paddingLeft:5,paddingRight:5}]}>
 
                                 <View style={{flex:4,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
@@ -437,7 +459,7 @@ class MultiPrices extends Component{
                     }
 
                     {
-                        (priceCount==1&&surveyDetail.modifyerId!==merchantId)||(priceCount==2&&surveyDetail.modifyerId1==merchantId)?
+                        (price!==undefined&&surveyDetail.modifyerId!==merchantId&&price1==undefined)||(price1!==undefined&&surveyDetail.modifyerId1==merchantId)?
                             <View style={[styles.row,{marginBottom:5,paddingLeft:5,paddingRight:5,borderWidth:0}]}>
 
                                 <View style={{flex:4,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
@@ -470,7 +492,7 @@ class MultiPrices extends Component{
                     }
 
                     {
-                        (priceCount==1&&surveyDetail.modifyerId!==merchantId)||(priceCount==2&&surveyDetail.modifyerId1==merchantId)?
+                        (price!==undefined&&surveyDetail.modifyerId!==merchantId&&price1==undefined)||(price1!==undefined&&surveyDetail.modifyerId1==merchantId)?
                             <View style={[styles.row,{marginBottom:5,paddingLeft:5,paddingRight:5}]}>
 
                                 <View style={{flex:4,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
@@ -518,7 +540,7 @@ class MultiPrices extends Component{
                     }
 
                     {
-                        (priceCount==1&&surveyDetail.modifyerId!==merchantId)||(priceCount==2&&surveyDetail.modifyerId1==merchantId)?
+                        (price!==undefined&&surveyDetail.modifyerId!==merchantId&&price1==undefined)||(price1!==undefined&&surveyDetail.modifyerId1==merchantId)?
                             <View style={[styles.row,{marginBottom:5,paddingLeft:5,paddingRight:5}]}>
 
                                 <View style={{flex:4,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
@@ -565,8 +587,8 @@ class MultiPrices extends Component{
                     }
 
                     {
-                        (priceCount==2&&surveyDetail.modifyerId!==merchantId&&surveyDetail.modifyerId1!==merchantId)
-                        ||(priceCount==3&&surveyDetail.modifyerId2==merchantId)?
+                        (price2==undefined&&price!==undefined&&price1!==undefined&&surveyDetail.modifyerId!==merchantId&&surveyDetail.modifyerId1!==merchantId)
+                        ||(price2!==undefined&&surveyDetail.modifyerId2==merchantId)?
                             <View style={[styles.row,{marginBottom:5,paddingLeft:5,paddingRight:5,borderWidth:0}]}>
                                 <View style={{flex:4,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
                                     <Text >价格三:</Text>
@@ -598,8 +620,8 @@ class MultiPrices extends Component{
                     }
 
                     {
-                        (priceCount==2&&surveyDetail.modifyerId!==merchantId&&surveyDetail.modifyerId1!==merchantId)
-                        ||(priceCount==3&&surveyDetail.modifyerId2==merchantId)?
+                        (price2==undefined&&price!==undefined&&price1!==undefined&&surveyDetail.modifyerId!==merchantId&&surveyDetail.modifyerId1!==merchantId)
+                        ||(price2!==undefined&&surveyDetail.modifyerId2==merchantId)?
                             <View style={[styles.row,{marginBottom:5,paddingLeft:5,paddingRight:5}]}>
 
                                 <View style={{flex:4,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
@@ -646,8 +668,8 @@ class MultiPrices extends Component{
                     }
 
                     {
-                        (priceCount==2&&surveyDetail.modifyerId!==merchantId&&surveyDetail.modifyerId1!==merchantId)
-                        ||(priceCount==3&&surveyDetail.modifyerId2==merchantId)?
+                        (price2==undefined&&price!==undefined&&price1!==undefined&&surveyDetail.modifyerId!==merchantId&&surveyDetail.modifyerId1!==merchantId)
+                        ||(price2!==undefined&&surveyDetail.modifyerId2==merchantId)?
                             <View style={[styles.row,{marginBottom:5,paddingLeft:5,paddingRight:5}]}>
 
                                 <View style={{flex:4,flexDirection:'row',justifyContent:'flex-end',alignItems:'center'}}>
@@ -707,7 +729,7 @@ class MultiPrices extends Component{
 
                     <TouchableOpacity style={{flex:1,height:30,flexDirection:'row',marginRight:15,marginLeft:15,
                         justifyContent:'center',alignItems:'center',backgroundColor:'#387ef5',borderRadius:6}}
-                                      onPress={()=>{ this.goBack(); }}>
+                                      onPress={()=>{ this.navigatePriceSurvey() }}>
                         <View style={{flex:1,height:30,flexDirection:'row',marginRight:15,marginLeft:15,
                         justifyContent:'center',alignItems:'center',backgroundColor:'#387ef5',borderRadius:6}}>
                             <Text style={{color:'#fff'}}>返回</Text>
