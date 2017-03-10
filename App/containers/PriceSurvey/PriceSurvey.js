@@ -30,7 +30,7 @@ var {height, width} = Dimensions.get('window');
 var Proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import MultiPrices from './MultiPrices'
-
+import PriceCodes from './PriceCodes'
 
 class PriceSurvey extends Component{
 
@@ -56,6 +56,75 @@ class PriceSurvey extends Component{
         }
     }
 
+    navigatePriceCodes(codes,count){
+        const { navigator } = this.props;
+
+        if(navigator) {
+            navigator.push({
+                name: 'priceCodes',
+                component: PriceCodes,
+                params: {
+                   codes:codes,
+                    count:count,
+                }
+            })
+        }
+    }
+
+
+    fetchData(){
+        const merchantId=this.props.merchantId;
+        Proxy.post({
+            url:Config.server+"supnuevo/supnuevoGetGroupInfoListOfMerchantMobile.do",
+            headers: {
+                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body:"merchantId=" + merchantId
+        },(json)=> {
+            var o = json;
+            var errorMsg=json.message;
+            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                alert(errorMsg);
+            }else{
+                var groupCodes = json.array;
+                this.state.groupCodes = groupCodes;
+                this.setState({groupCodes:groupCodes});
+            }
+
+        }, (err) =>{
+            alert(err);
+        });
+    }
+
+    fetchDataDetail(groupId,count){
+        const merchantId=this.props.merchantId;
+
+        Proxy.post({
+            url:Config.server+"supnuevo/supnuevoGetGroupCommodityListOfGroupMobile.do",
+            headers: {
+                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: "groupId=" + groupId + "&merchantId=" + merchantId
+        },(json)=> {
+            var o = json;
+            var errorMsg=json.message;
+            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                alert(errorMsg);
+            }else{
+               var codes = json.array;
+               this.state.codes = codes;
+               this.setState({codes:codes});
+               this.navigatePriceCodes(this.state.codes,count);
+            }
+
+        }, (err) =>{
+            alert(err);
+        });
+    }
+
+
     onCodigoSelect(code,count)
     {
         const merchantId=this.props.merchantId;
@@ -74,17 +143,14 @@ class PriceSurvey extends Component{
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
             }else{
-
                 this.navigateMultiPrices(o,count);
-
             }
 
-;
         }, (err) =>{
             alert(err);
-            this.setState({codigo:codigo});
         });
     }
+
 
     queryGoodsCode(codeNum){
         var code = parseInt(codeNum);
@@ -107,6 +173,7 @@ class PriceSurvey extends Component{
                 {
                     var codes=json.array;
                     this.setState({codes:codes});
+                    this.navigatePriceCodes(codes,null)
                 }
                 else{
                     this.navigateMultiPrices(o);
@@ -122,16 +189,36 @@ class PriceSurvey extends Component{
         var colorText = null;
         switch(rowData.count){
             case 0:
-                colorText=<Text style={{fontSize:20,color:'#fff'}}>{rowData.codigo}</Text>;
+                colorText=
+                    <View style={{flex:1,flexDirection:'row',padding:10,borderBottomWidth:1,borderColor:'#ddd',
+                    justifyContent:'flex-start',backgroundColor:'#fff'}}>
+                        <Text style={{flex:1,fontSize:15,color:'#343434'}}>{rowData.groupNum}</Text>
+                        <Text style={{flex:2,fontSize:15,color:'#343434'}}>{rowData.groupName}</Text>
+                    </View>
                 break;
             case 1:
-                colorText=<Text style={{fontSize:20,color:'#32b968'}}>{rowData.codigo}</Text>;
+                colorText=
+                    <View style={{flex:1,flexDirection:'row',padding:10,borderBottomWidth:1,borderColor:'#ddd',
+                    justifyContent:'flex-start',backgroundColor:'#32b968'}}>
+                        <Text style={{flex:1,fontSize:15,color:'#343434'}}>{rowData.groupNum}</Text>
+                        <Text style={{flex:2,fontSize:15,color:'#343434'}}>{rowData.groupName}</Text>
+                    </View>
                 break;
             case 2:
-                colorText=<Text style={{fontSize:20,color:'#fd871a'}}>{rowData.codigo}</Text>;
+                colorText=
+                    <View style={{flex:1,flexDirection:'row',padding:10,borderBottomWidth:1,borderColor:'#ddd',
+                    justifyContent:'flex-start',backgroundColor:'#fd871a'}}>
+                        <Text style={{flex:1,fontSize:15,color:'#343434'}}>{rowData.groupNum}</Text>
+                        <Text style={{flex:2,fontSize:15,color:'#343434'}}>{rowData.groupName}</Text>
+                    </View>
                 break;
             case 3:
-                colorText=<Text style={{fontSize:20,color:'#ec0909'}}>{rowData.codigo}</Text>;
+                colorText=
+                    <View style={{flex:1,flexDirection:'row',padding:10,borderBottomWidth:1,borderColor:'#ddd',
+                    justifyContent:'flex-start',backgroundColor:'#ec0909'}}>
+                        <Text style={{flex:1,fontSize:15,color:'#343434'}}>{rowData.groupNum}</Text>
+                        <Text style={{flex:2,fontSize:15,color:'#343434'}}>{rowData.groupName}</Text>
+                    </View>
                 break;
             default:
                 break;
@@ -141,13 +228,11 @@ class PriceSurvey extends Component{
             <View>
                 <TouchableOpacity onPress={
                     function() {
-                        this.onCodigoSelect(rowData.commodityId,rowData.count);
+                        this.fetchDataDetail(rowData.groupId,rowData.count);
                     }.bind(this)}>
 
-                    <View style={{flex:1,flexDirection:'row',padding:13,borderBottomWidth:1,borderColor:'#ddd',
-                    justifyContent:'flex-start',backgroundColor:'#ddd'}}>
-                        {colorText}
-                    </View>
+                    {colorText}
+
                 </TouchableOpacity>
 
             </View>;
@@ -160,7 +245,9 @@ class PriceSurvey extends Component{
         super(props);
         this.state = {
             codes:null,
+            groupCodes:null,
             goods:{},
+            count:null,
         };
     }
 
@@ -169,10 +256,10 @@ class PriceSurvey extends Component{
 
         var username = this.props.username;
         var listView=null;
-        const codes=this.state.codes;
-        if(codes!==undefined&&codes!==null&&Object.prototype.toString.call(codes)=='[object Array]')
+        const groupCodes=this.state.groupCodes;
+        if(groupCodes!==undefined&&groupCodes!==null&&Object.prototype.toString.call(groupCodes)=='[object Array]')
         {
-            var data=codes;
+            var data=groupCodes;
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
             listView=
@@ -186,6 +273,7 @@ class PriceSurvey extends Component{
                 </ScrollView>;
         }else{
 
+            this.fetchData();
         }
 
 
@@ -221,8 +309,18 @@ class PriceSurvey extends Component{
                                 <TextInput
                                     style={{flex:8,height: 50,paddingLeft:10,paddingRight:10,paddingTop:6,paddingBottom:6}}
                                     onChangeText={(codeNum) => {
+                                    if(codeNum.toString().length==13)
+                                    {
                                         this.state.goods.codeNum=codeNum;
                                         this.setState({goods:this.state.goods});
+                                        this.queryGoodsCode(codeNum.toString());
+                                    }
+                                    else{
+                                          if(codeNum!==undefined&&codeNum!==null){
+                                               this.state.goods.codeNum=codeNum;
+                                               this.setState({goods:this.state.goods});
+                                          }
+                                    }
 
                                 }}
                                     value={this.state.goods.codeNum}
@@ -234,23 +332,30 @@ class PriceSurvey extends Component{
                                 <TouchableOpacity style={{flex:2,height: 40,marginRight:10,paddingTop:6,paddingBottom:6,flexDirection:'row',justifyContent:'center',alignItems:'center',
                             marginBottom:0,borderRadius:4,backgroundColor:'rgba(17, 17, 17, 0.6)'}}
                                                   onPress={()=>{
+                                                  if(this.state.goods.codeNum!==undefined&&this.state.goods.codeNum!==null){
                                                       var codeNum = this.state.goods.codeNum;
-                                                if(codeNum.toString().length==13){
-                                                     this.queryGoodsCode(this.state.goods.codeNum.toString());
-                                                }
-                                                else if(codeNum.toString().length>=1&&codeNum.toString().length<13){
-                                                      this.queryGoodsCode(this.state.goods.codeNum.toString());
-                                                }
-                                                else{
-                                                    Alert.alert(
-                                                    '提示信息',
-                                                    '请输入4-13位的商品条码进行查询',
-                                                        [
-                                                        {text: 'OK', onPress: () => console.log('OK Pressed!')},
-                                                        ]
-                                                    )
-                                                }
-
+                                                      if(codeNum.toString().length>=1&&codeNum.toString().length<=13){
+                                                        this.queryGoodsCode(this.state.goods.codeNum.toString());
+                                                        }
+                                                      else{
+                                                         Alert.alert(
+                                                            '提示信息',
+                                                            '请输入4-13位的商品条码进行查询',
+                                                                [
+                                                                {text: 'OK', onPress: () => console.log('OK Pressed!')},
+                                                                ]
+                                                            )
+                                                          }
+                                                  }
+                                                  else{
+                                                     Alert.alert(
+                                                        '提示信息',
+                                                        '请输入4-13位的商品条码进行查询',
+                                                            [
+                                                            {text: 'OK', onPress: () => console.log('OK Pressed!')},
+                                                            ]
+                                                        )
+                                                      }
                                                   }}>
                                     <View>
                                         <Text style={{color:'#fff',fontSize:12}}>查询</Text>
@@ -261,7 +366,7 @@ class PriceSurvey extends Component{
                         </View>
 
                     {/* 彩色横幅 */}
-                    <View style={[styles.row,{borderBottomWidth:0,height:50,marginTop:12,marginBottom:5}]}>
+                    <View style={[styles.row,{borderBottomWidth:0,height:50,marginTop:12,marginBottom:0}]}>
                             <View style={{flex:1,flexDirection:'row',backgroundColor:'#fff',justifyContent:'center', marginRight:.5,
                             alignItems:'center',borderWidth:1,borderTopLeftRadius:4,borderBottomLeftRadius:4,borderColor:'#ddd'}}>
 
@@ -285,10 +390,14 @@ class PriceSurvey extends Component{
                 {/* 商品条码列表 */}
                 <View>
                     <ScrollView>
+                        <View style={{height:40,flexDirection:'row',padding:10,borderBottomWidth:1,borderColor:'#ddd',borderWidth:1,
+                    justifyContent:'flex-start',backgroundColor:'#fff'}}>
+                            <Text style={{flex:1,fontSize:15,color:'#343434'}}>组编号</Text>
+                            <Text style={{flex:2,fontSize:15,color:'#343434'}}>组名称</Text>
+                        </View>
                         <View style={{flex:1}}>
                             {listView}
                         </View>
-
                     </ScrollView>
                 </View>
 
