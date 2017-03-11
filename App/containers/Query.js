@@ -103,7 +103,7 @@ class Query extends Component{
     }
 
     queryGoodsCode(codeNum){
-        var code = parseInt(codeNum);
+        //var code = parseInt(codeNum);
         const { merchantId } = this.props;
 
         Proxy.post({
@@ -112,7 +112,7 @@ class Query extends Component{
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: "codigo=" + code + "&merchantId=" + merchantId
+            body: "codigo=" + codeNum + "&merchantId=" + merchantId
         },(json)=> {
             var errorMsg=json.message;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){

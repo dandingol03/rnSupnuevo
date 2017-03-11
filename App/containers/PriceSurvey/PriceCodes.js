@@ -50,6 +50,7 @@ class PriceCodes extends Component{
                 params: {
                     surveyDetail:o,
                     priceCount:count,
+                    goBack:this.goBack.bind(this),
                 }
             })
         }
