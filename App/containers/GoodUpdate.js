@@ -191,6 +191,10 @@ class GoodUpdate extends Component{
     render(){
 
         var selectedCodeInfo = this.state.selectedCodeInfo;
+        if(selectedCodeInfo.setSizeValue!==undefined&&selectedCodeInfo.setSizeValue!==null){
+            selectedCodeInfo.setSizeValue=selectedCodeInfo.setSizeValue.toString();
+        }
+
         var codigo =selectedCodeInfo.codigo;
         var name = selectedCodeInfo.nombre;
         var sizeValue = selectedCodeInfo.setSizeValue;
@@ -309,11 +313,11 @@ class GoodUpdate extends Component{
                                 style={{height: 40}}
                                 onChangeText={(sizeValue) => {
                                     this.state.selectedCodeInfo.setSizeValue=sizeValue;
-                                    var selectedCodeInfo = this.state.selectedCodeInfo;
-                                    this.setState({selectedCodeInfo:selectedCodeInfo});
+                                    var selectedCodeInfoNew = this.state.selectedCodeInfo;
+                                    this.setState({selectedCodeInfo:selectedCodeInfoNew});
                                 }}
-                                value={(this.state.selectedCodeInfo.setSizeValue!==undefined&&this.state.selectedCodeInfo.setSizeValue!==null)
-                                ?this.state.selectedCodeInfo.setSizeValue:''}
+                                value={(selectedCodeInfo.setSizeValue!==undefined&&selectedCodeInfo.setSizeValue!==null)
+                                ?selectedCodeInfo.setSizeValue+'':''}
                                 placeholder={sizeValue}
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"

@@ -46,17 +46,12 @@ class MultiPrices extends Component{
     navigatePriceSurvey(){
         const { navigator } = this.props;
         if(navigator) {
-            navigator.push({
-                name: 'priceSurvey',
-                component: PriceSurvey,
-                params: {
-                }
-            })
+            navigator.pop();
         }
+        this.props.goBack();
     }
 
     submit(){
-
         const merchantId=this.props.merchantId;
         var commodityId=this.props.surveyDetail.commodityId;
 
@@ -69,7 +64,6 @@ class MultiPrices extends Component{
                 ]
             )
         }
-
         if(this.state.internetId==undefined||this.state.internetId==null){
             switch(this.state.modifyType){
                 case 1:
@@ -85,7 +79,6 @@ class MultiPrices extends Component{
                     break;
             }
         }
-
         if(this.state.storeId==undefined||this.state.storeId==null){
             switch(this.state.modifyType){
                 case 1:
@@ -101,7 +94,6 @@ class MultiPrices extends Component{
                     break;
             }
         }
-
         Proxy.post({
             url:Config.server+"supnuevo/supnuevoSetAreaGroupPriceByPriceIdMobile.do",
             headers: {
@@ -117,7 +109,6 @@ class MultiPrices extends Component{
                 alert(message);
                 this.navigatePriceSurvey();
             }
-
 
         }, (err) =>{
             alert(err);
