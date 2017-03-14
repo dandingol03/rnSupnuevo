@@ -551,8 +551,8 @@ class GroupMaintain extends Component{
         if(groups&&groups.array!==undefined&&groups.array!==null&&Object.prototype.toString.call(groups.array)=='[object Array]')
         {
 
-            queryBox=   (<View style={[styles.card,{marginTop:10,padding:8}]}>
-                <View style={{flex:1,padding:8,paddingLeft:10,paddingRight:10,backgroundColor:'#eee',borderRadius:8}}>
+            queryBox=   (<View style={[styles.card,{marginTop:10,padding:5}]}>
+                <View style={{flex:1,padding:5,paddingLeft:5,paddingRight:5,backgroundColor:'#eee',borderRadius:8}}>
 
                     {/* 商品特征码 */}
                     <View style={[styles.row,{borderBottomWidth:0}]}>
@@ -588,8 +588,8 @@ class GroupMaintain extends Component{
 
                         <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
                             <TextInput
-                                style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
+                                style={{height:40,flex:5,backgroundColor:'#fff',paddingLeft:5,borderRadius:4,
+                                        fontSize:15,flexDirection:'row',alignItems:'center'}}
                                 onChangeText={(groupName) => {
                                             if(groupName.toString().length==4)
                                             {
@@ -612,11 +612,11 @@ class GroupMaintain extends Component{
                             />
                         </View>
 
-                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
+                        <TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:4}}
                                           onPress={()=>{
                                           this.mergeToNewGroup();
                                                   }}>
-                            <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
+                            <View style={{backgroundColor:'#387ef5',padding:8,paddingLeft:8,paddingRight:8,borderRadius:8}}>
                                 <Text style={{color:'#fff',fontSize:14}}>合并到新组</Text>
                             </View>
                         </TouchableOpacity>
@@ -674,21 +674,24 @@ class GroupMaintain extends Component{
                 <ScrollView>
 
                     {/* header bar */}
-                    <View style={[{backgroundColor:'#387ef5',padding: 8,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
-                        <TouchableOpacity style={{flex:1}}
+
+                    <View style={[{backgroundColor:'#387ef5',padding:8,paddingTop:20,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
+
+                        <TouchableOpacity style={{flex:1,paddingTop:10,paddingBottom:5,marginRight:2,flexDirection:'row',justifyContent:'center',alignItems: 'center'}}
                                           onPress={()=>{
-                                                this.goBack();
+                                              this.goBack();
                                           }}>
-                            <Icon name="chevron-left" color="#fff" size={25}></Icon>
+                            <Icon name="angle-left" color="#fff" size={35}></Icon>
                         </TouchableOpacity>
-                        <Text style={{fontSize:22,flex:3,textAlign:'center',color:'#fff'}}>
+
+                        <Text style={{fontSize:17,flex:3,paddingTop:10,textAlign:'center',color:'#fff'}}>
                             商品组维护
                         </Text>
-                        <TouchableOpacity ref="menu" style={{flex:1,marginRight:2,flexDirection:'row',justifyContent:'center'}}
-                        >
-                        </TouchableOpacity>
-                    </View>
 
+                        <View style={{flex:1}}>
+
+                        </View>
+                    </View>
 
                     {queryBox}
 

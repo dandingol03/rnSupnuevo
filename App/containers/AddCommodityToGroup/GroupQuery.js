@@ -1,9 +1,6 @@
 /**
  * Created by danding on 17/1/15.
  */
-/**
- * Created by danding on 16/11/21.
- */
 import React,{Component} from 'react';
 
 import  {
@@ -191,7 +188,6 @@ class GroupQuery extends Component{
     onCodigoSelect(code,groupNum)
     {
 
-
         const {merchantId}=this.props;
         var query=this.state.query;
         var codigo=code.codigo;
@@ -215,12 +211,12 @@ class GroupQuery extends Component{
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
                 this.setState({query:{}});
-            }else{
+            }
+            else{
                 var data=json;
                 if(json.groupNum!==undefined&&json.groupNum!==null)
                 {
                     //单个组
-
                     json.array.map(function (commodity,i) {
 
                         if(commodity.setSizeValue!=undefined&&commodity.setSizeValue!=null
@@ -240,16 +236,18 @@ class GroupQuery extends Component{
                     //多个组的信息
                     if(data.array.length==0)
                     {
-                        Alert.alert(
-                            '错误',
-                            '该商品没有匹配的组信息',
-                            [
-                                {text: 'OK', onPress: () => {
+                        // Alert.alert(
+                        //     '错误',
+                        //     '该商品没有匹配的组信息',
+                        //     [
+                        //         {text: 'OK', onPress: () => {
+                        //
+                        //         }},
+                        //     ]
+                        // );
+                        // this.setState({groupArr: data,query:{},code:null});
+                        this.redirect2groupQueryNotInGroup(data,code);
 
-                                }},
-                            ]
-                        );
-                        this.setState({groupArr: data,query:{},code:null});
                     }else{
                         this.redirect2groupQueryNotInGroup(data,code);
                     }
@@ -266,7 +264,7 @@ class GroupQuery extends Component{
 
     queryGoodsCode(codeNum)
     {
-        var code = parseInt(codeNum);
+        //var code = parseInt(codeNum);
         const { merchantId } = this.props;
         Proxy.post({
             url:Config.server+'supnuevo/supnuevoGetSupnuevoCommonCommodityListByLastFourCodigoMobile.do',
@@ -274,14 +272,20 @@ class GroupQuery extends Component{
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: "codigo=" + code + "&merchantId=" + merchantId
+            body: "codigo=" + codeNum + "&merchantId=" + merchantId
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
             }else{
                 var codes=json.array;
-                this.setState({codes: codes,codesModalVisible:true});
+                if(codes.length==1){
+                    var code = codes[0];
+                    this.onCodigoSelect(code);
+                }
+                else{
+                    this.setState({codes: codes,codesModalVisible:true});
+                }
             }
         }, (err) =>{
             alert(err);
@@ -470,44 +474,67 @@ class GroupQuery extends Component{
 
                 {/* 条码 */}
                 <View style={[styles.row,{borderBottomWidth:0}]}>
-                    {/*<View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>*/}
-                    {/*<Text style={{color:'#222'}}>条码</Text>*/}
-                    {/*</View>*/}
-                    <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
+                    <View style={{flex:1,borderWidth:1,backgroundColor:'#fff',borderColor:'#ddd',flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                         <TextInput
-                            style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
+                            style={{flex:8,height: 50,paddingLeft:10,paddingRight:10,paddingTop:6,paddingBottom:6,backgroundColor:'#fff',}}
                             onChangeText={(codeNum) => {
-                                            if(codeNum.toString().length==4)
-                                            {
-                                                this.state.query.codeNum=codeNum;
+                                if(codeNum.toString().length==13)
+                                    {
+                                        this.state.query.codeNum=codeNum;
+                                        this.setState({query:this.state.query});
+
+                                        this.queryGoodsCode(codeNum.toString());
+                                    }
+                                    else{
+                                          if(codeNum!==undefined&&codeNum!==null){
+                                               this.state.query.codeNum=codeNum;
                                                 this.setState({query:this.state.query});
-                                                this.queryGoodsCode(codeNum.toString().substring(0,4));
-                                            }else if(codeNum.toString().length>4){
-                                                this.state.query.codeNum=codeNum;
-                                                this.setState({query:this.state.query});
-                                            }
-                                            else{
-                                                this.state.query.codeNum=codeNum;
-                                                this.setState({query:this.state.query});
-                                            }
-                                        }}
+                                          }
+                                    }
+
+                                }}
+
                             value={this.state.query.codeNum}
-                            placeholder='请输入条码最后四位'
+                            placeholder='请输入商品条码尾数'
                             placeholderTextColor="#aaa"
                             underlineColorAndroid="transparent"
                         />
+
+                        <TouchableOpacity style={{flex:2,height:40,marginRight:10,paddingTop:6,paddingBottom:6,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            marginBottom:0,borderRadius:4,backgroundColor:'rgba(17, 17, 17, 0.6)'}}
+                                          onPress={()=>{
+                                                  if(this.state.query.codeNum!==undefined&&this.state.query.codeNum!==null){
+                                                      var codeNum = this.state.query.codeNum;
+                                                      if(codeNum.toString().length>=4&&codeNum.toString().length<=13){
+                                                        this.queryGoodsCode(this.state.query.codeNum.toString());
+                                                        }
+                                                      else{
+                                                         Alert.alert(
+                                                            '提示信息',
+                                                            '请输入4-13位的商品条码进行查询',
+                                                                [
+                                                                {text: 'OK', onPress: () => console.log('OK Pressed!')},
+                                                                ]
+                                                            )
+                                                          }
+                                                  }
+                                                  else{
+                                                     Alert.alert(
+                                                        '提示信息',
+                                                        '请输入4-13位的商品条码进行查询',
+                                                            [
+                                                            {text: 'OK', onPress: () => console.log('OK Pressed!')},
+                                                            ]
+                                                        )
+                                                      }
+                                                  }}>
+                            <View>
+                                <Text style={{color:'#fff',fontSize:12}}>查询</Text>
+                            </View>
+                        </TouchableOpacity>
+
+
                     </View>
-
-                    {/*<TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}*/}
-                    {/*onPress={()=>{*/}
-                    {/*this.refs.modal3.open();*/}
-                    {/*}}>*/}
-                    {/*<View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>*/}
-                    {/*<Text style={{color:'#fff',fontSize:14}}>新增组</Text>*/}
-                    {/*</View>*/}
-                    {/*</TouchableOpacity>*/}
-
                 </View>
 
                 {/*组添加*/}
@@ -719,21 +746,24 @@ class GroupQuery extends Component{
                 <ScrollView>
 
                     {/* header bar */}
-                    <View style={[{backgroundColor:'#387ef5',padding: 8,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
-                        <TouchableOpacity style={{flex:1}}
-                                          onPress={()=>{
-                                                this.goBack();
-                                          }}>
-                            <Icon name="chevron-left" color="#fff" size={25}></Icon>
-                        </TouchableOpacity>
-                        <Text style={{fontSize:22,flex:3,textAlign:'center',color:'#fff'}}>
-                            组商品信息
-                        </Text>
-                        <TouchableOpacity ref="menu" style={{flex:1,marginRight:2,flexDirection:'row',justifyContent:'center'}}
-                                          >
-                        </TouchableOpacity>
-                    </View>
 
+                    <View style={[{backgroundColor:'#387ef5',padding:8,paddingTop:20,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
+
+                        <TouchableOpacity style={{flex:1,paddingTop:10,paddingBottom:5,marginRight:2,flexDirection:'row',justifyContent:'center',alignItems: 'center'}}
+                                          onPress={()=>{
+                                              this.goBack();
+                                          }}>
+                            <Icon name="angle-left" color="#fff" size={35}></Icon>
+                        </TouchableOpacity>
+
+                        <Text style={{fontSize:17,flex:3,paddingTop:10,textAlign:'center',color:'#fff'}}>
+                            组商品管理
+                        </Text>
+
+                        <View style={{flex:1}}>
+
+                        </View>
+                    </View>
 
                     {queryBox}
 

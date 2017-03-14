@@ -1,9 +1,6 @@
 /**
  * Created by danding on 17/1/15.
  */
-/**
- * Created by danding on 16/11/21.
- */
 import React,{Component} from 'react';
 
 import  {
@@ -143,7 +140,7 @@ class GroupQueryNotInGroup extends Component{
 
 
                         <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold',fontSize:24}}>{rowData.groupName}</Text>
+                            <Text style={{color:'#222',fontWeight:'bold',fontSize:17}}>{rowData.groupName}</Text>
                         </View>
 
                         <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
@@ -534,8 +531,8 @@ class GroupQueryNotInGroup extends Component{
         var groupArr=this.state.groupArr;
         var code=this.state.code;
         var listView=null;
-        var queryBox=   (<View style={[styles.card,{marginTop:10,padding:8}]}>
-            <View style={{flex:1,padding:8,paddingLeft:10,paddingRight:10,backgroundColor:'#eee',borderRadius:8}}>
+        var queryBox=   (<View style={[styles.card,{marginTop:10,padding:5}]}>
+            <View style={{flex:1,padding:5,backgroundColor:'#eee',borderRadius:8}}>
 
                 {/* 条码 */}
                 <View style={[styles.row,{borderBottomWidth:0,marginBottom:10}]}>
@@ -562,8 +559,8 @@ class GroupQueryNotInGroup extends Component{
 
                     <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
                         <TextInput
-                            style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
+                            style={{height:40,flex:5,backgroundColor:'#fff',paddingLeft:5,borderRadius:4,
+                                    fontSize:15,flexDirection:'row',alignItems:'center'}}
                             onChangeText={(groupName) => {
                                             if(groupName.toString().length==4)
                                             {
@@ -586,12 +583,12 @@ class GroupQueryNotInGroup extends Component{
                         />
                     </View>
 
-                    <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
+                    <TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:2}}
                                       onPress={()=>{
                                           this.commodityAddToNewGroup();
                                                   }}>
-                        <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
-                            <Text style={{color:'#fff',fontSize:14}}>添加到新建组</Text>
+                        <View style={{backgroundColor:'#387ef5',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
+                            <Text style={{color:'#fff',fontSize:12}}>添加到新建组</Text>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -646,21 +643,23 @@ class GroupQueryNotInGroup extends Component{
                 <ScrollView>
 
                     {/* header bar */}
-                    <View style={[{backgroundColor:'#387ef5',padding: 8,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
-                        <TouchableOpacity style={{flex:1}}
+                    <View style={[{backgroundColor:'#387ef5',padding:8,paddingTop:20,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
+
+                        <TouchableOpacity style={{flex:1,paddingTop:20,paddingBottom:5,marginRight:2,flexDirection:'row',justifyContent:'center',alignItems: 'center'}}
                                           onPress={()=>{
-                                                this.goBack();
+                                              this.goBack();
                                           }}>
-                            <Icon name="chevron-left" color="#fff" size={25}></Icon>
+                            <Icon name="angle-left" color="#fff" size={35}></Icon>
                         </TouchableOpacity>
-                        <Text style={{fontSize:22,flex:3,textAlign:'center',color:'#fff'}}>
+
+                        <Text style={{fontSize:17,flex:3,paddingTop:10,textAlign:'center',color:'#fff'}}>
                             组商品信息
                         </Text>
-                        <TouchableOpacity ref="menu" style={{flex:1,marginRight:2,flexDirection:'row',justifyContent:'center'}}
-                        >
-                        </TouchableOpacity>
-                    </View>
 
+                        <View style={{flex:1}}>
+
+                        </View>
+                    </View>
 
                     {queryBox}
 

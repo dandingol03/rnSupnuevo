@@ -540,13 +540,9 @@ class GroupManage extends Component{
 
                 {/* 商品特征码 */}
                 <View style={[styles.row,{borderBottomWidth:0}]}>
-                    {/*<View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>*/}
-                    {/*<Text style={{color:'#222'}}>条码</Text>*/}
-                    {/*</View>*/}
-                    <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
+                    <View style={{flex:1,borderWidth:1,backgroundColor:'#fff',borderColor:'#ddd',flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
                         <TextInput
-                            style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
+                            style={{flex:8,height: 50,paddingLeft:10,paddingRight:10,paddingTop:6,paddingBottom:6,backgroundColor:'#fff',}}
                             onChangeText={(groupNum) => {
                                             if(groupNum.toString().length==7)
                                             {
@@ -564,16 +560,43 @@ class GroupManage extends Component{
                             placeholderTextColor="#aaa"
                             underlineColorAndroid="transparent"
                         />
+
+                        <TouchableOpacity style={{flex:2,height:40,marginRight:10,paddingTop:6,paddingBottom:6,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            marginBottom:0,borderRadius:4,backgroundColor:'rgba(17, 17, 17, 0.6)'}}
+                                          onPress={()=>{
+                                                  if(this.state.query.groupNum!==undefined&&this.state.query.groupNum!==null){
+                                                      var groupNum = this.state.query.groupNum;
+                                                      if(groupNum.toString().length>=1&&groupNum.toString().length<=7){
+                                                        this.queryGroupsByGroupNum(groupNum.toString());
+                                                        }
+                                                      else{
+                                                         Alert.alert(
+                                                            '提示信息',
+                                                            '请输入4-7位的商品特征码进行查询',
+                                                                [
+                                                                {text: 'OK', onPress: () => console.log('OK Pressed!')},
+                                                                ]
+                                                            )
+                                                          }
+                                                  }
+                                                  else{
+                                                     Alert.alert(
+                                                        '提示信息',
+                                                        '请输入4-7位的商品特征码进行查询',
+                                                            [
+                                                            {text: 'OK', onPress: () => console.log('OK Pressed!')},
+                                                            ]
+                                                        )
+                                                      }
+                                                  }}>
+                            <View>
+                                <Text style={{color:'#fff',fontSize:12}}>查询</Text>
+                            </View>
+                        </TouchableOpacity>
+
+
                     </View>
 
-                    {/*<TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}*/}
-                    {/*onPress={()=>{*/}
-                    {/*this.refs.modal3.open();*/}
-                    {/*}}>*/}
-                    {/*<View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>*/}
-                    {/*<Text style={{color:'#fff',fontSize:14}}>新增组</Text>*/}
-                    {/*</View>*/}
-                    {/*</TouchableOpacity>*/}
 
                 </View>
 
@@ -759,19 +782,23 @@ class GroupManage extends Component{
                 <ScrollView>
 
                     {/* header bar */}
-                    <View style={[{backgroundColor:'#387ef5',padding: 8,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
-                        <TouchableOpacity style={{flex:1}}
+
+                    <View style={[{backgroundColor:'#387ef5',padding:8,paddingTop:20,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
+
+                        <TouchableOpacity style={{flex:1,paddingTop:10,paddingBottom:5,marginRight:2,flexDirection:'row',justifyContent:'center',alignItems: 'center'}}
                                           onPress={()=>{
-                                                this.goBack();
+                                              this.goBack();
                                           }}>
-                            <Icon name="chevron-left" color="#fff" size={25}></Icon>
+                            <Icon name="angle-left" color="#fff" size={35}></Icon>
                         </TouchableOpacity>
-                        <Text style={{fontSize:22,flex:3,textAlign:'center',color:'#fff'}}>
+
+                        <Text style={{fontSize:17,flex:3,paddingTop:10,textAlign:'center',color:'#fff'}}>
                             商品组维护
                         </Text>
-                        <TouchableOpacity ref="menu" style={{flex:1,marginRight:2,flexDirection:'row',justifyContent:'center'}}
-                        >
-                        </TouchableOpacity>
+
+                        <View style={{flex:1}}>
+
+                        </View>
                     </View>
 
 
