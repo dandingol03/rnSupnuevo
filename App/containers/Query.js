@@ -396,6 +396,7 @@ class Query extends Component{
     savePrice(){
         var priceShow =this.state.selectedCodeInfo.priceShow;
         var priceId = this.state.selectedCodeInfo.priceId;
+        var commodityId = this.state.selectedCodeInfo.commodityId;
         var codigo = this.state.selectedCodeInfo.codigo;
         var printType = this.state.selectedCodeInfo.printType;
         var code = {codigo:codigo};
@@ -411,7 +412,7 @@ class Query extends Component{
                     'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                     'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body:"merchantId=" + merchantId + "&price=" + priceShow+ "&priceId=" + priceId+ "&printType=" + printType+ "&codigo=" + codigo
+                body:"merchantId=" + merchantId + "&price=" + priceShow+ "&commodityId=" + commodityId+ "&printType=" + printType+ "&codigo=" + codigo
             },(json)=> {
 
                 var errorMsg=json.errorMsg;

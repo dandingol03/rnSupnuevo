@@ -66,7 +66,7 @@ class Group extends Component{
         }
     }
 
-    getCommoditiesByPriceId(priceId){
+    getCommoditiesByPriceId(commodityId){
 
         var merchantId=this.props.merchantId;
         Proxy.post({
@@ -75,16 +75,17 @@ class Group extends Component{
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: "priceId=" + priceId + "&merchantId=" + merchantId
+            body: "commodityId=" + commodityId + "&merchantId=" + merchantId
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
 
             }else{
-                var relatedGoods=json.array;
-                relatedGoods.map(function(good,i) {
-                    if (good.priceId == priceId) {
+                var relatedGoods0=json.array0;
+                var relatedGoods1=json.array1;
+                relatedGoods0.map(function(good,i) {
+                    if (good.commodityId == commodityId) {
                         good.checked = true;
                     }else{
                         good.checked=false;
@@ -99,19 +100,38 @@ class Group extends Component{
                     }
                 });
 
+                relatedGoods1.map(function(good,i) {
+                    if (good.commodityId == commodityId) {
+                        good.checked = true;
+                    }else{
+                        good.checked=false;
+                    }
+                    if(good.sizeValue!=undefined&&good.sizeValue!=null
+                        &&good.sizeUnit!=undefined&&good.sizeUnit!=null)
+                    {
+                        good.goodName=good.nombre+','+
+                            good.sizeValue+','+good.sizeUnit;
+                    }else{
+                        good.goodName=good.nombre;
+                    }
+                });
+
+
                 //TDOO:set state relatedGoods
-                this.setState({relatedGoods: relatedGoods,dataSource:this.state.dataSource.cloneWithRows(relatedGoods)});
+                this.setState({relatedGoods0: relatedGoods0,relatedGoods1: relatedGoods1,
+                    dataSource0:this.state.dataSource0.cloneWithRows(relatedGoods0),
+                    dataSource1:this.state.dataSource1.cloneWithRows(relatedGoods1),
+                });
             }
         }, (err) =>{
             alert(err);
         });
 
 
-
     }
 
 
-    renderRow(rowData,sectionId,rowId){
+    renderRow0(rowData,sectionId,rowId){
 
         var lineStyle=null;
         if(parseInt(rowId)%2==0)
@@ -129,12 +149,12 @@ class Group extends Component{
             chebx=<CheckBox
                 style={{flex: 1, padding: 2}}
                 onClick={()=>{
-                      var relatedGoods=_.cloneDeep(this.state.relatedGoods);
-                      relatedGoods.map(function(good,i) {
-                        if(good.priceId==rowData.priceId)
+                      var relatedGoods0=_.cloneDeep(this.state.relatedGoods0);
+                      relatedGoods0.map(function(good,i) {
+                        if(good.commodity==rowData.commodity)
                             good.checked=false;
                       });
-                       this.setState({relatedGoods: relatedGoods,dataSource:this.state.dataSource.cloneWithRows(relatedGoods)});
+                       this.setState({relatedGoods0: relatedGoods0,dataSource0:this.state.dataSource0.cloneWithRows(relatedGoods0)});
                 }}
                 isChecked={true}
                 leftText={null}
@@ -143,12 +163,82 @@ class Group extends Component{
             chebx=<CheckBox
                 style={{flex: 1, padding: 2}}
                 onClick={()=>{
-                      var relatedGoods=_.cloneDeep(this.state.relatedGoods);
-                      relatedGoods.map(function(good,i) {
-                        if(good.priceId==rowData.priceId)
+                      var relatedGoods0=_.cloneDeep(this.state.relatedGoods0);
+                      relatedGoods0.map(function(good,i) {
+                        if(good.commodity==rowData.commodity)
                             good.checked=true;
                       });
-                       this.setState({relatedGoods: relatedGoods,dataSource:this.state.dataSource.cloneWithRows(relatedGoods)});
+                       this.setState({relatedGoods0: relatedGoods0,dataSource0:this.state.dataSource0.cloneWithRows(relatedGoods0)});
+
+                }}
+                isChecked={false}
+                leftText={null}
+            />;
+        }
+
+
+        var row=
+            <View>
+                <TouchableOpacity onPress={
+                    function() {
+                        //TODO:
+                    }.bind(this)}>
+                    <View style={lineStyle}>
+
+                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+                            {chebx}
+                        </View>
+
+                        <View style={{flex:10,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
+                            <Text style={{color:'#000',fontWeight:'bold',fontSize:18}}>{rowData.codigo+'\n'+rowData.goodName}</Text>
+                        </View>
+
+                    </View>
+                </TouchableOpacity>
+
+            </View>;
+
+        return row;
+    }
+
+    renderRow1(rowData,sectionId,rowId){
+
+        var lineStyle=null;
+        if(parseInt(rowId)%2==0)
+        {
+            lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
+                borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#ece863'};
+        }else{
+            lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
+                borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#fff'}
+        }
+
+        var chebx=null;
+        if(rowData.checked==true)
+        {
+            chebx=<CheckBox
+                style={{flex: 1, padding: 2}}
+                onClick={()=>{
+                      var relatedGoods1=_.cloneDeep(this.state.relatedGoods1);
+                      relatedGoods1.map(function(good,i) {
+                        if(good.commodity==rowData.commodity)
+                            good.checked=false;
+                      });
+                       this.setState({relatedGoods1: relatedGoods1,dataSource1:this.state.dataSource1.cloneWithRows(relatedGoods1)});
+                }}
+                isChecked={true}
+                leftText={null}
+            />;
+        }else{
+            chebx=<CheckBox
+                style={{flex: 1, padding: 2}}
+                onClick={()=>{
+                      var relatedGoods1=_.cloneDeep(this.state.relatedGoods1);
+                      relatedGoods1.map(function(good,i) {
+                        if(good.commodity==rowData.commodity)
+                            good.checked=true;
+                      });
+                       this.setState({relatedGoods1: relatedGoods1,dataSource1:this.state.dataSource1.cloneWithRows(relatedGoods1)});
 
                 }}
                 isChecked={false}
@@ -184,10 +274,16 @@ class Group extends Component{
     changePriceRelated()
     {
         var selectedRelativePriceIds=[];
-        var relatedGoods=this.state.relatedGoods;
-        relatedGoods.map(function(good,i) {
+        var relatedGoods0=this.state.relatedGoods0;
+        var relatedGoods1=this.state.relatedGoods1;
+        relatedGoods0.map(function(good,i) {
             if(good.checked==true){
-                selectedRelativePriceIds.push(good.priceId);
+                selectedRelativePriceIds.push(good.commodityId);
+            }
+        });
+        relatedGoods1.map(function(good,i) {
+            if(good.checked==true){
+                selectedRelativePriceIds.push(good.commodityId);
             }
         });
         const {goodInfo}=this.props;
@@ -200,7 +296,7 @@ class Group extends Component{
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: "priceIds=" + selectedRelativePriceIds.toString() +
+            body: "commodityIds=" + selectedRelativePriceIds.toString() +
             "&merchantId=" + merchantId+
             '&priceShow='+goodInfo.priceShow+
             '&printType='+goodInfo.printType+
@@ -232,9 +328,23 @@ class Group extends Component{
         this.state = {
             merchantId:props.merchantId,
             goodInfo:props.goodInfo,
-            relatedGoods:null,
+            relatedGoods0:null,
+            relatedGoods1:null,
             selectAll:false,
-            dataSource : new ListView.DataSource({
+            dataSource0 : new ListView.DataSource({
+                rowHasChanged: (r1, r2)=> {
+                    if (r1 !== r2) {
+                        console.log("不相等=");
+                        console.log(r1);
+                    } else {
+                        console.log("相等=");
+                        console.log(r1);
+                        console.log(r2);
+                    }
+                    return r1 !== r2;
+                }
+            }),
+            dataSource1 : new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
                         console.log("不相等=");
@@ -258,28 +368,47 @@ class Group extends Component{
 
 
 
-        var relatedGoods=[];
-        if(this.state.relatedGoods!==undefined&&this.state.relatedGoods!==null)
+        var relatedGoods0=[];
+        if(this.state.relatedGoods0!==undefined&&this.state.relatedGoods0!==null)
         {
-            relatedGoods=this.state.relatedGoods;
+            relatedGoods0=this.state.relatedGoods0;
         }else{
-            this.getCommoditiesByPriceId(goodInfo.priceId);
+            this.getCommoditiesByPriceId(goodInfo.commodityId);
         }
 
+        var relatedGoods1=[];
+        if(this.state.relatedGoods1!==undefined&&this.state.relatedGoods1!==null)
+        {
+            relatedGoods1=this.state.relatedGoods1;
+        }else{
+            this.getCommoditiesByPriceId(goodInfo.commodityId);
+        }
 
-        var listView=null;
-        if(relatedGoods.length>0) {
+        var listView0=null;
+        var listView1=null;
+        if(relatedGoods0.length>0) {
 
-            listView=
+            listView0=
                 <ListView
                     automaticallyAdjustContentInsets={false}
-                    dataSource={this.state.dataSource}
-                    renderRow={this.renderRow.bind(this)}
+                    dataSource={this.state.dataSource0}
+                    renderRow={this.renderRow0.bind(this)}
                 />;
 
         }else{
         }
 
+        if(relatedGoods1.length>0) {
+
+            listView1=
+                <ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={this.state.dataSource1}
+                    renderRow={this.renderRow1.bind(this)}
+                />;
+
+        }else{
+        }
 
         return (
             <View style={{flex:1}}>
@@ -355,7 +484,14 @@ class Group extends Component{
 
                         </View>
                         <ScrollView>
-                            {listView}
+                            <View style={{margin:10,borderWidth:1,borderColor:'#343434'}}>
+                                {listView0}
+                            </View>
+
+                            <View style={{marginTop:20,margin:10,borderWidth:1,borderColor:'#343434'}}>
+                                {listView1}
+                            </View>
+
                         </ScrollView>
                         <View style={{height:50,width:width}}></View>
 

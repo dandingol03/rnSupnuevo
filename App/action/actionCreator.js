@@ -21,7 +21,7 @@ export let loginAction=function(username,password,cb){
                 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: "password=" + password + "&loginName=" + username + "&appVersion" + versionName
+            body: "password=" + password + "&loginName=" + username + "&appVersion=" + versionName
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
