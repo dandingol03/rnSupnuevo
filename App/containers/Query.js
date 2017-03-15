@@ -314,6 +314,7 @@ class Query extends Component{
         goodInfo.price=price;
         goodInfo.price1=price;
         goodInfo.priceShow=price;
+        goodInfo.suggestPrice=price;
         this.setState({selectedCodeInfo: goodInfo,priceShow:goodInfo.priceShow});
     }
 
@@ -488,7 +489,7 @@ class Query extends Component{
         var codigo = this.state.selectedCodeInfo.codigo;
         var goodName = this.state.selectedCodeInfo.goodName;
         var oldPrice = this.state.selectedCodeInfo.oldPrice;
-        var suggestPrice = this.state.selectedCodeInfo.suggestPrice==undefined||this.state.selectedCodeInfo.suggestPrice==null?this.state.selectedCodeInfo.suggestPrice:null;
+        var suggestPrice = this.state.selectedCodeInfo.suggestPrice==undefined||this.state.selectedCodeInfo.suggestPrice==null?null:this.state.selectedCodeInfo.suggestPrice;
         var fixedPrice =null;
         var prientType = this.state.printType;
 
@@ -537,7 +538,7 @@ class Query extends Component{
                                 }}
                                     value={this.state.goods.codeNum}
 
-                                    placeholder='请输入条码'
+                                    placeholder='请输入商品条码尾数'
                                     placeholderTextColor="#aaa"
                                     underlineColorAndroid="transparent"
                                 />
@@ -963,7 +964,7 @@ class Query extends Component{
                                               this.closePopover();
                                               this.navigateGroupQuery();
                                           }}>
-                            <Text style={[styles.popoverText,{color:'#444'}]}>添加商品至组</Text>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>组商品管理</Text>
                         </TouchableOpacity>
 
                         <TouchableOpacity style={[styles.popoverContent,,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}

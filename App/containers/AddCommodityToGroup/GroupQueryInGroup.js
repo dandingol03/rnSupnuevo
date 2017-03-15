@@ -1,9 +1,7 @@
 /**
  * Created by danding on 17/1/15.
  */
-/**
- * Created by danding on 16/11/21.
- */
+
 import React,{Component} from 'react';
 
 import  {
@@ -28,7 +26,6 @@ import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scr
 import DatePicker from 'react-native-datepicker';
 import CheckBox from 'react-native-check-box';
 
-
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../../proxy/Proxy');
@@ -48,7 +45,6 @@ class GroupQueryInGroup extends Component{
         }
 
     }
-
 
 
     renderCommodityRow(rowData,sectionId,rowId)
@@ -93,8 +89,6 @@ class GroupQueryInGroup extends Component{
 
     onCodigoSelect(code,groupNum)
     {
-
-
         const {merchantId}=this.props;
         var query=this.state.query;
         var codigo=code.codigo;
@@ -241,9 +235,6 @@ class GroupQueryInGroup extends Component{
 
                     {/* 条码 */}
                     <View style={[styles.row,{borderBottomWidth:0}]}>
-                        {/*<View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>*/}
-                        {/*<Text style={{color:'#222'}}>条码</Text>*/}
-                        {/*</View>*/}
                         <View style={{flex:4,flexDirection:'row',alignItems:'center',padding:4}}>
                             <View style={{flex:2}}>
                                 <Text style={{color:'#222'}}>条码</Text>
@@ -354,27 +345,27 @@ class GroupQueryInGroup extends Component{
                 <ScrollView>
 
                     {/* header bar */}
-                    <View style={[{backgroundColor:'#387ef5',padding: 8,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
-                        <TouchableOpacity style={{flex:1}}
+                    <View style={[{backgroundColor:'#387ef5',padding:8,paddingTop:20,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
+
+                        <TouchableOpacity style={{flex:1,paddingTop:20,paddingBottom:5,marginRight:2,flexDirection:'row',justifyContent:'center',alignItems: 'center'}}
                                           onPress={()=>{
-                                                this.goBack();
+                                              this.goBack();
                                           }}>
-                            <Icon name="chevron-left" color="#fff" size={25}></Icon>
+                            <Icon name="angle-left" color="#fff" size={35}></Icon>
                         </TouchableOpacity>
-                        <Text style={{fontSize:22,flex:3,textAlign:'center',color:'#fff'}}>
+
+                        <Text style={{fontSize:17,flex:3,paddingTop:10,textAlign:'center',color:'#fff'}}>
                             组商品信息
                         </Text>
-                        <TouchableOpacity ref="menu" style={{flex:1,marginRight:2,flexDirection:'row',justifyContent:'center'}}
-                        >
-                        </TouchableOpacity>
-                    </View>
 
+                        <View style={{flex:1}}>
+
+                        </View>
+                    </View>
 
                     {queryBox}
 
                     {listView}
-
-
 
                 </ScrollView>
 

@@ -324,7 +324,7 @@ class PriceSurvey extends Component{
 
                                 }}
                                     value={this.state.goods.codeNum}
-                                    placeholder='请输入条码'
+                                    placeholder='请输入商品条码尾数'
                                     placeholderTextColor="#aaa"
                                     underlineColorAndroid="transparent"
                                 />
