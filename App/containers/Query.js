@@ -310,7 +310,7 @@ class Query extends Component{
     updatePrice(price){
 
         var goodInfo = this.state.selectedCodeInfo;
-        goodInfo.oldPrice = price;
+        //goodInfo.oldPrice = price;
         goodInfo.price=price;
         goodInfo.price1=price;
         goodInfo.priceShow=price;
