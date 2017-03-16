@@ -25,7 +25,6 @@ import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scr
 import DatePicker from 'react-native-datepicker';
 import CheckBox from 'react-native-check-box';
 
-
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../proxy/Proxy');
@@ -42,26 +41,25 @@ class Group extends Component{
         }
     }
 
-
     toggleAll(){
-        if(this.state.relatedGoods!==undefined&&this.state.relatedGoods!==null)
+        if(this.state.relatedGoods0!==undefined&&this.state.relatedGoods0!==null)
         {
-            var relatedGoods=_.cloneDeep(this.state.relatedGoods);
+            var relatedGoods0=_.cloneDeep(this.state.relatedGoods0);
             if(this.state.selectAll!=true)
             {
-                relatedGoods.map(function (good, i){
+                relatedGoods0.map(function (good, i){
                     good.checked=true;
                 });
             }else{
-                relatedGoods.map(function (good, i){
+                relatedGoods0.map(function (good, i){
                     good.checked=false;
                 });
             }
-            var dataSource = this.state.dataSource.cloneWithRows(relatedGoods);
+            var dataSource0 = this.state.dataSource0.cloneWithRows(relatedGoods0);
             this.setState({
-                relatedGoods: relatedGoods,
+                relatedGoods0: relatedGoods0,
                 selectAll:!this.state.selectAll,
-                dataSource:dataSource
+                dataSource0:dataSource0
             });
         }
     }
@@ -116,9 +114,8 @@ class Group extends Component{
                     }
                 });
 
-
                 //TDOO:set state relatedGoods
-                this.setState({relatedGoods0: relatedGoods0,relatedGoods1: relatedGoods1,
+                this.setState({relatedGoods0:relatedGoods0,relatedGoods1:relatedGoods1,
                     dataSource0:this.state.dataSource0.cloneWithRows(relatedGoods0),
                     dataSource1:this.state.dataSource1.cloneWithRows(relatedGoods1),
                 });
@@ -126,7 +123,6 @@ class Group extends Component{
         }, (err) =>{
             alert(err);
         });
-
 
     }
 
@@ -179,22 +175,46 @@ class Group extends Component{
 
         var row=
             <View>
-                <TouchableOpacity onPress={
-                    function() {
-                        //TODO:
-                    }.bind(this)}>
+
                     <View style={lineStyle}>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
-                            {chebx}
-                        </View>
+                        {
+                            rowData.checked==true?
+                        <TouchableOpacity onPress={function() {
+                              var relatedGoods0=_.cloneDeep(this.state.relatedGoods0);
+                              relatedGoods0.map(function(good,i) {
+                              if(good.commodityId==rowData.commodityId){
+                                  good.checked=false;
+                              }
+                              });
+                              this.setState({relatedGoods0: relatedGoods0,dataSource0:this.state.dataSource0.cloneWithRows(relatedGoods0)});
+                            }.bind(this)}>
+                            <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+                                <Icon name='check-square' size={24} color="#444"></Icon>
+                            </View>
+                        </TouchableOpacity>
+                        :
+                        <TouchableOpacity onPress={function() {
+                              var relatedGoods0=_.cloneDeep(this.state.relatedGoods0);
+                              relatedGoods0.map(function(good,i) {
+                              if(good.commodityId==rowData.commodityId){
+                                 good.checked=true;
+                              }
+                              });
+                              this.setState({relatedGoods0: relatedGoods0,dataSource0:this.state.dataSource0.cloneWithRows(relatedGoods0)});
+                            }.bind(this)}>
+                             <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+                                 <Icon name='square-o' size={24} color="#444"></Icon>
+                             </View>
+                        </TouchableOpacity>
+
+                        }
 
                         <View style={{flex:10,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
                             <Text style={{color:'#000',fontWeight:'bold',fontSize:18}}>{rowData.codigo+'\n'+rowData.goodName}</Text>
                         </View>
 
                     </View>
-                </TouchableOpacity>
 
             </View>;
 
@@ -325,38 +345,16 @@ class Group extends Component{
     constructor(props)
     {
         super(props);
+        const ds0 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+        const ds1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
             merchantId:props.merchantId,
             goodInfo:props.goodInfo,
             relatedGoods0:null,
             relatedGoods1:null,
             selectAll:false,
-            dataSource0 : new ListView.DataSource({
-                rowHasChanged: (r1, r2)=> {
-                    if (r1 !== r2) {
-                        console.log("不相等=");
-                        console.log(r1);
-                    } else {
-                        console.log("相等=");
-                        console.log(r1);
-                        console.log(r2);
-                    }
-                    return r1 !== r2;
-                }
-            }),
-            dataSource1 : new ListView.DataSource({
-                rowHasChanged: (r1, r2)=> {
-                    if (r1 !== r2) {
-                        console.log("不相等=");
-                        console.log(r1);
-                    } else {
-                        console.log("相等=");
-                        console.log(r1);
-                        console.log(r2);
-                    }
-                    return r1 !== r2;
-                }
-            })
+            dataSource0 : new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
+            dataSource1 : new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}),
         };
     }
 
@@ -365,8 +363,6 @@ class Group extends Component{
 
         const {username} = this.props;
         const {goodInfo}=this.props;
-
-
 
         var relatedGoods0=[];
         if(this.state.relatedGoods0!==undefined&&this.state.relatedGoods0!==null)
@@ -392,6 +388,7 @@ class Group extends Component{
                 <ListView
                     automaticallyAdjustContentInsets={false}
                     dataSource={this.state.dataSource0}
+
                     renderRow={this.renderRow0.bind(this)}
                 />;
 

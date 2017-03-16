@@ -517,7 +517,7 @@ class GroupQuery extends Component{
         var groupArr=this.state.groupArr;
         var groupInfo=this.state.groupInfo;
         var listView=null;
-        var queryBox=   (<View style={[styles.card,{marginTop:10,padding:8}]}>
+        var queryBox=(<View style={[styles.card,{marginTop:10,padding:8}]}>
             <View style={{flex:1,padding:8,paddingLeft:10,paddingRight:10,backgroundColor:'#eee',borderRadius:8}}>
                 {/* 条码 */}
                 <View style={[styles.row,{borderBottomWidth:0}]}>
