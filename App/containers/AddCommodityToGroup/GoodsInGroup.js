@@ -1,5 +1,5 @@
 /**
- * Created by danding on 17/1/15.
+ * Created by dingyiming on 2017/3/18.
  */
 
 import React,{Component} from 'react';
@@ -23,7 +23,6 @@ import { connect } from 'react-redux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scrollable-tab-view';
-import DatePicker from 'react-native-datepicker';
 import CheckBox from 'react-native-check-box';
 
 var Dimensions = require('Dimensions');
@@ -33,7 +32,7 @@ import Config from '../../../config';
 import _ from 'lodash';
 
 
-class GroupQueryInGroup extends Component{
+class GoodsInGroup extends Component{
 
     goBack(){
         const { navigator } = this.props;
@@ -57,9 +56,6 @@ class GroupQueryInGroup extends Component{
             lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
                 borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#fff'}
         }
-
-        if(rowData.codigo==this.state.code.codigo)
-            lineStyle=Object.assign(lineStyle,{borderColor:'#284bff',borderWidth:2,borderBottomWidth:2,borderLeftWidth:2,borderRightWidth:2});
 
         var chebx=null;
         if(rowData.checked==true)
@@ -114,65 +110,6 @@ class GroupQueryInGroup extends Component{
         return row;
     }
 
-    onCodigoSelect(code,groupNum)
-    {
-        const {merchantId}=this.props;
-        var query=this.state.query;
-        var codigo=code.codigo;
-        query.codeNum=codigo;
-
-        var body='';
-        if(groupNum!==undefined&&groupNum!==null)
-            body='groupNum='+groupNum+"&supnuevoMerchantId=" + merchantId;
-        else
-            body="codigo=" + codigo + "&supnuevoMerchantId=" + merchantId;
-
-        Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetSupnuevoCommonCommodityGroupListByCodigoMobile.do",
-            headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: body
-        },(json)=> {
-            var errorMsg=json.errorMsg;
-            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
-                alert(errorMsg);
-                this.state.query.codeNum=null;
-                this.setState({query:this.state.query});
-            }else{
-                var data=json;
-                if(json.groupNum!==undefined&&json.groupNum!==null)
-                {
-                    //单个组
-
-                    json.array.map(function (commodity,i) {
-
-                        if(commodity.setSizeValue!=undefined&&commodity.setSizeValue!=null
-                            &&commodity.sizeUnit!=undefined&&commodity.sizeUnit!=null)
-                        {
-                            commodity.goodName=commodity.nombre+','+
-                                commodity.setSizeValue+','+commodity.sizeUnit;
-                        }
-                        else{
-                            commodity.goodName=commodity.nombre;
-                        }
-                    });
-                    this.setState({groupInfo:json,query:query,code:code});
-
-                }else{
-                    //多个组的信息
-                    this.setState({groupArr: data,query:query,code:code});
-                }
-            }
-        }, (err) =>{
-            alert(err);
-            this.setState({query:query});
-        });
-
-    }
-
-
     commodityGroupRemove(groupInfoArray){
 
         var commodityIds=[];
@@ -203,8 +140,6 @@ class GroupQueryInGroup extends Component{
                         '商品删除成功',
                         [
                             {text: 'OK', onPress: () => {
-                                var code={};
-                                this.setState({groupInfo:{},code:code});
                                 this.goBack();
                             }},
                         ]
@@ -234,10 +169,8 @@ class GroupQueryInGroup extends Component{
             merchantId:props.merchantId,
             query:{},
             groupInfo:props.groupInfo,
+            groupInfoArray:props.groupInfo.array,
             selectAll:false,
-            codesModalVisible:false,
-            groupAppendModalVisible:false,
-            code:props.code,
             dataSource : new ListView.DataSource({
                 rowHasChanged: (r1, r2)=> {
                     if (r1 !== r2) {
@@ -249,44 +182,19 @@ class GroupQueryInGroup extends Component{
         };
     }
 
-
     render(){
 
         var groupInfo=this.state.groupInfo;
+        var groupInfoArray = this.state.groupInfoArray;
         var listView=null;
-        var code=this.state.code;
         var queryBox=(
             <View style={[styles.card,{marginTop:10,padding:8}]}>
                 <View style={{flex:1,padding:8,paddingLeft:10,paddingRight:10,backgroundColor:'#eee',borderRadius:8}}>
-
-                    {/* 条码 */}
-                    <View style={[styles.row,{borderBottomWidth:0}]}>
-                        <View style={{flex:4,flexDirection:'row',alignItems:'center',padding:4}}>
-                            <View style={{flex:2}}>
-                                <Text style={{color:'#222'}}>条码</Text>
-                            </View>
-                            <View style={{flex:3}}>
-                                <Text style={{color:'#222'}}>{code.codigo}</Text>
-                            </View>
-                        </View>
-
-                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
-                                          onPress={()=>{
-                                    this.commodityGroupRemove(this.state.code.commodityId);
-                                }}>
-                            <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
-                                <Text style={{color:'#fff',fontSize:14}}>移除</Text>
-                            </View>
-                        </TouchableOpacity>
-
-                    </View>
-
-
                     {/*组特征码*/}
                     <View style={[styles.row,{borderBottomWidth:0,marginBottom:8}]}>
                         <View style={{flex:4,flexDirection:'row',alignItems:'center',padding:4}}>
-                            <View style={{flex:2}}>
-                                <Text style={{color:'#222'}}>组特征码</Text>
+                            <View style={{flex:1}}>
+                                <Text style={{color:'#222'}}>组特征码:</Text>
                             </View>
                             <View style={{flex:3}}>
                                 <Text style={{color:'#222'}}>
@@ -294,17 +202,14 @@ class GroupQueryInGroup extends Component{
                                 </Text>
                             </View>
                         </View>
-
-                        <View style={{flex:3,flexDirection:'row',alignItems:'center',marginLeft:5,padding:4}}>
-                        </View>
                     </View>
 
                     {/*商品组名*/}
                     <View style={[styles.row,{borderBottomWidth:0}]}>
 
                         <View style={{flex:4,flexDirection:'row',alignItems:'center',padding:4}}>
-                            <View style={{flex:2}}>
-                                <Text style={{color:'#222'}}>商品组名</Text>
+                            <View style={{flex:1}}>
+                                <Text style={{color:'#222'}}>商品组名:</Text>
                             </View>
                             <View style={{flex:3}}>
                                 <Text style={{color:'#222'}}>
@@ -312,19 +217,26 @@ class GroupQueryInGroup extends Component{
                                 </Text>
                             </View>
                         </View>
+                    </View>
 
-                        <View style={{flex:3,flexDirection:'row',alignItems:'center',marginLeft:5,padding:4}}>
+                    <TouchableOpacity style={{borderBottomWidth:0,flex:3,flexDirection:'row',justifyContent:'flex-end',alignItems:'center',marginLeft:5,padding:4}}
+                                      onPress={()=>{
+                                    this.commodityGroupRemove(this.state.groupInfoArray);
+                                }}>
+                        <View style={{backgroundColor:'#3536ff',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
+                            <Text style={{color:'#fff',fontSize:14}}>从组中移除</Text>
                         </View>
 
-                    </View>
+                    </TouchableOpacity>
+
 
                 </View>
             </View>
         );
 
-        if(groupInfo&&groupInfo.array!==undefined&&groupInfo.array!==null&&Object.prototype.toString.call(groupInfo.array)=='[object Array]')
+        if(groupInfo&&groupInfoArray!==undefined&&groupInfoArray!==null&&Object.prototype.toString.call(groupInfoArray)=='[object Array]')
         {
-            var data=groupInfo.array;
+            var data=groupInfoArray;
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
             listView=(
@@ -431,5 +343,5 @@ var styles = StyleSheet.create({
 module.exports = connect(state=>({
         merchantId:state.user.supnuevoMerchantId
     })
-)(GroupQueryInGroup);
+)(GoodsInGroup);
 

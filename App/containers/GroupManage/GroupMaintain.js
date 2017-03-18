@@ -194,7 +194,7 @@ class GroupMaintain extends Component{
                                           onPress={()=>{
                                           this.navigateToGroupSplit(rowData);
                                                   }}>
-                            <Text style={{color:'#111',fontWeight:'bold',fontSize:24}}>{rowData.groupName}</Text>
+                            <Text style={{color:'#111',fontWeight:'bold',fontSize:17}}>{rowData.groupName}</Text>
                         </TouchableOpacity>
 
                         {
@@ -524,23 +524,11 @@ class GroupMaintain extends Component{
 
                 {/* 商品特征码 */}
                 <View style={[styles.row,{borderBottomWidth:0}]}>
-                    {/*<View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>*/}
-                    {/*<Text style={{color:'#222'}}>条码</Text>*/}
-                    {/*</View>*/}
                     <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
                        <Text style={{color:'#222'}}>
                            {groupNum}
                        </Text>
                     </View>
-
-                    {/*<TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}*/}
-                    {/*onPress={()=>{*/}
-                    {/*this.refs.modal3.open();*/}
-                    {/*}}>*/}
-                    {/*<View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>*/}
-                    {/*<Text style={{color:'#fff',fontSize:14}}>新增组</Text>*/}
-                    {/*</View>*/}
-                    {/*</TouchableOpacity>*/}
 
                 </View>
 
@@ -556,13 +544,10 @@ class GroupMaintain extends Component{
 
                     {/* 商品特征码 */}
                     <View style={[styles.row,{borderBottomWidth:0}]}>
-                        {/*<View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>*/}
-                        {/*<Text style={{color:'#222'}}>条码</Text>*/}
-                        {/*</View>*/}
                         <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4,marginBottom:10}}>
                             <View style={{flex:2}}>
                                 <Text style={{color:'#222',fontSize:18}}>
-                                    条码
+                                    组特征码:
                                 </Text>
                             </View>
                             <View style={{flex:4}}>
@@ -572,15 +557,6 @@ class GroupMaintain extends Component{
                             </View>
                         </View>
 
-                        {/*<TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}*/}
-                        {/*onPress={()=>{*/}
-                        {/*this.refs.modal3.open();*/}
-                        {/*}}>*/}
-                        {/*<View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>*/}
-                        {/*<Text style={{color:'#fff',fontSize:14}}>新增组</Text>*/}
-                        {/*</View>*/}
-                        {/*</TouchableOpacity>*/}
-
                     </View>
 
                     {/*组添加*/}
@@ -589,7 +565,7 @@ class GroupMaintain extends Component{
                         <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
                             <TextInput
                                 style={{height:40,flex:5,backgroundColor:'#fff',paddingLeft:5,borderRadius:4,
-                                        fontSize:15,flexDirection:'row',alignItems:'center'}}
+                                        fontSize:13,flexDirection:'row',alignItems:'center'}}
                                 onChangeText={(groupName) => {
                                             if(groupName.toString().length==4)
                                             {
@@ -612,11 +588,11 @@ class GroupMaintain extends Component{
                             />
                         </View>
 
-                        <TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:4}}
+                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:4}}
                                           onPress={()=>{
                                           this.mergeToNewGroup();
                                                   }}>
-                            <View style={{backgroundColor:'#387ef5',padding:8,paddingLeft:8,paddingRight:8,borderRadius:8}}>
+                            <View style={{backgroundColor:'#00f',padding:8,paddingLeft:8,paddingRight:8,borderRadius:8}}>
                                 <Text style={{color:'#fff',fontSize:14}}>合并到新组</Text>
                             </View>
                         </TouchableOpacity>
