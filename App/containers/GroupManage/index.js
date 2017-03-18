@@ -150,94 +150,140 @@ class GroupManage extends Component{
         return row;
     }
 
-    renderRow(rowData,sectionId,rowId){
+    // renderRow(rowData,sectionId,rowId){
+    //
+    //     var lineStyle=null;
+    //     if(parseInt(rowId)%2==0)
+    //     {
+    //         lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
+    //             borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#C4D9FF'};
+    //     }else{
+    //         lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
+    //             borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#fff'}
+    //     }
+    //
+    //     var chebx=null;
+    //     if(rowData.checked==true)
+    //     {
+    //         chebx=  <CheckBox
+    //             style={{flex: 1, padding: 2,flexDirection:'row',justifyContent:'center'}}
+    //             onClick={()=>{
+    //
+    //                 var groups=_.cloneDeep(this.state.groups);
+    //                 groups.array.map(function(group,i) {
+    //                 if(group.groupId==rowData.groupId)
+    //                     group.checked=false;
+    //                 });
+    //                this.setState({groups: groups,dataSource:this.state.dataSource.cloneWithRows(groups.array)});
+    //                             }}
+    //             isChecked={true}
+    //             leftText={null}
+    //         />;
+    //     }else{
+    //         chebx=  <CheckBox
+    //             style={{flex: 1, padding: 2,flexDirection:'row',justifyContent:'center'}}
+    //             onClick={()=>{
+    //                 var groups=_.cloneDeep(this.state.groups);
+    //                 groups.array.map(function(group,i) {
+    //                 if(group.groupId==rowData.groupId)
+    //                     group.checked=true;
+    //                 });
+    //                this.setState({groups: groups,dataSource:this.state.dataSource.cloneWithRows(groups.array)});
+    //                             }}
+    //             isChecked={false}
+    //             leftText={null}
+    //         />;
+    //     }
+    //
+    //
+    //     var row=
+    //         <View>
+    //             <View>
+    //                 <View style={lineStyle}>
+    //
+    //                     <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+    //                         {chebx}
+    //                     </View>
+    //
+    //                     <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}
+    //                                       onPress={()=>{
+    //                                       this.navigateToGroupSplit(rowData);
+    //                                               }}>
+    //                         <Text style={{color:'#111',fontWeight:'bold',fontSize:24}}>{rowData.groupName}</Text>
+    //                     </TouchableOpacity>
+    //
+    //                     {
+    //                         rowData.groupNum!==undefined&&rowData.groupNum!==null?
+    //                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+    //                             </View>:
+    //                             <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
+    //                                               onPress={()=>{
+    //                                       this.removeCommodityGroup(rowData.groupId);
+    //                                               }}>
+    //                                 <Icon name="remove" color="#f00" size={23}></Icon>
+    //                             </TouchableOpacity>
+    //
+    //                     }
+    //
+    //                 </View>
+    //             </View>
+    //
+    //         </View>;
+    //
+    //     return row;
+    // }
 
-        var lineStyle=null;
-        if(parseInt(rowId)%2==0)
-        {
-            lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
-                borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#C4D9FF'};
-        }else{
-            lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
-                borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#fff'}
-        }
 
-        var chebx=null;
-        if(rowData.checked==true)
-        {
-            chebx=  <CheckBox
-                style={{flex: 1, padding: 2,flexDirection:'row',justifyContent:'center'}}
-                onClick={()=>{
+    fetchData(){
+        const merchantId=this.props.merchantId;
+        Proxy.post({
+            url:Config.server+"supnuevo/supnuevoGetGroupInfoListOfMerchantMobile.do",
+            headers: {
+                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body:"merchantId=" + merchantId
+        },(json)=> {
+            var o = json;
+            var errorMsg=json.message;
+            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                alert(errorMsg);
+            }else{
+                var groupCodes = json.array;
+                this.state.groupCodes = groupCodes;
+                this.setState({groupCodes:groupCodes});
+            }
 
-                    var groups=_.cloneDeep(this.state.groups);
-                    groups.array.map(function(group,i) {
-                    if(group.groupId==rowData.groupId)
-                        group.checked=false;
-                    });
-                   this.setState({groups: groups,dataSource:this.state.dataSource.cloneWithRows(groups.array)});
-                                }}
-                isChecked={true}
-                leftText={null}
-            />;
-        }else{
-            chebx=  <CheckBox
-                style={{flex: 1, padding: 2,flexDirection:'row',justifyContent:'center'}}
-                onClick={()=>{
-                    var groups=_.cloneDeep(this.state.groups);
-                    groups.array.map(function(group,i) {
-                    if(group.groupId==rowData.groupId)
-                        group.checked=true;
-                    });
-                   this.setState({groups: groups,dataSource:this.state.dataSource.cloneWithRows(groups.array)});
-                                }}
-                isChecked={false}
-                leftText={null}
-            />;
-        }
+        }, (err) =>{
+            alert(err);
+        });
+    }
 
 
+    renderRow(rowData){
         var row=
             <View>
-                <View>
-                    <View style={lineStyle}>
+                <TouchableOpacity onPress={
+                    function() {
+                        console.log('暂时没有交互');
+                    }.bind(this)}>
 
-                        <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
-                            {chebx}
-                        </View>
-
-                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}
-                                          onPress={()=>{
-                                          this.navigateToGroupSplit(rowData);
-                                                  }}>
-                            <Text style={{color:'#111',fontWeight:'bold',fontSize:24}}>{rowData.groupName}</Text>
-                        </TouchableOpacity>
-
-                        {
-                            rowData.groupNum!==undefined&&rowData.groupNum!==null?
-                                <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
-                                </View>:
-                                <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
-                                                  onPress={()=>{
-                                          this.removeCommodityGroup(rowData.groupId);
-                                                  }}>
-                                    <Icon name="remove" color="#f00" size={23}></Icon>
-                                </TouchableOpacity>
-
-                        }
-
+                    <View style={{flex:1,flexDirection:'row',padding:10,borderBottomWidth:1,borderColor:'#ddd',
+                    justifyContent:'flex-start',backgroundColor:'#fff'}}>
+                        <Text style={{flex:1,fontSize:15,color:'#343434'}}>{rowData.groupNum}</Text>
+                        <Text style={{flex:2,fontSize:15,color:'#343434'}}>{rowData.groupName}</Text>
                     </View>
-                </View>
+
+                </TouchableOpacity>
 
             </View>;
 
         return row;
     }
 
-
     closeCodesModal(val){
         this.setState({codesModalVisible:val});
     }
-
 
     onCodigoSelect(code,groupNum)
     {
@@ -299,7 +345,6 @@ class GroupManage extends Component{
 
 
     }
-
 
     //按商品组特征码搜索
     queryGroupsByGroupNum(groupNum)
@@ -496,7 +541,6 @@ class GroupManage extends Component{
         }
     }
 
-
     constructor(props)
     {
         super(props);
@@ -505,6 +549,7 @@ class GroupManage extends Component{
             query:{},
             groups:null,
             groupArr:{},
+            groupCodes:null,
             selectAll:false,
             codesModalVisible:false,
             groupAppendModalVisible:false,
@@ -525,7 +570,6 @@ class GroupManage extends Component{
         handleBack:this.handleBack
     }
 
-
     static propTypes = {
         handleBack: React.PropTypes.func
     }
@@ -534,8 +578,29 @@ class GroupManage extends Component{
 
         var groups=this.state.groups;
         var groupInfo=this.state.groupInfo;
+
         var listView=null;
-        var queryBox=   (<View style={[styles.card,{marginTop:10,padding:8}]}>
+        const groupCodes=this.state.groupCodes;
+        if(groupCodes!==undefined&&groupCodes!==null&&Object.prototype.toString.call(groupCodes)=='[object Array]')
+        {
+            var data=groupCodes;
+            var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
+            listView=
+                <ScrollView>
+                    <ListView
+                        automaticallyAdjustContentInsets={false}
+                        dataSource={ds.cloneWithRows(data)}
+                        renderRow={this.renderRow.bind(this)}
+
+                    />
+                </ScrollView>;
+        }else{
+
+            this.fetchData();
+        }
+
+        var queryBox=(<View style={[styles.card,{marginTop:10,padding:8}]}>
             <View style={{flex:1,padding:8,paddingLeft:10,paddingRight:10,backgroundColor:'#eee',borderRadius:8}}>
 
                 {/* 商品特征码 */}
@@ -804,7 +869,19 @@ class GroupManage extends Component{
 
                     {queryBox}
 
-                    {listView}
+                    {/* 商品条码列表 */}
+                    <View>
+                        <ScrollView>
+                            <View style={{height:40,flexDirection:'row',padding:10,borderBottomWidth:1,borderColor:'#ddd',borderWidth:1,
+                    justifyContent:'flex-start',backgroundColor:'#fff'}}>
+                                <Text style={{flex:1,fontSize:15,color:'#343434'}}>组编号</Text>
+                                <Text style={{flex:2,fontSize:15,color:'#343434'}}>组名称</Text>
+                            </View>
+                            <View style={{flex:1}}>
+                                {listView}
+                            </View>
+                        </ScrollView>
+                    </View>
 
                     <Modal
                         animationType={"slide"}
