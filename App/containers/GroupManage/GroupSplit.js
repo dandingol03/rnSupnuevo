@@ -1,9 +1,7 @@
 /**
  * Created by danding on 17/1/15.
  */
-/**
- * Created by danding on 16/11/21.
- */
+
 import React,{Component} from 'react';
 
 import  {
@@ -28,7 +26,6 @@ import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scr
 import DatePicker from 'react-native-datepicker';
 import CheckBox from 'react-native-check-box';
 
-
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../../proxy/Proxy');
@@ -37,9 +34,6 @@ import _ from 'lodash';
 import CodesModal from '../../components/modal/CodesModal';
 import GroupInfoManage from '../GroupInfoManage';
 import Modalbox from 'react-native-modalbox';
-
-
-
 
 class GroupSplit extends Component{
 
@@ -175,7 +169,7 @@ class GroupSplit extends Component{
                         </View>
 
                         <View style={{flex:6,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#111',fontSize:24,fontWeight:'bold'}}>{rowData.codigo+'\n'+rowData.goodName}</Text>
+                            <Text style={{color:'#111',fontSize:17,fontWeight:'bold'}}>{rowData.codigo+'\n'+rowData.goodName}</Text>
                         </View>
 
                     </View>
@@ -593,8 +587,6 @@ class GroupSplit extends Component{
 
     render(){
 
-
-
         var groups=this.state.groups;
         var groupInfo=this.state.groupInfo;
         var listView=null;
@@ -614,12 +606,11 @@ class GroupSplit extends Component{
 
                     <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
                         <TextInput
-                            style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
+                            style={{flex:8,height:40,backgroundColor:'#fff',paddingLeft:10,paddingRight:10,borderRadius:4,
+                                                flexDirection:'row',alignItems:'center',fontSize:13}}
                                 onChangeText={(groupName) => {
                                             if(groupName.toString().length==4)
                                             {
-
                                                 this.state.query.groupName=groupName;
                                                 this.setState({query:this.state.query});
                                             }else if(groupName.toString().length>4){
@@ -638,7 +629,7 @@ class GroupSplit extends Component{
                         />
                     </View>
 
-                    <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
+                    <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5}}
                                       onPress={()=>{
                                           this.splitToNewGroup();
                                                   }}>
@@ -713,21 +704,23 @@ class GroupSplit extends Component{
                 <ScrollView>
 
                     {/* header bar */}
-                    <View style={[{backgroundColor:'#387ef5',padding: 8,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
-                        <TouchableOpacity style={{flex:1}}
+                    <View style={[{backgroundColor:'#387ef5',padding:8,paddingTop:20,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
+
+                        <TouchableOpacity style={{flex:1,paddingTop:20,paddingBottom:5,marginRight:2,flexDirection:'row',justifyContent:'center',alignItems: 'center'}}
                                           onPress={()=>{
-                                                this.goBack();
+                                              this.goBack();
                                           }}>
-                            <Icon name="chevron-left" color="#fff" size={25}></Icon>
+                            <Icon name="angle-left" color="#fff" size={35}></Icon>
                         </TouchableOpacity>
-                        <Text style={{fontSize:22,flex:3,textAlign:'center',color:'#fff'}}>
+
+                        <Text style={{fontSize:17,flex:3,paddingTop:10,textAlign:'center',color:'#fff'}}>
                             商品组维护
                         </Text>
-                        <TouchableOpacity ref="menu" style={{flex:1,marginRight:2,flexDirection:'row',justifyContent:'center'}}
-                        >
-                        </TouchableOpacity>
-                    </View>
 
+                        <View style={{flex:1}}>
+
+                        </View>
+                    </View>
 
                     {queryBox}
 

@@ -150,90 +150,6 @@ class GroupManage extends Component{
         return row;
     }
 
-    // renderRow(rowData,sectionId,rowId){
-    //
-    //     var lineStyle=null;
-    //     if(parseInt(rowId)%2==0)
-    //     {
-    //         lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
-    //             borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#C4D9FF'};
-    //     }else{
-    //         lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
-    //             borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#fff'}
-    //     }
-    //
-    //     var chebx=null;
-    //     if(rowData.checked==true)
-    //     {
-    //         chebx=  <CheckBox
-    //             style={{flex: 1, padding: 2,flexDirection:'row',justifyContent:'center'}}
-    //             onClick={()=>{
-    //
-    //                 var groups=_.cloneDeep(this.state.groups);
-    //                 groups.array.map(function(group,i) {
-    //                 if(group.groupId==rowData.groupId)
-    //                     group.checked=false;
-    //                 });
-    //                this.setState({groups: groups,dataSource:this.state.dataSource.cloneWithRows(groups.array)});
-    //                             }}
-    //             isChecked={true}
-    //             leftText={null}
-    //         />;
-    //     }else{
-    //         chebx=  <CheckBox
-    //             style={{flex: 1, padding: 2,flexDirection:'row',justifyContent:'center'}}
-    //             onClick={()=>{
-    //                 var groups=_.cloneDeep(this.state.groups);
-    //                 groups.array.map(function(group,i) {
-    //                 if(group.groupId==rowData.groupId)
-    //                     group.checked=true;
-    //                 });
-    //                this.setState({groups: groups,dataSource:this.state.dataSource.cloneWithRows(groups.array)});
-    //                             }}
-    //             isChecked={false}
-    //             leftText={null}
-    //         />;
-    //     }
-    //
-    //
-    //     var row=
-    //         <View>
-    //             <View>
-    //                 <View style={lineStyle}>
-    //
-    //                     <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
-    //                         {chebx}
-    //                     </View>
-    //
-    //                     <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}
-    //                                       onPress={()=>{
-    //                                       this.navigateToGroupSplit(rowData);
-    //                                               }}>
-    //                         <Text style={{color:'#111',fontWeight:'bold',fontSize:24}}>{rowData.groupName}</Text>
-    //                     </TouchableOpacity>
-    //
-    //                     {
-    //                         rowData.groupNum!==undefined&&rowData.groupNum!==null?
-    //                             <View style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
-    //                             </View>:
-    //                             <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
-    //                                               onPress={()=>{
-    //                                       this.removeCommodityGroup(rowData.groupId);
-    //                                               }}>
-    //                                 <Icon name="remove" color="#f00" size={23}></Icon>
-    //                             </TouchableOpacity>
-    //
-    //                     }
-    //
-    //                 </View>
-    //             </View>
-    //
-    //         </View>;
-    //
-    //     return row;
-    // }
-
-
     fetchData(){
         const merchantId=this.props.merchantId;
         Proxy.post({
@@ -265,7 +181,7 @@ class GroupManage extends Component{
             <View>
                 <TouchableOpacity onPress={
                     function() {
-                        console.log('暂时没有交互');
+                         this.queryGroupsByGroupNum(rowData.groupNum);
                     }.bind(this)}>
 
                     <View style={{flex:1,flexDirection:'row',padding:10,borderBottomWidth:1,borderColor:'#ddd',
@@ -287,8 +203,6 @@ class GroupManage extends Component{
 
     onCodigoSelect(code,groupNum)
     {
-
-
         const {merchantId}=this.props;
         var query=this.state.query;
         var codigo=code.codigo;
