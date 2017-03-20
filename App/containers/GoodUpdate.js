@@ -35,6 +35,7 @@ import Config from '../../config';
 class GoodUpdate extends Component{
 
     cancel(){
+        this.props.reset();
         const { navigator } = this.props;
         if(navigator) {
             navigator.pop();
@@ -44,6 +45,7 @@ class GoodUpdate extends Component{
     goBack(){
         var code = {codigo:this.state.selectedCodeInfo.codigo};
         this.props.onCodigoSelect(code);
+        this.props.setHasCodigo();
         const { navigator } = this.props;
         if(navigator) {
             navigator.pop();
