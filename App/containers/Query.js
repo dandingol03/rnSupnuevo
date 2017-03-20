@@ -60,6 +60,14 @@ class Query extends Component{
         this.setState({menuVisible: false});
     }
 
+    setHasCodigo(){
+        this.setState({hasCodigo:false});
+    }
+
+    reset(){
+        this.setState({hasCodigo:false,selectedCodeInfo:{},});
+    }
+
     onCodigoSelect(code)
     {
         const merchantId=this.props.merchantId;
@@ -250,6 +258,8 @@ class Query extends Component{
                                 taxArr:this.state.taxArr,
                                 sizeArr: this.state.sizeArr,
                                 onCodigoSelect:this.onCodigoSelect.bind(this),
+                                setHasCodigo:this.setHasCodigo.bind(this),
+                                reset:this.reset.bind(this)
                             }
                         })
                     }
