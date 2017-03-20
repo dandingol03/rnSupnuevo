@@ -397,48 +397,6 @@ class GroupQuery extends Component{
                     </View>
                 </View>
 
-<<<<<<< HEAD
-                {/*组添加*/}
-                {/*<View style={[styles.row,{borderBottomWidth:0}]}>*/}
-
-                    {/*<View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>*/}
-                        {/*<TextInput*/}
-                            {/*style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,*/}
-                                                {/*flexDirection:'row',alignItems:'center'}}*/}
-                            {/*onChangeText={(groupName) => {*/}
-                                            {/*if(groupName.toString().length==4)*/}
-                                            {/*{*/}
-
-                                                {/*this.state.query.groupName=groupName;*/}
-                                                {/*this.setState({query:this.state.query});*/}
-                                            {/*}else if(groupName.toString().length>4){*/}
-                                                {/*this.state.query.groupName=groupName;*/}
-                                                {/*this.setState({query:this.state.query});*/}
-                                            {/*}*/}
-                                            {/*else{*/}
-                                                {/*this.state.query.groupName=groupName;*/}
-                                                {/*this.setState({query:this.state.query});*/}
-                                            {/*}*/}
-                                        {/*}}*/}
-                            {/*value={this.state.query.groupName}*/}
-                            {/*placeholder='在此输入新增的组名'*/}
-                            {/*placeholderTextColor="#aaa"*/}
-                            {/*underlineColorAndroid="transparent"*/}
-                        {/*/>*/}
-                    {/*</View>*/}
-
-                    {/*<TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}*/}
-                                      {/*onPress={()=>{*/}
-                                          {/*this.commodityAddToNewGroup();*/}
-                                                  {/*}}>*/}
-                        {/*<View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>*/}
-                            {/*<Text style={{color:'#fff',fontSize:14}}>添加到新建组</Text>*/}
-                        {/*</View>*/}
-                    {/*</TouchableOpacity>*/}
-                {/*</View>*/}
-
-=======
->>>>>>> 13d324942c07cd3b840d65d8aad353c1e3e357cb
             </View>
         </View>);
 
@@ -523,46 +481,6 @@ class GroupQuery extends Component{
 
                 </ScrollView>
 
-<<<<<<< HEAD
-                <Modalbox
-                    style={[ styles.modal3,{borderRadius:12,padding:4,paddingLeft:12,paddingRight:12}]} position={"center"} ref={"modal3"}
-                    animationType={"slide"}>
-
-
-                    <View style={[styles.row,{borderWidth:0,borderBottomWidth:1,borderBottomColor:'#ddd'}]}>
-                        <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
-                            <Text style={{color:'#222'}}>组名</Text>
-                        </View>
-                        <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
-                            <TextInput
-                                style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
-                                onChangeText={(groupName) => {
-                                            this.state.groupName=groupName;
-                                            this.setState({groupName:this.state.groupName});
-                                        }}
-                                value={this.state.groupName}
-                                placeholder='在此输入新增的组名'
-                                placeholderTextColor="#aaa"
-                                underlineColorAndroid="transparent"
-                            />
-                        </View>
-                    </View>
-
-
-                    <View style={[styles.row,{borderBottomWidth:0,marginTop:10,justifyContent:'center'}]}>
-                        <TouchableOpacity style={{backgroundColor:'#00f',borderRadius:8,padding:8,paddingLeft:20,paddingRight:20}}
-                          onPress={()=>{
-                               this.commodityGroupAdd();
-                            }}>
-                            <Text style={{color:'#fff',fontSize:16}}>确认</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                </Modalbox>
-
-=======
->>>>>>> 13d324942c07cd3b840d65d8aad353c1e3e357cb
             </View>
         );
     }
