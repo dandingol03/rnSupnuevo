@@ -24,7 +24,6 @@ import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scr
 import DatePicker from 'react-native-datepicker';
 var Popover = require('react-native-popover');
 
-
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../proxy/Proxy');
@@ -38,13 +37,13 @@ import GoodAdd from './GoodAdd';
 import GroupManage from './GroupManage/index';
 
 import PriceSurvey from './PriceSurvey/PriceSurvey';
-
+import Camera from 'react-native-camera';
 
 
 class Query extends Component{
 
     closeCodesModal(val){
-        this.setState({codesModalVisible:val})
+        this.setState({codesModalVisible:val,goods:{},selectedCodeInfo:{},priceShow:null,hasCodigo:false});
     }
 
     showPopover(ref){
@@ -65,7 +64,7 @@ class Query extends Component{
     }
 
     reset(){
-        this.setState({hasCodigo:false,selectedCodeInfo:{},});
+        this.setState({hasCodigo:false,selectedCodeInfo:{},priceShow:null});
     }
 
     onCodigoSelect(code)
@@ -103,7 +102,7 @@ class Query extends Component{
             var newPrintType = this.state.printType;
             this.state.goods.codeNum = 0;
             var goods = this.state.goods;
-            this.setState({selectedCodeInfo: goodInfo,codigo:codigo,priceShow:goodInfo.priceShow,printType:newPrintType,goods:goods,hasCodigo:true});
+            this.setState({selectedCodeInfo: goodInfo,codigo:codigo,priceShow:goodInfo.priceShow,inputPrice:goodInfo.priceShow,printType:newPrintType,goods:goods,hasCodigo:true});
         }, (err) =>{
             alert(err);
             this.setState({codigo:codigo});
@@ -273,7 +272,6 @@ class Query extends Component{
     navigateGroupMaintain(){
         const { navigator } = this.props;
 
-
         if(navigator) {
             navigator.push({
                 name: 'groupMaintain',
@@ -308,7 +306,8 @@ class Query extends Component{
                     component: Group,
                     params: {
                         merchantId:merchantId,
-                        goodInfo:this.state.selectedCodeInfo
+                        goodInfo:this.state.selectedCodeInfo,
+                        reset:this.reset.bind(this)
                     }
                 })
             }
@@ -320,12 +319,11 @@ class Query extends Component{
     updatePrice(price){
 
         var goodInfo = this.state.selectedCodeInfo;
-        //goodInfo.oldPrice = price;
         goodInfo.price=price;
         goodInfo.price1=price;
         goodInfo.priceShow=price;
-        goodInfo.suggestPrice=price;
-        this.setState({selectedCodeInfo: goodInfo,priceShow:goodInfo.priceShow});
+        this.setState({selectedCodeInfo: goodInfo,priceShow:goodInfo.priceShow,inputPrice:price, taxMark:0,
+            amount:0});
     }
 
     addIVA(){
@@ -337,7 +335,7 @@ class Query extends Component{
             taxMark = 0;
         }
 
-        this.state.selectedCodeInfo.price = (Math.round(this.state.selectedCodeInfo.price1 * (1 + taxMark * this.state.selectedCodeInfo.iva)*(1 + this.state.amount) *100))/100;
+        this.state.selectedCodeInfo.price = (Math.round(this.state.inputPrice * (1 + taxMark * this.state.selectedCodeInfo.iva)*(1 + this.state.amount) *100))/100;
         this.state.selectedCodeInfo.priceShow=this.state.selectedCodeInfo.price;
         var priceShow = this.state.selectedCodeInfo.price;
         this.setState({taxMark: taxMark,priceShow:priceShow});
@@ -345,15 +343,15 @@ class Query extends Component{
 
     addPercentage1(){
         var amount =  this.state.amount + 0.1;
-        this.state.selectedCodeInfo.price = (Math.round(this.state.selectedCodeInfo.price1 * (1 + this.state.taxMark * this.state.selectedCodeInfo.iva)*(1 + amount) *100))/100;
+        this.state.selectedCodeInfo.price = (Math.round(this.state.inputPrice * (1 + this.state.taxMark * this.state.selectedCodeInfo.iva)*(1 + amount) *100))/100;
         this.state.selectedCodeInfo.priceShow= this.state.selectedCodeInfo.price;
-        var priceShow = this.state.selectedCodeInfo.price;
+        var priceShow =  this.state.selectedCodeInfo.priceShow;
         this.setState({amount:amount,priceShow:priceShow});
     }
 
     addPercentage2(){
         var amount =  this.state.amount + 0.05;
-        this.state.selectedCodeInfo.price = (Math.round(this.state.selectedCodeInfo.price1 * (1 + this.state.taxMark * this.state.selectedCodeInfo.iva)*(1 + amount) *100))/100;
+        this.state.selectedCodeInfo.price = (Math.round(this.state.inputPrice * (1 + this.state.taxMark * this.state.selectedCodeInfo.iva)*(1 + amount) *100))/100;
         this.state.selectedCodeInfo.priceShow = this.state.selectedCodeInfo.price;
         var priceShow = this.state.selectedCodeInfo.price;
         this.setState({amount:amount,priceShow:priceShow});
@@ -374,7 +372,7 @@ class Query extends Component{
         }else if(taxMark > 0){
             taxMark = 0;
         }
-        this.state.selectedCodeInfo.price = (Math.round(this.state.selectedCodeInfo.price1 * (1 + taxMark * this.state.selectedCodeInfo.iva)*(1 + this.state.amount) *100))/100;
+        this.state.selectedCodeInfo.price = (Math.round(this.state.inputPrice * (1 + taxMark * this.state.selectedCodeInfo.iva)*(1 + this.state.amount) *100))/100;
         this.state.selectedCodeInfo.priceShow=this.state.selectedCodeInfo.price;
         var priceShow = this.state.selectedCodeInfo.price;
         this.setState({taxMark: taxMark,priceShow:priceShow});
@@ -382,7 +380,7 @@ class Query extends Component{
 
     reducePercentage1(){
         var amount =  this.state.amount - 0.1;
-        this.state.selectedCodeInfo.price = (Math.round(this.state.selectedCodeInfo.price1 * (1 + this.state.taxMark * this.state.selectedCodeInfo.iva)*(1 + amount) *100))/100;
+        this.state.selectedCodeInfo.price = (Math.round(this.state.inputPrice * (1 + this.state.taxMark * this.state.selectedCodeInfo.iva)*(1 + amount) *100))/100;
         this.state.selectedCodeInfo.priceShow= this.state.selectedCodeInfo.price;
         var priceShow = this.state.selectedCodeInfo.price;
         this.setState({amount:amount,priceShow:priceShow});
@@ -390,7 +388,7 @@ class Query extends Component{
 
     reducePercentage2(){
         var amount =  this.state.amount - 0.05;
-        this.state.selectedCodeInfo.price = (Math.round(this.state.selectedCodeInfo.price1 * (1 + this.state.taxMark * this.state.selectedCodeInfo.iva)*(1 + amount) *100))/100;
+        this.state.selectedCodeInfo.price = (Math.round(this.state.inputPrice * (1 + this.state.taxMark * this.state.selectedCodeInfo.iva)*(1 + amount) *100))/100;
         this.state.selectedCodeInfo.priceShow = this.state.selectedCodeInfo.price;
         var priceShow = this.state.selectedCodeInfo.price;
         this.setState({amount:amount,priceShow:priceShow});
@@ -431,7 +429,8 @@ class Query extends Component{
                 }else{
                     var message = json.message;
                     alert(message);
-                    this.onCodigoSelect(code);
+                   // this.onCodigoSelect(code);
+                    this.reset();
                 }
             });
 
@@ -474,6 +473,10 @@ class Query extends Component{
         this.setState({printType:printType,selectCodeInfo:selectCodeInfo});
     }
 
+    closeCamera(){
+        this.setState({cameraModalVisible:false});
+    }
+
     constructor(props)
     {
         super(props);
@@ -484,15 +487,27 @@ class Query extends Component{
             codigo:null,
             selectedCodeInfo:{},
             priceShow:null,
+            inputPrice:null,
             taxMark:0,
             amount:0,
             taxArr:[],
             sizeArr:[],
             printType:{type1:'0',type2:'0',type3:'0',type4:'0'},
-            hasCodigo:false
+            hasCodigo:false,
+            cameraModalVisible:false,
+            camera: {
+                aspect: Camera.constants.Aspect.fill,
+                captureTarget: Camera.constants.CaptureTarget.disk,
+                type: Camera.constants.Type.back,
+                orientation: Camera.constants.Orientation.auto,
+                flashMode: Camera.constants.FlashMode.auto
+            },
+            barcodeX:null,
+            barcodeY:null,
+            barcodeWidth:null,
+            barcodeHeight:null,
         };
     }
-
 
     render(){
 
@@ -534,7 +549,7 @@ class Query extends Component{
                                 <TextInput
                                     style={{flex:8,height: 50,paddingLeft:10,paddingRight:10,paddingTop:6,paddingBottom:6}}
                                     onChangeText={(codeNum) => {
-                                    if(codeNum.toString().length==13)
+                                    if(codeNum.toString().length==13||codeNum.toString().length==12||codeNum.toString().length==8)
                                     {
                                         this.state.goods.codeNum=codeNum;
                                         this.setState({goods:this.state.goods});
@@ -586,6 +601,17 @@ class Query extends Component{
 
                                     <View>
                                         <Text style={{color:'#fff',fontSize:12}}>查询</Text>
+                                    </View>
+                                </TouchableOpacity>
+
+                                <TouchableOpacity style={{flex:2,height: 40,marginRight:10,paddingTop:6,paddingBottom:6,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            marginBottom:0,borderRadius:4,backgroundColor:'rgba(17, 17, 17, 0.6)'}}
+                                                  onPress={()=>{
+                                                      this.setState({cameraModalVisible:true})
+                                                  }}>
+
+                                    <View>
+                                        <Text style={{color:'#fff',fontSize:12}}>扫码</Text>
                                     </View>
                                 </TouchableOpacity>
 
@@ -690,7 +716,8 @@ class Query extends Component{
                                     onChangeText={(priceShow) => {
 
                                         this.state.selectedCodeInfo.priceShow=priceShow;
-                                        this.setState({priceShow:priceShow});
+                                        this.state.inputPrice=priceShow;
+                                        this.setState({priceShow:priceShow,inputPrice:priceShow,taxMark:0,amount:0,});
 
                                 }}
 
@@ -701,8 +728,6 @@ class Query extends Component{
                                 />
                             </View>
                         </View>
-
-
 
                         <View style={[styles.row,{borderBottomWidth:0,height:50,marginTop:12,marginBottom:12}]}>
 
@@ -818,96 +843,77 @@ class Query extends Component{
 
                         {/*包含8个按钮的按钮组*/}
                         <View style={[styles.row,{borderBottomWidth:0,height:50}]}>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                borderRightWidth:1,borderRightColor:'#fff',marginRight:1,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
-
-                                <TouchableOpacity
-                                    onPress={
+                            <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
+                                borderRightWidth:1,borderRightColor:'#fff',marginRight:1,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}
+                                              onPress={
                                     ()=>{
                                         this.addIVA();
                                     }}>
                                     <Text style={{color:'#fff',fontSize:20}}>+IVA</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}>
-
-                                <TouchableOpacity
-                                    onPress={
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
+                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}
+                                              onPress={
                                     ()=>{
                                         this.addPercentage1();
                                     }}>
-                                    <Text style={{color:'#fff',fontSize:20}}>+10%</Text>
-                                </TouchableOpacity>
 
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}>
-                                <TouchableOpacity
-                                    onPress={
+                                    <Text style={{color:'#fff',fontSize:20}}>+10%</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
+                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}
+                                              onPress={
                                     ()=>{
                                         this.addPercentage2();
                                     }}>
+
                                     <Text style={{color:'#fff',fontSize:20}}>+5%</Text>
-                                </TouchableOpacity>
-
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center'}}>
-
-                                <TouchableOpacity
-                                    onPress={
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
+                                borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center'}}
+                                              onPress={
                                     ()=>{
                                         this.zero();
                                     }}>
+
                                     <Text style={{color:'#fff',fontSize:20}}>.00</Text>
-                                </TouchableOpacity>
-                            </View>
+                            </TouchableOpacity>
                         </View>
 
                         <View style={[styles.row,{borderBottomWidth:0,height:50,marginTop:4}]}>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                borderRightWidth:1,borderRightColor:'#fff',marginRight:1,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
-
-                                <TouchableOpacity
-                                    onPress={
+                            <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
+                                borderRightWidth:1,borderRightColor:'#fff',marginRight:1,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}
+                                              onPress={
                                     ()=>{
                                         this.reduceIVA();
                                     }}>
+
                                     <Text style={{color:'#fff',fontSize:20}}>-IVA</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}>
-                                <TouchableOpacity
-                                    onPress={
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
+                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}
+                                              onPress={
                                     ()=>{
                                         this.reducePercentage1();
                                     }}>
                                     <Text style={{color:'#fff',fontSize:20}}>-10%</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}>
-                                <TouchableOpacity
-                                    onPress={
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
+                                borderRightWidth:1,borderRightColor:'#fff',alignItems:'center'}}
+                                              onPress={
                                     ()=>{
                                         this.reducePercentage2();
                                     }}>
                                     <Text style={{color:'#fff',fontSize:20}}>-5%</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
-                                borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center'}}>
-                                <TouchableOpacity
-                                    onPress={
+                            </TouchableOpacity>
+                            <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',
+                                borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center'}}
+                                              onPress={
                                     ()=>{
                                         this.zero1();
                                     }}>
                                     <Text style={{color:'#fff',fontSize:20}}>0.50</Text>
-                                </TouchableOpacity>
-
-                            </View>
+                            </TouchableOpacity>
                         </View>
 
                         <View style={[styles.row,{borderBottomWidth:0,height:50,marginTop:12}]}>
@@ -929,18 +935,9 @@ class Query extends Component{
                                 <Text style={{color:'#fff',fontSize:18}}>组改价</Text>
                             </TouchableOpacity>
 
-                            {/*<TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#387ef5',*/}
-                                    {/*borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center'}}*/}
-                                {/*onPress={*/}
-                                    {/*()=>{*/}
-                                        {/*this.navigateGoodUpdate();*/}
-                                    {/*}}>*/}
-                                    {/*<Text style={{color:'#fff',fontSize:18}}>修改</Text>*/}
-                            {/*</TouchableOpacity>*/}
                         </View>
 
                     </View>
-
 
                     <Popover
                         isVisible={this.state.menuVisible}
@@ -996,7 +993,6 @@ class Query extends Component{
 
                     </Popover>
 
-
                     <Modal
                         animationType={"slide"}
                         transparent={false}
@@ -1015,9 +1011,62 @@ class Query extends Component{
                         />
                     </Modal>
 
+                    {/*camera part*/}
+                    <Modal
+                        animationType={"slide"}
+                        transparent={false}
+                        visible={this.state.cameraModalVisible}
+                        onRequestClose={() => {alert("Modal has been closed.")}}
+                    >
+                        <Camera
+                            ref={(cam) => {
+                            this.camera = cam;
+                          }}
+                            style={styles.preview}
+                            aspect={this.state.camera.aspect}
+                            captureTarget={this.state.camera.captureTarget}
+                            type={this.state.camera.type}
+                            flashMode={this.state.camera.flashMode}
+                            defaultTouchToFocus
+                            mirrorImage={false}
+                            onBarCodeRead={(barcode)=>{
+                                var{type,data,bounds}=barcode;
+
+                                if(data!==undefined&&data!==null){
+                                  console.log('barcode data='+data);
+
+                                this.state.goods.codeNum = data;
+                                var goods =  this.state.goods;
+                                goods.codeNum = data;
+                                this.closeCamera();
+                                this.queryGoodsCode(data);
+
+                                }
+
+                            }}
+                        />
+
+                        <View style={[styles.box]}>
+                            
+                        </View>
+                        <View style={{ position: 'absolute',right: 1/2*width-100,top: 1/2*height,
+                            height:100,width:200,borderTopWidth:1,borderColor:'#e42112',backgroundColor:'transparent'}}>
+
+                        </View>
+
+                        <View style={[styles.overlay,styles.bottomOverlay]}>
+
+                            <TouchableOpacity
+                                style={styles.captureButton}
+                                onPress={()=>{this.closeCamera()}}
+                            >
+                                <Icon name="times-circle" size={50} color="#343434" />
+                            </TouchableOpacity>
+
+                        </View>
 
 
-
+                    </Modal>
 
                 </ScrollView>
             </View>);
@@ -1080,7 +1129,42 @@ var styles = StyleSheet.create({
     popoverText: {
         color: '#ccc',
         fontSize:18
-    }
+    },
+    preview: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    overlay: {
+        position: 'absolute',
+        padding: 16,
+        right: 0,
+        left: 0,
+        alignItems: 'center',
+    },
+    box:{
+        position: 'absolute',
+        right: 1/2*width-100,
+        top: 1/2*height-100,
+        height:200,
+        width:200,
+        borderWidth:1,
+        borderColor:'#387ef5',
+        backgroundColor:'transparent'
+
+    },
+    bottomOverlay: {
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    captureButton: {
+        padding: 15,
+        backgroundColor: 'white',
+        borderRadius: 40,
+    },
 });
 
 

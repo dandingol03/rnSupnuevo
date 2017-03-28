@@ -60,7 +60,6 @@ class CodesModal extends Component{
     }
 
 
-
     constructor(props)
     {
         super(props);
@@ -69,7 +68,6 @@ class CodesModal extends Component{
             codes:codes
         }
     }
-
 
     render(){
 
@@ -91,7 +89,6 @@ class CodesModal extends Component{
                     />
                 </ScrollView>;
         }else{}
-
 
 
         return (

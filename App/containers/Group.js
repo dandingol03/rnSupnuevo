@@ -28,13 +28,14 @@ import CheckBox from 'react-native-check-box';
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../proxy/Proxy');
-import Config from '../../config';
+ import Config from '../../config';
 import _ from 'lodash';
 
 
 class Group extends Component{
 
     goBack(){
+        this.props.reset();
         const { navigator } = this.props;
         if(navigator) {
             navigator.pop();
@@ -274,10 +275,37 @@ class Group extends Component{
                         //TODO:
                     }.bind(this)}>
                     <View style={lineStyle}>
+                        {
+                            rowData.checked==true?
+                                <TouchableOpacity onPress={function() {
+                              var relatedGoods1=_.cloneDeep(this.state.relatedGoods1);
+                              relatedGoods1.map(function(good,i) {
+                              if(good.commodityId==rowData.commodityId){
+                                  good.checked=false;
+                              }
+                              });
+                              this.setState({relatedGoods1: relatedGoods1,dataSource1:this.state.dataSource1.cloneWithRows(relatedGoods1)});
+                            }.bind(this)}>
+                                    <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+                                        <Icon name='check-square' size={24} color="#444"></Icon>
+                                    </View>
+                                </TouchableOpacity>
+                                :
+                                <TouchableOpacity onPress={function() {
+                              var relatedGoods1=_.cloneDeep(this.state.relatedGoods1);
+                              relatedGoods1.map(function(good,i) {
+                              if(good.commodityId==rowData.commodityId){
+                                 good.checked=true;
+                              }
+                              });
+                              this.setState({relatedGoods1: relatedGoods1,dataSource1:this.state.dataSource1.cloneWithRows(relatedGoods1)});
+                            }.bind(this)}>
+                                    <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
+                                        <Icon name='square-o' size={24} color="#444"></Icon>
+                                    </View>
+                                </TouchableOpacity>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}>
-                            {chebx}
-                        </View>
+                        }
 
                         <View style={{flex:10,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
                             <Text style={{color:'#000',fontWeight:'bold',fontSize:18}}>{rowData.codigo+'\n'+rowData.goodName}</Text>

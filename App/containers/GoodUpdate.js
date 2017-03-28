@@ -35,7 +35,7 @@ import Config from '../../config';
 class GoodUpdate extends Component{
 
     cancel(){
-        this.props.reset();
+        //this.props.reset();
         const { navigator } = this.props;
         if(navigator) {
             navigator.pop();
@@ -163,7 +163,6 @@ class GoodUpdate extends Component{
             alert(err);
         });
     }
-
     _handlePress2(index) {
         this.state.selectedCodeInfo.scaleUnit = this.state.scaleArr[index-1].label;
         var selectedCodeInfo = this.state.selectedCodeInfo;
@@ -176,7 +175,6 @@ class GoodUpdate extends Component{
         var selectedCodeInfo = this.state.selectedCodeInfo;
         this.setState({selectedCodeInfo:selectedCodeInfo});
     }
-
     show(actionSheet) {
         if(actionSheet=='actionSheet2'){
             if(this.state.scaleArr!==undefined&&this.state.scaleArr!==null&&this.state.scaleArr.length>0){
