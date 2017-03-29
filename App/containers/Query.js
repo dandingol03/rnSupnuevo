@@ -64,7 +64,8 @@ class Query extends Component{
     }
 
     reset(){
-        this.setState({hasCodigo:false,selectedCodeInfo:{},priceShow:null});
+        var printType={type1:'0',type2:'0',type3:'0',type4:'0'};
+        this.setState({hasCodigo:false,selectedCodeInfo:{},priceShow:null,printType:printType});
     }
 
     onCodigoSelect(code)
@@ -599,9 +600,7 @@ class Query extends Component{
 
                                                   }}>
 
-                                    <View>
                                         <Text style={{color:'#fff',fontSize:12}}>查询</Text>
-                                    </View>
                                 </TouchableOpacity>
 
                                 <TouchableOpacity style={{flex:2,height: 40,marginRight:10,paddingTop:6,paddingBottom:6,flexDirection:'row',justifyContent:'center',alignItems:'center',
@@ -1038,8 +1037,9 @@ class Query extends Component{
                                 this.state.goods.codeNum = data;
                                 var goods =  this.state.goods;
                                 goods.codeNum = data;
-                                this.closeCamera();
                                 this.queryGoodsCode(data);
+                                this.closeCamera();
+
 
                                 }
 
