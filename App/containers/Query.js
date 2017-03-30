@@ -738,7 +738,7 @@ class Query extends Component{
                                         <TouchableOpacity style={{justifyContent:'center'}}
                                                           onPress={
                                     ()=>{
-                                        this.updatePrintType1(1);
+                                        this.updatePrintType1('1');
                                     }}>
                                             <Text style={{'fontSize':14,color:'#444'}}>标签</Text>
                                         </TouchableOpacity>
@@ -748,7 +748,7 @@ class Query extends Component{
                                         <TouchableOpacity style={{justifyContent:'center'}}
                                                           onPress={
                                     ()=>{
-                                        this.updatePrintType1(0);
+                                        this.updatePrintType1('0');
                                     }}>
                                             <Text style={{'fontSize':14,color:'#fff'}}>标签</Text>
                                         </TouchableOpacity>
@@ -765,7 +765,7 @@ class Query extends Component{
                                         <TouchableOpacity style={{justifyContent:'center'}}
                                                           onPress={
                                     ()=>{
-                                        this.updatePrintType2(1);
+                                        this.updatePrintType2('1');
                                     }}>
                                             <Text style={{'fontSize':14,color:'#444'}}>大折扣</Text>
                                         </TouchableOpacity>
@@ -775,7 +775,7 @@ class Query extends Component{
                                         <TouchableOpacity style={{justifyContent:'center'}}
                                                           onPress={
                                     ()=>{
-                                        this.updatePrintType2(0);
+                                        this.updatePrintType2('0');
                                     }}>
                                             <Text style={{'fontSize':14,color:'#fff'}}>大折扣</Text>
                                         </TouchableOpacity>
@@ -792,7 +792,7 @@ class Query extends Component{
                                         <TouchableOpacity style={{justifyContent:'center'}}
                                                           onPress={
                                     ()=>{
-                                        this.updatePrintType3(1);
+                                        this.updatePrintType3('1');
                                     }}>
                                             <Text style={{'fontSize':14,color:'#444'}}>中折扣</Text>
                                         </TouchableOpacity>
@@ -802,7 +802,7 @@ class Query extends Component{
                                         <TouchableOpacity style={{justifyContent:'center'}}
                                                           onPress={
                                     ()=>{
-                                        this.updatePrintType3(0);
+                                        this.updatePrintType3('0');
                                     }}>
                                             <Text style={{'fontSize':14,color:'#fff'}}>中折扣</Text>
                                         </TouchableOpacity>
@@ -819,7 +819,7 @@ class Query extends Component{
                                         <TouchableOpacity style={{justifyContent:'center'}}
                                                           onPress={
                                     ()=>{
-                                        this.updatePrintType4(1);
+                                        this.updatePrintType4('1');
                                     }}>
                                             <Text style={{'fontSize':14,color:'#444'}}>小折扣</Text>
                                         </TouchableOpacity>
@@ -829,7 +829,7 @@ class Query extends Component{
                                         <TouchableOpacity style={{justifyContent:'center'}}
                                                           onPress={
                                     ()=>{
-                                        this.updatePrintType4(0);
+                                        this.updatePrintType4('0');
                                     }}>
                                             <Text style={{'fontSize':14,color:'#fff'}}>小折扣</Text>
                                         </TouchableOpacity>
