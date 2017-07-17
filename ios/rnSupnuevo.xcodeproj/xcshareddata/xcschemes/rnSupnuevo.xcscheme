@@ -124,6 +124,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "rnSupnuevo"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

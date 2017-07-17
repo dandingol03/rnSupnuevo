@@ -9,14 +9,22 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
-} from 'react-native';
+  View,
+  Image,
+} from 'react-native'
 
 import App from './App/index';
+
+import NetInfoDemo from './NetInfo.js';
+
+
+
 export default class rnSupnuevo extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <View>
+        </View>      
         <Text style={styles.welcome}>
           Welcome to React Native!
         </Text>

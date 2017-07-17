@@ -33,9 +33,11 @@ import {BoxShadow} from 'react-native-shadow'
 
 
 import {loginAction,setTimerAction} from '../action/actionCreator';
+
 var Proxy = require('../proxy/Proxy');
 
 var  Login =React.createClass({
+
     onLoginPressed:function () {
         var user=this.state.user;
         var username=user.username;
@@ -44,7 +46,7 @@ var  Login =React.createClass({
         {
             if(password!==undefined&&password!==null&&password!='')
             {
-                this.setState({showProgress: true,modalVisible:true});
+                this.setState({showProgress: true});
                 const {dispatch} = this.props;
                 this.timer= setInterval(
 
@@ -63,9 +65,22 @@ var  Login =React.createClass({
                     600,
                 );
                 dispatch(setTimerAction(this.timer));
-                dispatch(loginAction(username,password,function () {
+
+                dispatch(loginAction(username,password, (errorMsg)=> {
                     this.setState({showProgress: false,user:{}});
-                }.bind(this)));
+
+                    var string = errorMsg
+                    setTimeout(()=>{
+                        Alert.alert(
+                            '错误',
+                            string,
+                            [
+                                {text: 'OK', onPress: () => {
+                                }},
+                            ]
+                        );
+                    },900)
+                }));
 
             }else{
                 Alert.alert(
@@ -89,13 +104,13 @@ var  Login =React.createClass({
         }
     },
 
-    onPress:function () {
-        var form = this.refs.form.getValue();
-        console.log('struct=\r\n'+form);
-        this.setState({showProgress: true});
-        const {dispatch} = this.props;
-        dispatch(loginAction(form.用户名,form.密码));
-    },
+    // onPress:function () {
+    //     var form = this.refs.form.getValue();
+    //     console.log('struct=\r\n'+form);
+    //     this.setState({showProgress: true});
+    //     const {dispatch} = this.props;
+    //     dispatch(loginAction(form.用户名,form.密码));
+    // },
 
     getInitialState:function(){
         return ({
@@ -123,7 +138,6 @@ var  Login =React.createClass({
 
         return (
             <View style={[styles.container]}>
-
 
                 <View style={[{backgroundColor:'#387ef5',padding:10,justifyContent:'center',flexDirection:'row'}]}>
                     <Text style={{color:'#fff',fontSize:22}}>supnuevo</Text>

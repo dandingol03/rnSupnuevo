@@ -29,8 +29,9 @@ var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
-import MultiPrices from './MultiPrices'
-import PriceCodes from './PriceCodes'
+import MultiPrices from './MultiPrices';
+import PriceCodes from './PriceCodes';
+import Camera from 'react-native-camera';
 
 class PriceSurvey extends Component{
 
@@ -70,7 +71,6 @@ class PriceSurvey extends Component{
             })
         }
     }
-
 
     fetchData(){
         const merchantId=this.props.merchantId;
@@ -124,7 +124,6 @@ class PriceSurvey extends Component{
         });
     }
 
-
     onCodigoSelect(code,count)
     {
         const merchantId=this.props.merchantId;
@@ -150,7 +149,6 @@ class PriceSurvey extends Component{
             alert(err);
         });
     }
-
 
     queryGoodsCode(codeNum){
         //var code = parseInt(codeNum);
@@ -240,6 +238,11 @@ class PriceSurvey extends Component{
         return row;
     }
 
+    closeCamera(){
+        this.setState({cameraModalVisible:false});
+    }
+
+
     constructor(props)
     {
         super(props);
@@ -248,6 +251,18 @@ class PriceSurvey extends Component{
             groupCodes:null,
             goods:{},
             count:null,
+            cameraModalVisible:false,
+            camera: {
+                aspect: Camera.constants.Aspect.fill,
+                captureTarget: Camera.constants.CaptureTarget.disk,
+                type: Camera.constants.Type.back,
+                orientation: Camera.constants.Orientation.auto,
+                flashMode: Camera.constants.FlashMode.auto
+            },
+            barcodeX:null,
+            barcodeY:null,
+            barcodeWidth:null,
+            barcodeHeight:null,
         };
     }
 
@@ -362,6 +377,17 @@ class PriceSurvey extends Component{
                                     </View>
                                 </TouchableOpacity>
 
+                                <TouchableOpacity style={{flex:2,height: 40,marginRight:10,paddingTop:6,paddingBottom:6,flexDirection:'row',justifyContent:'center',alignItems:'center',
+                            marginBottom:0,borderRadius:4,backgroundColor:'rgba(17, 17, 17, 0.6)'}}
+                                                  onPress={()=>{
+                                                      this.setState({cameraModalVisible:true})
+                                                  }}>
+
+                                    <View>
+                                        <Text style={{color:'#fff',fontSize:12}}>扫码</Text>
+                                    </View>
+                                </TouchableOpacity>
+
                             </View>
                         </View>
 
@@ -401,6 +427,64 @@ class PriceSurvey extends Component{
                     </ScrollView>
                 </View>
 
+                {/*camera part*/}
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.cameraModalVisible}
+                    onRequestClose={() => {alert("Modal has been closed.")}}
+                >
+                    <Camera
+                        ref={(cam) => {
+                            this.camera = cam;
+                          }}
+                        style={styles.preview}
+                        aspect={this.state.camera.aspect}
+                        captureTarget={this.state.camera.captureTarget}
+                        type={this.state.camera.type}
+                        flashMode={this.state.camera.flashMode}
+                        defaultTouchToFocus
+                        mirrorImage={false}
+                        onBarCodeRead={(barcode)=>{
+                                var{type,data,bounds}=barcode;
+
+                                if(data!==undefined&&data!==null){
+                                  console.log('barcode data='+data);
+
+                                this.state.goods.codeNum = data;
+                                var goods =  this.state.goods;
+                                goods.codeNum = data;
+                                this.queryGoodsCode(data);
+                                this.closeCamera();
+
+
+                                }
+
+                            }}
+                    />
+
+                    <View style={[styles.box]}>
+
+                    </View>
+                    <View style={{ position: 'absolute',right: 1/2*width-100,top: 1/2*height,
+                            height:100,width:200,borderTopWidth:1,borderColor:'#e42112',backgroundColor:'transparent'}}>
+
+                    </View>
+
+                    <View style={[styles.overlay,styles.bottomOverlay]}>
+
+                        <TouchableOpacity
+                            style={styles.captureButton}
+                            onPress={()=>{this.closeCamera()}}
+                        >
+                            <Icon name="times-circle" size={50} color="#343434" />
+                        </TouchableOpacity>
+
+                    </View>
+
+
+                </Modal>
+
             </View>);
     }
 }
@@ -433,6 +517,41 @@ var styles = StyleSheet.create({
         height:50,
         borderBottomWidth:1,
         borderBottomColor:'#222'
+    },
+    preview: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    overlay: {
+        position: 'absolute',
+        padding: 16,
+        right: 0,
+        left: 0,
+        alignItems: 'center',
+    },
+    box:{
+        position: 'absolute',
+        right: 1/2*width-100,
+        top: 1/2*height-100,
+        height:200,
+        width:200,
+        borderWidth:1,
+        borderColor:'#387ef5',
+        backgroundColor:'transparent'
+
+    },
+    bottomOverlay: {
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    captureButton: {
+        padding: 15,
+        backgroundColor: 'white',
+        borderRadius: 40,
     },
 
 });

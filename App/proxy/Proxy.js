@@ -6,6 +6,13 @@
  */
 
 
+import  {
+    NetInfo,
+    Alert,
+} from 'react-native';
+
+import store from '../store/index';
+
 
 
 let Proxy={
@@ -35,7 +42,61 @@ let Proxy={
             throw new Error('lack of url field');
         }
     },
+
     post:(params,success,fail)=>{
+
+        var connectionInfoHistory = store.getState().netInfo.connectionInfoHistory;
+        var length = connectionInfoHistory.length;
+
+        //connectionInfoHistory[length-1] = 'none';
+
+        if(connectionInfoHistory[length-1]!=='none'&&connectionInfoHistory[length-1]!=='unknown'){
+
+            var url=params.url;
+            if(url!==undefined&&url!==null)
+            {
+
+                if(Object.prototype.toString.call(params.body)=='[object Object]')
+                    params.body = JSON.stringify(params.body);
+
+                var options={
+                    method:'POST',
+                    headers:params.headers!==undefined&&params.headers!==null?params.headers:null,
+                    cache:false,
+                    body:params.body
+                };
+
+                fetch(url,options)
+                    .then((response) => response.text())
+                    .then((res) => {
+                        success(JSON.parse(res));
+                    })
+                    .catch((err) => {
+                        var msg = '服务器返回失败'
+                        if(fail!==null&&fail!==undefined){
+                            fail(msg);
+                            console.warn(err);
+                        }
+
+                    })
+                    .done();
+
+            }else{
+                throw new Error('lack of url field');
+            }
+
+        }
+        else{
+            if(fail!==null){
+                var msg = '未连接网络'
+                fail(msg);
+            }
+            console.log('没联网！！！！！')
+        }
+
+    },
+
+    postes:(params)=>{
         var url=params.url;
         if(url!==undefined&&url!==null)
         {
@@ -50,17 +111,24 @@ let Proxy={
                 body:params.body
             };
 
-            fetch(url,options)
-                .then((response) => response.text())
-                .then((res) => {
-                    success(JSON.parse(res));
-                })
-                .done();
+            return new Promise((resolve,reject) => {
+                fetch(url,options)
+                    .then((response) => response.text())
+                    .then((res) => {
+                        resolve(JSON.parse(res));
+                    })
+                    .catch((err) => {
+                        reject(new Error(err));
+                        console.warn(err);
+                    }).done();
+
+            });
 
         }else{
             throw new Error('lack of url field');
         }
     },
+
     fetch:(params)=>{
         var url=params.url;
         if(url!==undefined&&url!==null)
@@ -86,6 +154,7 @@ let Proxy={
             throw new Error('lack of url field');
         }
     },
+
     fetchInPlain:(params)=>{
         var url=params.url;
         if(url!==undefined&&url!==null&&url!='') {
@@ -114,5 +183,7 @@ let Proxy={
         }
 
     }
+
 }
+
 module.exports=Proxy;

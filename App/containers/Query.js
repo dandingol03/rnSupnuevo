@@ -4,6 +4,7 @@
 import React,{Component} from 'react';
 
 import  {
+    NetInfo,
     AppRegistry,
     StyleSheet,
     TouchableHighlight,
@@ -103,10 +104,22 @@ class Query extends Component{
             var newPrintType = this.state.printType;
             this.state.goods.codeNum = 0;
             var goods = this.state.goods;
-            this.setState({selectedCodeInfo: goodInfo,codigo:codigo,priceShow:goodInfo.priceShow,inputPrice:goodInfo.priceShow,printType:newPrintType,goods:goods,hasCodigo:true});
+            this.setState({selectedCodeInfo: goodInfo,codigo:codigo,priceShow:goodInfo.priceShow,
+                inputPrice:goodInfo.priceShow,printType:newPrintType,goods:goods,hasCodigo:true});
         }, (err) =>{
-            alert(err);
-            this.setState({codigo:codigo});
+            this.setState({codesModalVisible:false});
+
+            setTimeout(()=>{
+                Alert.alert(
+                    '错误',
+                    err,
+                    [
+                        {text: 'OK', onPress: () => {
+                        }},
+                    ]
+                );
+            },900)
+
         });
     }
 
@@ -115,12 +128,16 @@ class Query extends Component{
         const { merchantId } = this.props;
 
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoGetQueryDataListByInputStringBs.do',
+            url:Config.server+'/func/commodity/getQueryDataListByInputStringMobile',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: "codigo=" + codeNum + "&merchantId=" + merchantId
+            //body: "codigo=" + codeNum + "&merchantId=" + merchantId
+            body:{
+                codigo:codeNum,
+                merchantId:merchantId
+            }
         },(json)=> {
             var errorMsg=json.message;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -206,6 +223,18 @@ class Query extends Component{
                 }
 
             }
+        },(err) =>{
+            setTimeout(()=>{
+                Alert.alert(
+                    '错误',
+                    err,
+                    [
+                        {text: 'OK', onPress: () => {
+                        }},
+                    ]
+                );
+            },900)
+
         });
     }
 
@@ -267,6 +296,18 @@ class Query extends Component{
                     alert('请先选择要修改的商品！');
                 }
             }
+        },(err) =>{
+            setTimeout(()=>{
+                Alert.alert(
+                    '错误',
+                    err,
+                    [
+                        {text: 'OK', onPress: () => {
+                        }},
+                    ]
+                );
+            },900)
+
         });
     }
 

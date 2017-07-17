@@ -24,6 +24,7 @@ let user = (state = initialState, action) => {
                 username:action.username
             });
             break;
+
         default:
             return state;
     }

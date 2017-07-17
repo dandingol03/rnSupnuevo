@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+    NetInfo,
     View,
     StyleSheet,
     Text,
@@ -20,6 +21,7 @@ import Login from '../containers/Login';
 import Query from '../containers/Query';
 
 import Group from '../containers/Group';
+import { setNetInfo } from '../action/actionCreator';
 
 
 const tabBarTintColor = '#f8f8f8';// 标签栏的背景颜色
@@ -29,9 +31,11 @@ class App extends React.Component {
 
     constructor(props) {
         super(props);
+        const {dispatch} = this.props;
         this.state={
             tab:'query',
-            selectedTab:'query'
+            selectedTab:'query',
+            isConnected: null,
         }
     }
     _createNavigatorItem(route,icon,title)
@@ -105,7 +109,29 @@ class App extends React.Component {
         }
     }
 
+    componentDidMount() {
+        NetInfo.addEventListener(
+            'change',
+            this._handleConnectionInfoChange.bind(this)
+        );
+
+    }
+
+    _handleConnectionInfoChange(connectionInfo) {
+        const connectionInfoHistory = this.props.connectionInfoHistory.slice();
+        connectionInfoHistory.push(connectionInfo);
+        const {dispatch} = this.props;
+        dispatch(setNetInfo(connectionInfoHistory));
+
+    }
+
     componentWillUnmount() {
+
+        NetInfo.removeEventListener(
+            'change',
+            this._handleConnectionInfoChange
+        );
+
         if (Platform.OS === 'android') {
             BackAndroid.removeEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
         }
@@ -181,7 +207,8 @@ var styles = StyleSheet.create({
 
 export default connect(
     (state) => ({
-        auth: state.user.auth
+        auth: state.user.auth,
+        connectionInfoHistory:state.netInfo.connectionInfoHistory,
     })
 )(App);
 
