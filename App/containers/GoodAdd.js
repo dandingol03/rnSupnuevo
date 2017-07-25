@@ -94,15 +94,24 @@ class GoodAdd extends Component{
 
 
             Proxy.post({
-                url:Config.server+'supnuevo/supnuevoSaveOrUpdateSupnuevoCommonCommodityMobile.do',
+                url:Config.server+'/func/commodity/saveOrUpdateSupnuevoCommonCommodityMobile',
                 headers: {
-                    'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                    'Content-Type': 'application/json'
                 },
-                body: "taxId=" + this.state.newGoodInfo.taxId + "&supnuevoMerchantId=" + this.state.merchantId
-                + "&codigo=" + this.state.newGoodInfo.codigo+ "&nombre=" + this.state.newGoodInfo.nombre+
-                "&sizeValue=" + this.state.newGoodInfo.setSizeValue+ "&sizeUnited=" + this.state.newGoodInfo.sizeUnit+
-                "&scaleUnited=" + this.state.newGoodInfo.scaleUnit
+               // body: "taxId=" + this.state.newGoodInfo.taxId + "&supnuevoMerchantId=" + this.state.merchantId
+               // + "&codigo=" + this.state.newGoodInfo.codigo+ "&nombre=" + this.state.newGoodInfo.nombre+
+               // "&sizeValue=" + this.state.newGoodInfo.setSizeValue+ "&sizeUnited=" + this.state.newGoodInfo.sizeUnit+
+               // "&scaleUnited=" + this.state.newGoodInfo.scaleUnit
+                body:{
+                    taxId:this.state.newGoodInfo.taxId,
+                    supnuevoMerchantId:this.state.merchantId,
+                    codigo:this.state.newGoodInfo.codigo,
+                    nombre:this.state.newGoodInfo.nombre,
+                    sizeValue:this.state.newGoodInfo.setSizeValue,
+                    sizeUnited:this.state.newGoodInfo.sizeUnit,
+                    scaleUnited:this.state.newGoodInfo.scaleUnit
+                }
             },(json)=> {
                 var errorMsg=json.errorMsg;
                 var message = json.message;
@@ -133,12 +142,17 @@ class GoodAdd extends Component{
         }
 
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoGetSupnuevoScaleInfoListMobile.do',
+            url:Config.server+'/func/commodity/getSupnuevoScaleInfoListMobile',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "sizeUnit=" + sizeUnit + "&merchantId=" + this.state.merchantId
+           // body: "sizeUnit=" + sizeUnit + "&merchantId=" + this.state.merchantId
+            body:{
+                sizeUnit:sizeUnit,
+                merchantId:this.state.merchantId
+            }
+
         },(json)=> {
             var scaleArr = new Array();
             json.scaleArr.map(function(index,i){

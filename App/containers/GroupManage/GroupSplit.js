@@ -195,12 +195,15 @@ class GroupSplit extends Component{
         const groupInfo=this.state.groupInfo;
 
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetSupnuevoCommonCommodityListOfGroupMobile.do",
+            url:Config.server+"/func/commodity/getSupnuevoCommonCommodityListOfGroupMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: 'groupId='+groupId
+            //body: 'groupId='+groupId
+            body:{
+                groupId:groupId
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -244,15 +247,22 @@ class GroupSplit extends Component{
 
         var body='';
         if(groupNum!==undefined&&groupNum!==null)
-            body='groupNum='+groupNum+"&supnuevoMerchantId=" + merchantId;
+           // body='groupNum='+groupNum+"&supnuevoMerchantId=" + merchantId;
+            body={
+                groupNum:groupNum,
+                supnuevoMerchantId:merchantId
+            }
         else
-            body="codigo=" + codigo + "&supnuevoMerchantId=" + merchantId;
-
+            //body="codigo=" + codigo + "&supnuevoMerchantId=" + merchantId;
+            body={
+                codigo:codigo,
+                supnuevoMerchantId:merchantId
+            }
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetSupnuevoCommonCommodityGroupListByCodigoMobile.do",
+            url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
             body: body
         },(json)=> {
@@ -301,12 +311,15 @@ class GroupSplit extends Component{
 
         const { merchantId } = this.props;
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommonCommodityGroupListByGroupNumMobile.do',
+            url:Config.server+'/func/commodity/getSupnuevoCommonCommodityGroupListByGroupNumMobile',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "groupNum=" + groupNum
+            //body: "groupNum=" + groupNum
+            body:{
+                groupNum:groupNum
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -331,12 +344,16 @@ class GroupSplit extends Component{
         if(groupInfo&&groupInfo.groupId!==undefined&&groupInfo.groupId!==null)
         {
             Proxy.post({
-                url:Config.server+"supnuevo/supnuevoRemoveSupnuevoCommodityFromGroupMobile.do",
+                url:Config.server+"/func/commodity/removeSupnuevoCommodityFromGroupMobile",
                 headers: {
-                    'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                    'Content-Type': 'application/json'
                 },
-                body: "commodityIds=" + commodityIds.toString() + "&groupId=" + groupInfo.groupId
+               // body: "commodityIds=" + commodityIds.toString() + "&groupId=" + groupInfo.groupId
+                body:{
+                    commodityIds:commodityIds.toString(),
+                    groupId:groupInfo.groupId
+                }
             },(json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -384,12 +401,17 @@ class GroupSplit extends Component{
         {
 
             Proxy.post({
-                url:Config.server+"supnuevo/supnuevoAddSupnuevoCommodityIntoGroupMobile.do",
+                url:Config.server+"/func/commodity/addSupnuevoCommodityIntoGroupMobile",
                 headers: {
-                    'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                    'Content-Type': 'application/json'
                 },
-                body: "commodityId=" + code.commodityId + "&groupId=" + groupId+'&supnuevoMerchantId='+merchantId
+                //body: "commodityId=" + code.commodityId + "&groupId=" + groupId+'&supnuevoMerchantId='+merchantId
+                body:{
+                    commodityId:code.commodityId,
+                    groupId:groupId,
+                    supnuevoMerchantId:merchantId
+                }
             },(json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -453,12 +475,18 @@ class GroupSplit extends Component{
                 {
 
                     Proxy.post({
-                        url:Config.server+"supnuevo/supnuevoBreakSupnuevoCommodityGroupMobile.do",
+                        url:Config.server+"/func/commodity/breakSupnuevoCommodityGroupMobile",
                         headers: {
-                            'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                            'Content-Type': 'application/x-www-form-urlencoded'
+                            //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                            'Content-Type': 'application/json'
                         },
-                        body: "commodityIds=" + commodityIds.toString() + "&groupName=" + groupName+'&groupId='+groupId+'&supnuevoMerchantId='+merchantId
+                        //body: "commodityIds=" + commodityIds.toString() + "&groupName=" + groupName+'&groupId='+groupId+'&supnuevoMerchantId='+merchantId
+                        body:{
+                            commodityIds:commodityIds.toString(),
+                            groupName:groupName,
+                            groupId:groupId,
+                            supnuevoMerchantId:merchantId
+                        }
                     },(json)=> {
                         var errorMsg=json.errorMsg;
                         if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -518,12 +546,16 @@ class GroupSplit extends Component{
         const {merchantId}=this.props;
 
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommonCommodityListOfGroupMobile.do',
+            url:Config.server+'/func/commodity/getSupnuevoCommonCommodityListOfGroupMobile',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "&groupId=" + groupId+'&supnuevoMerchantId='+merchantId
+            //body: "&groupId=" + groupId+'&supnuevoMerchantId='+merchantId
+            body:{
+                groupId:groupId,
+                supnuevoMerchantId:merchantId
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){

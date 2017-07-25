@@ -62,12 +62,16 @@ class PriceCodes extends Component{
         var commodityId=code.commodityId;
 
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetAreaGroupPriceByCommodityIdMobile.do",
+            url:Config.server+"/func/commodity/getAreaGroupPriceByCommodityIdMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "commodityId=" + commodityId + "&merchantId=" + merchantId
+           // body: "commodityId=" + commodityId + "&merchantId=" + merchantId
+            body:{
+                commodityId:commodityId,
+                merchantId:merchantId
+            }
         },(json)=> {
             var o = json;
             var errorMsg=json.message;

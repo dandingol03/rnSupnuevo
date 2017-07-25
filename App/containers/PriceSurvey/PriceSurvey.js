@@ -75,12 +75,15 @@ class PriceSurvey extends Component{
     fetchData(){
         const merchantId=this.props.merchantId;
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetGroupInfoListOfMerchantMobile.do",
+            url:Config.server+"/func/commodity/getGroupInfoListOfMerchantMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body:"merchantId=" + merchantId
+            //body:"merchantId=" + merchantId
+            body:{
+                merchantId:merchantId
+            }
         },(json)=> {
             var o = json;
             var errorMsg=json.message;
@@ -101,12 +104,16 @@ class PriceSurvey extends Component{
         const merchantId=this.props.merchantId;
 
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetGroupCommodityListOfGroupMobile.do",
+            url:Config.server+"/func/commodity/getGroupCommodityListOfGroupMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "groupId=" + groupId + "&merchantId=" + merchantId
+           // body: "groupId=" + groupId + "&merchantId=" + merchantId
+            body:{
+                groupId:groupId,
+                merchantId:merchantId
+            }
         },(json)=> {
             var o = json;
             var errorMsg=json.message;
@@ -130,12 +137,16 @@ class PriceSurvey extends Component{
         var codigo=code;
 
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetAreaGroupPriceByCommodityIdMobile.do",
+            url:Config.server+"/func/commodity/getAreaGroupPriceByCommodityIdMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "commodityId=" + codigo + "&merchantId=" + merchantId
+            //body: "commodityId=" + codigo + "&merchantId=" + merchantId
+            body:{
+                commodityId:codigo,
+                merchantId:merchantId
+            }
         },(json)=> {
             var o = json;
             var errorMsg=json.message;
@@ -155,12 +166,16 @@ class PriceSurvey extends Component{
         const { merchantId } = this.props;
 
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoGetGroupCommodityCodigoListByLastCodigoMobile.do',
+            url:Config.server+'/func/commodity/getGroupCommodityCodigoListByLastCodigoMobile',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "codigo=" + codeNum + "&merchantId=" + merchantId
+            //body: "codigo=" + codeNum + "&merchantId=" + merchantId
+            body:{
+                codigo:codeNum,
+                merchantId:merchantId
+            }
         },(json)=> {
             var o = json;
             var errorMsg=json.message;

@@ -95,13 +95,21 @@ class MultiPrices extends Component{
             }
         }
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoSetAreaGroupPriceByPriceIdMobile.do",
+            url:Config.server+"/func/commodity/setAreaGroupPriceByPriceIdMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "commodityId=" + commodityId + "&merchantId=" + merchantId+"&price=" +
-            this.state.price+"&internetId=" + this.state.internetId+"&storeId=" + this.state.storeId+"&modifyType=" + this.state.modifyType
+            //body: "commodityId=" + commodityId + "&merchantId=" + merchantId+"&price=" +
+            //this.state.price+"&internetId=" + this.state.internetId+"&storeId=" + this.state.storeId+"&modifyType=" + this.state.modifyType
+            body:{
+                commodityId:commodityId,
+                merchantId:merchantId,
+                price:this.state.price,
+                internetId:this.state.internetId,
+                storeId:this.state.storeId,
+                modifyType:this.state.modifyType
+            }
         },(json)=> {
             var o = json;
             var message=json.message;

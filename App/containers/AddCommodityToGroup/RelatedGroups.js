@@ -65,12 +65,15 @@ class RelatedGroups extends Component{
     {
 
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetSupnuevoCommonCommodityListOfGroupMobile.do",
+            url:Config.server+"/func/commodity/getSupnuevoCommonCommodityListOfGroupMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: 'groupId='+groupId
+           // body: 'groupId='+groupId
+            body:{
+                groupId:groupId
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){

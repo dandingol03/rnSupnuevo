@@ -40,6 +40,7 @@ import GroupManage from './GroupManage/index';
 import PriceSurvey from './PriceSurvey/PriceSurvey';
 import Camera from 'react-native-camera';
 
+import sale from './Sale/Sale';
 
 class Query extends Component{
 
@@ -75,12 +76,16 @@ class Query extends Component{
         var codigo=code.codigo;
 
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetSupnuevoBuyerPriceFormByCodigoBs.do",
+            url:Config.server+"/func/commodity/getSupnuevoBuyerPriceFormByCodigoMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "codigo=" + codigo + "&supnuevoMerchantId=" + merchantId
+           //body: "codigo=" + codigo + "&supnuevoMerchantId=" + merchantId
+            body:{
+                codigo:codigo,
+                supnuevoMerchantId:merchantId
+            }
         },(json)=> {
             var goodInfo = json.object;
 
@@ -124,21 +129,23 @@ class Query extends Component{
     }
 
     queryGoodsCode(codeNum){
-        //var code = parseInt(codeNum);
+
         const { merchantId } = this.props;
 
-        Proxy.post({
+
+        Proxy.postes({
             url:Config.server+'/func/commodity/getQueryDataListByInputStringMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/json'
             },
             //body: "codigo=" + codeNum + "&merchantId=" + merchantId
-            body:{
+            body: {
                 codigo:codeNum,
                 merchantId:merchantId
             }
-        },(json)=> {
+        }).then((json)=>{
             var errorMsg=json.message;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -153,7 +160,7 @@ class Query extends Component{
                     this.onCodigoSelect(code);
                 }
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
         });
 
@@ -176,12 +183,16 @@ class Query extends Component{
         const {merchantId}=this.props;
 
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommodityTaxInfoListMobile.do',
+            url:Config.server+'/func/commodity/getSupnuevoCommodityTaxInfoListMobile',
+            //url:Config.server+'supnuevo/supnuevoGetSupnuevoCommodityTaxInfoListMobile.do',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body:"merchantId=" + merchantId
+            //body:"merchantId=" + merchantId
+            body:{
+                merchantId:merchantId
+            }
         },(json)=> {
 
             var errorMsg=json.errorMsg;
@@ -243,12 +254,15 @@ class Query extends Component{
         const {merchantId}=this.props;
 
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommodityTaxInfoListMobile.do',
+            url:Config.server+'/func/commodity/getSupnuevoCommodityTaxInfoListMobile',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body:"merchantId=" + merchantId
+           // body:"merchantId=" + merchantId
+            body:{
+                merchantId:merchantId
+            }
         },(json)=> {
 
             var errorMsg=json.errorMsg;
@@ -330,6 +344,18 @@ class Query extends Component{
             navigator.push({
                 name: 'priceSurvey',
                 component: PriceSurvey,
+                params: {
+                }
+            })
+        }
+    }
+
+    navigateSale(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.push({
+                name: 'sale',
+                component: sale,
                 params: {
                 }
             })
@@ -457,12 +483,19 @@ class Query extends Component{
         if(priceShow !== null && priceShow !== undefined && priceShow !== ''){
 
             Proxy.post({
-                url:Config.server+'supnuevo/supnueSaveOrUpdateSupnuevoBuyerCommodityPriceMobile.do?',
+                url:Config.server+'/func/commodity/saveOrUpdateSupnuevoBuyerCommodityPriceMobile',
                 headers: {
-                    'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                    'Content-Type': 'application/json'
                 },
-                body:"merchantId=" + merchantId + "&price=" + priceShow+ "&commodityId=" + commodityId+ "&printType=" + printType+ "&codigo=" + codigo
+                //body:"merchantId=" + merchantId + "&price=" + priceShow+ "&commodityId=" + commodityId+ "&printType=" + printType+ "&codigo=" + codigo
+                body:{
+                    merchantId:merchantId,
+                    price:priceShow,
+                    commodityId:commodityId,
+                    printType:printType,
+                    codigo:codigo
+                }
             },(json)=> {
 
                 var errorMsg=json.errorMsg;
@@ -1015,7 +1048,7 @@ class Query extends Component{
                             <Text style={[styles.popoverText,{color:'#444'}]}>组商品管理</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={[styles.popoverContent,,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
+                        <TouchableOpacity style={[styles.popoverContent,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
                                           onPress={()=>{
                                               this.closePopover();
                                               this.navigateGroupMaintain();
@@ -1023,7 +1056,7 @@ class Query extends Component{
                             <Text style={[styles.popoverText,{color:'#444'}]}>商品组维护</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={[styles.popoverContent]}
+                        <TouchableOpacity style={[styles.popoverContent,{borderBottomWidth:1,borderBottomColor:'#ddd'}]}
                                           onPress={()=>{
                                               this.closePopover();
                                               this.navigatePriceSurvey();
@@ -1031,6 +1064,13 @@ class Query extends Component{
                             <Text style={[styles.popoverText,{color:'#444'}]}>商品价格调查</Text>
                         </TouchableOpacity>
 
+                        <TouchableOpacity style={[styles.popoverContent]}
+                                          onPress={()=>{
+                                              this.closePopover();
+                                              this.navigateSale();
+                                          }}>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>收银</Text>
+                        </TouchableOpacity>
                     </Popover>
 
                     <Modal
@@ -1088,7 +1128,7 @@ class Query extends Component{
                         />
 
                         <View style={[styles.box]}>
-                            
+
                         </View>
                         <View style={{ position: 'absolute',right: 1/2*width-100,top: 1/2*height,
                             height:100,width:200,borderTopWidth:1,borderColor:'#e42112',backgroundColor:'transparent'}}>

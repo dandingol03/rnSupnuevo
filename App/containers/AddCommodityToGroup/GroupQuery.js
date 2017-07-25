@@ -131,15 +131,23 @@ class GroupQuery extends Component{
 
         var body='';
         if(groupNum!==undefined&&groupNum!==null)
-            body='groupNum='+groupNum+"&supnuevoMerchantId=" + merchantId;
+            //body='groupNum='+groupNum+"&supnuevoMerchantId=" + merchantId;
+            body={
+                groupNum:groupNum,
+                supnuevoMerchantId:merchantId
+            }
         else
-            body="codigo=" + codigo + "&supnuevoMerchantId=" + merchantId;
+            //body="codigo=" + codigo + "&supnuevoMerchantId=" + merchantId;
+            body={
+                codigo:codigo,
+                supnuevoMerchantId:merchantId
+            }
 
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetSupnuevoCommonCommodityGroupListByCodigoMobile.do",
+            url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
             body: body
         },(json)=> {
@@ -189,12 +197,16 @@ class GroupQuery extends Component{
         //var code = parseInt(codeNum);
         const { merchantId } = this.props;
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommonCommodityListByLastFourCodigoMobile.do',
+            url:Config.server+'/func/commodity/getSupnuevoCommonCommodityListByLastFourCodigoMobile',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "codigo=" + codeNum + "&merchantId=" + merchantId
+          // body: "codigo=" + codeNum + "&merchantId=" + merchantId
+            body:{
+                codigo:codeNum,
+                merchantId:merchantId
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -218,12 +230,15 @@ class GroupQuery extends Component{
     queryCommodityListByGroupId(groupId,groupNum,groupName)
     {
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetSupnuevoCommonCommodityListOfGroupMobile.do",
+            url:Config.server+"/func/commodity/getSupnuevoCommonCommodityListOfGroupMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: 'groupId='+groupId
+            //body: 'groupId='+groupId
+            body:{
+                groupId:groupId
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -259,12 +274,15 @@ class GroupQuery extends Component{
     fetchData(){
         const merchantId=this.props.merchantId;
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetGroupInfoListOfMerchantMobile.do",
+            url:Config.server+"/func/commodity/getGroupInfoListOfMerchantMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body:"merchantId=" + merchantId
+            //body:"merchantId=" + merchantId
+            body:{
+                merchantId:merchantId
+            }
         },(json)=> {
             var o = json;
             var errorMsg=json.message;

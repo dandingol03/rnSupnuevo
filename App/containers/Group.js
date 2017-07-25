@@ -69,12 +69,16 @@ class Group extends Component{
 
         var merchantId=this.props.merchantId;
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoGetSupnuevoBuyerCommodityPriceFormListOfGroupMobile.do',
+            url:Config.server+'/func/commodity/getSupnuevoBuyerCommodityPriceFormListOfGroupMobile',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "commodityId=" + commodityId + "&merchantId=" + merchantId
+           // body: "commodityId=" + commodityId + "&merchantId=" + merchantId
+            body:{
+                commodityId:commodityId,
+                merchantId:merchantId
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -339,16 +343,23 @@ class Group extends Component{
         //TODO:make a fetch
 
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoUpdateSupnuevoBuyerCommodityPriceGroupMobile.do',
+            url:Config.server+'/func/commodity/updateSupnuevoBuyerCommodityPriceGroupMobile',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "commodityIds=" + selectedRelativePriceIds.toString() +
-            "&merchantId=" + merchantId+
-            '&priceShow='+goodInfo.priceShow+
-            '&printType='+goodInfo.printType+
-            '&price='+goodInfo.price
+            //body: "commodityIds=" + selectedRelativePriceIds.toString() +
+            //"&merchantId=" + merchantId+
+            //'&priceShow='+goodInfo.priceShow+
+            //'&printType='+goodInfo.printType+
+            //'&price='+goodInfo.price
+            body:{
+                commodityIds:selectedRelativePriceIds.toString(),
+                merchantId:merchantId,
+                priceShow:goodInfo.priceShow,
+                printType:goodInfo.printType,
+                price:goodInfo.price
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
