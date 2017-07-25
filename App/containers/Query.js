@@ -554,6 +554,9 @@ class Query extends Component{
 
     constructor(props)
     {
+
+
+
         super(props);
         this.state = {
             uploadModalVisible:false,
@@ -1069,7 +1072,7 @@ class Query extends Component{
                                               this.closePopover();
                                               this.navigateSale();
                                           }}>
-                            <Text style={[styles.popoverText,{color:'#444'}]}>收银</Text>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>收银111</Text>
                         </TouchableOpacity>
                     </Popover>
 
