@@ -8,73 +8,6 @@ import * as types from './types';
 import Config from '../../config';
 var Proxy = require('../proxy/Proxy');
 
-// export let loginAction=function(username,password,cb){
-//
-//     return dispatch=>{
-//
-//         var versionName = "3.0";
-//
-//         Proxy.post({
-//             //url:Config.server+'supnuevo/supnuevoGetUserLoginJSONObjectMobile.do',
-//             url:Config.server+'/func/auth/webLogin',
-//             headers: {
-//                // 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-//                 'Content-Type': 'application/json'
-//             },
-//             //body: "password=" + password + "&loginName=" + username + "&appVersion=" + versionName
-//             body:{
-//                 loginName:username,
-//                 password:password,
-//             }
-//         },(json)=> {
-//             var errorMsg=json.errorMsg;
-//
-//             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
-//                 //alert(errorMsg);
-//                 dispatch(getSession(null));
-//                 dispatch(clearTimerAction());
-//                 if(cb)
-//                     cb(errorMsg);
-//             }else{
-//                 Proxy.post({
-//                         //url:Config.server+'supnuevo/supnuevoGetUserLoginJSONObjectMobile.do',
-//                         url:Config.server+'/commodity/getUserInfo',
-//                         headers: {
-//                             // 'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-//                             'Content-Type': 'application/json'
-//                         },
-//                         body:{
-//                             personId:json.personId.toString(),
-//                             appVersion:versionName
-//                         }}
-//                     ,(json)=>{
-//                         var errorMessageList=json.errorMessageList;
-//                         if(errorMessageList !== null && errorMessageList !== undefined && errorMessageList !== ""){
-//                             dispatch(getSession({username:username,merchantStates:json.merchantStates,supnuevoMerchantId:json.merchantId}));
-//                             dispatch(clearTimerAction());
-//                             if(cb)
-//                                 cb(errorMsg);
-//                         }
-//
-//                     },
-//                     (err)=>{
-//                         dispatch(getSession(null));
-//                         dispatch(clearTimerAction());
-//                         if(cb)
-//                             cb(err);
-//                     })
-//
-//             }
-//
-//         }, (err) =>{
-//                 dispatch(getSession(null));
-//                 dispatch(clearTimerAction());
-//                 if(cb)
-//                     cb(err);
-//             });
-//     };
-// }
-
 export let loginAction=function(username,password,cb) {
 
     return dispatch => {
@@ -95,13 +28,15 @@ export let loginAction=function(username,password,cb) {
         }).then((json) => {
             var errorMsg=json.errorMsg;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
-
                 dispatch(getSession(null));
                 dispatch(clearTimerAction());
                 if (cb)
                     cb(errorMsg);
             }
             else {
+                dispatch(setAnnouncement(json.dataMap.helpContent));
+                dispatch(setCommodityClassList(json.dataMap.commodityClassList));
+                dispatch(setWeightService(json.dataMap.weightService));
                 dispatch(getSession({
                     username: username,
                     merchantStates: json.dataMap.merchantStates,
@@ -113,7 +48,6 @@ export let loginAction=function(username,password,cb) {
     }
 
 }
-
 
 export let setTimerAction=function (timer) {
     return dispatch=>{
@@ -138,6 +72,33 @@ export let setNetInfo=function (connectionInfoHistory) {
             type: types.SET_NETINFO,
             connectionInfoHistory:connectionInfoHistory
         })
+    };
+}
+
+export let setAnnouncement=function (string) {
+    return dispatch=>{
+        dispatch({
+            type: types.SET_ANNOUNCEMENT,
+            announcement:string
+        });
+    };
+}
+
+export let setCommodityClassList=function (commodityClassList) {
+    return dispatch=>{
+        dispatch({
+            type: types.SET_COMMODITY_CLASS_LIST,
+            commodityClassList:commodityClassList
+        });
+    };
+}
+
+export let setWeightService=function (weightService) {
+    return dispatch=>{
+        dispatch({
+            type: types.SET_WEIGHT_SERVICE,
+            weightService:weightService
+        });
     };
 }
 

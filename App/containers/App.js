@@ -19,8 +19,11 @@ import TabNavigator from 'react-native-tab-navigator';
 
 import Login from '../containers/Login';
 import Query from '../containers/Query';
+import Announcement from '../containers/Announcement';
+import Sale from '../containers/Sale/Sale';
+import Stock from '../containers/Stock';
+import My from '../containers/My';
 
-import Group from '../containers/Group';
 import { setNetInfo } from '../action/actionCreator';
 
 
@@ -33,43 +36,63 @@ class App extends React.Component {
         super(props);
         const {dispatch} = this.props;
         this.state={
-            tab:'query',
-            selectedTab:'query',
+            tab:'公告',
+            selectedTab:'公告',
             isConnected: null,
         }
     }
-    _createNavigatorItem(route,icon,title)
+    _createNavigatorItem(route,icon)
     {
-
-        var component=Query;
+        var component=Announcement;
         switch (route) {
-            case 'query':
+            case '公告':
+                component=Announcement
+                break;
+            case '改价':
                 component=Query;
                 break;
-            case 'group':
-                component=Group;
+            case '收银':
+                component=Sale;
+                break;
+            case '进货':
+                component=Stock;
+                break;
+            case '我的':
+                component=My;
                 break;
             default:
                 break;
         }
 
         return (
+
             <TabNavigator.Item
                 selected={this.state.selectedTab === route}
-                title={title!==undefined&&title!==null?title:route}
+                title={route}
+                titleStyle={{color:'#C6C5CA',fontSize:13}}
                 renderIcon={() => <Icon name={icon} size={25}/>}
                 renderSelectedIcon={() => <Icon name={icon} size={25} color='#00f' />}
-                onPress={() => this.setState({ selectedTab: route })}>
-                <Navigator
-                    initialRoute={{ name: route, component:component }}
-                    configureScene={(route) => {
-                        return Navigator.SceneConfigs.HorizontalSwipeJumpFromRight;
-                      }}
-                    renderScene={(route, navigator) => {
-                        let Component = route.component;
-                        this.navigator=navigator;
-                        return <Component {...route.params} navigator={navigator} />
-                      }} />
+                onPress={() => {
+                    this.setState({ selectedTab: route });
+                }}
+                tabStyle={{backgroundColor:'transparent',}}
+                onSelectedStyle={{backgroundColor:'#eeecf3',}}
+                >
+                <View style={{flex:1,}}>
+                    <Navigator
+                        initialRoute={{ name: route, component:component }}
+                        configureScene={(route) => {
+                            return Navigator.SceneConfigs.HorizontalSwipeJumpFromRight;
+                          }}
+                        renderScene={(route, navigator) => {
+                            let Component = route.component;
+                            //this.props.dispatch(updateNavigator({route:route.name,navigator:navigator}))
+                            return (<Component {...route.params} navigator={navigator} />);
+                          }}
+
+                    />
+
+                </View>
             </TabNavigator.Item>
         );
     }
@@ -79,21 +102,44 @@ class App extends React.Component {
         if(auth==true)
         {
 
-            return(
-                // <TabNavigator>
-                //     {this._createNavigatorItem('query','home','改价')}
-                // </TabNavigator>
+            var defaultStyle={
+                backgroundColor:'#eeecf3',
+                paddingBottom:5,
+                paddingTop:5,
+                height:60
+            }
 
-                <Navigator
-                    initialRoute={{ name: 'query', component:Query }}
-                    configureScene={(route) => {
-                        return Navigator.SceneConfigs.HorizontalSwipeJumpFromRight;
-                      }}
-                    renderScene={(route, navigator) => {
-                        let Component = route.component;
-                        this.navigator=navigator;
-                        return <Component {...route.params} navigator={navigator} />
-                      }} />
+            var defaultSceneStyle={
+            }
+
+            // if(tab.hidden==true)
+            // {
+            //     defaultStyle.height=0
+            //     defaultStyle.paddingBottom=0
+            //     defaultStyle.paddingTop=0
+            //     defaultSceneStyle.paddingBottom=0
+            // }
+
+            return(
+
+            <TabNavigator  tabBarStyle={defaultStyle} sceneStyle={defaultSceneStyle}>
+                {this._createNavigatorItem('公告','home')}
+                {this._createNavigatorItem('改价','comment-o')}
+                {this._createNavigatorItem('收银','search')}
+                {this._createNavigatorItem('进货','user-o')}
+                {this._createNavigatorItem('我的','user-o')}
+            </TabNavigator>
+
+                // <Navigator
+                //     initialRoute={{ name: 'query', component:Query }}
+                //     configureScene={(route) => {
+                //         return Navigator.SceneConfigs.HorizontalSwipeJumpFromRight;
+                //       }}
+                //     renderScene={(route, navigator) => {
+                //         let Component = route.component;
+                //         this.navigator=navigator;
+                //         return <Component {...route.params} navigator={navigator} />
+                //       }} />
 
             );
         }
