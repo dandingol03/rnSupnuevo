@@ -136,16 +136,23 @@ class GroupInfoManage extends Component{
         //TODO:make a fetch
 
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoUpdateSupnuevoBuyerCommodityPriceGroupMobile.do',
+            url:Config.server+'/func/commodity/updateSupnuevoBuyerCommodityPriceGroupMobile',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "priceIds=" + selectedRelativePriceIds.toString() +
-            "&merchantId=" + merchantId+
-            '&priceShow='+goodInfo.priceShow+
-            '&printType='+goodInfo.printType+
-            '&price='+goodInfo.price
+            //body: "priceIds=" + selectedRelativePriceIds.toString() +
+            //"&merchantId=" + merchantId+
+            //'&priceShow='+goodInfo.priceShow+
+            //'&printType='+goodInfo.printType+
+           // '&price='+goodInfo.price
+            body:{
+                priceIds:selectedRelativePriceIds.toString(),
+                merchantId:merchantId,
+                priceShow:goodInfo.priceShow,
+                printType:goodInfo.printType,
+                price:goodInfo.price
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -173,12 +180,16 @@ class GroupInfoManage extends Component{
         var code=this.state.selectedCodeInfo;
 
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoAddSupnuevoCommodityIntoGroupMobile.do",
+            url:Config.server+"/func/commodity/addSupnuevoCommodityIntoGroupMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "commodityId=" + code.commodityId + "&groupId=" + groupInfo.groupId
+            //body: "commodityId=" + code.commodityId + "&groupId=" + groupInfo.groupId
+            body:{
+                commodityId:code.commodityId,
+                groupId:groupInfo.groupId
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -208,12 +219,16 @@ class GroupInfoManage extends Component{
 
         const {groupInfo}=this.props;
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoRemoveSupnuevoCommodityFromGroupMobile.do",
+            url:Config.server+"/func/commodity/removeSupnuevoCommodityFromGroupMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "commodityIds=" + commodityIds + "&groupId=" + groupInfo.groupId
+            //body: "commodityIds=" + commodityIds + "&groupId=" + groupInfo.groupId
+            body:{
+                commodityIds:commodityIds,
+                groupId:groupInfo.groupId
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -249,12 +264,17 @@ class GroupInfoManage extends Component{
         if(groupName!==undefined&&groupName!==null&&groupName!='')
         {
             Proxy.post({
-                url:Config.server+'supnuevo/supnuevoSaveOrUpdateSupnuevoBuyerCommodityGroupMobile.do',
+                url:Config.server+'/func/commodity/saveOrUpdateSupnuevoBuyerCommodityGroupMobile',
                 headers: {
-                    'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                    'Content-Type': 'application/json'
                 },
-                body: "groupName=" + groupName + "&groupId="+groupInfo.groupId+ ''+'&supnuevoMerchantId='+merchantId
+                //body: "groupName=" + groupName + "&groupId="+groupInfo.groupId+ ''+'&supnuevoMerchantId='+merchantId
+                body:{
+                    groupName:groupName,
+                    groupId:groupInfo.groupId,
+                    supnuevoMerchantId:merchantId
+                }
             },(json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -312,12 +332,16 @@ class GroupInfoManage extends Component{
         var codigo = parseInt(codigo);
         const { merchantId } = this.props;
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommonCommodityListByLastFourCodigoMobile.do',
+            url:Config.server+'/func/commodity/getSupnuevoCommonCommodityListByLastFourCodigoMobile',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "codigo=" + codigo + "&merchantId=" + merchantId
+            //body: "codigo=" + codigo + "&merchantId=" + merchantId
+            body:{
+                codigo:codigo,
+                merchantId:merchantId
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){

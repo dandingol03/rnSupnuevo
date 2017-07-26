@@ -11,6 +11,7 @@ import {
   Text,
   View,
   Image,
+    TouchableOpacity,
 } from 'react-native'
 
 import App from './App/index';
@@ -41,6 +42,7 @@ export default class rnSupnuevo extends Component {
 }
 
 const styles = StyleSheet.create({
+
   container: {
     flex: 1,
     justifyContent: 'center',

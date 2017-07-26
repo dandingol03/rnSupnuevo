@@ -235,15 +235,24 @@ class GroupMaintain extends Component{
 
         var body='';
         if(groupNum!==undefined&&groupNum!==null)
-            body='groupNum='+groupNum+"&supnuevoMerchantId=" + merchantId;
+            //body='groupNum='+groupNum+"&supnuevoMerchantId=" + merchantId;
+            body={
+                groupNum:groupNum,
+                supnuevoMerchantId:merchantId
+    }
+
         else
-            body="codigo=" + codigo + "&supnuevoMerchantId=" + merchantId;
+            //body="codigo=" + codigo + "&supnuevoMerchantId=" + merchantId;
+            body={
+                codigo:codigo,
+                supnuevoMerchantId:merchantId
+            }
 
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoGetSupnuevoCommonCommodityGroupListByCodigoMobile.do",
+            url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
             body: body
         },(json)=> {
@@ -292,12 +301,15 @@ class GroupMaintain extends Component{
 
         const { merchantId } = this.props;
         Proxy.post({
-            url:Config.server+'supnuevo/supnuevoGetSupnuevoCommonCommodityGroupListByGroupNumMobile.do',
+            url:Config.server+'/func/commodity/getSupnuevoCommonCommodityGroupListByGroupNumMobile',
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "groupNum=" + groupNum
+            //body: "groupNum=" + groupNum
+            body:{
+                groupNum:groupNum
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -342,12 +354,17 @@ class GroupMaintain extends Component{
                 {
 
                     Proxy.post({
-                        url:Config.server+"supnuevo/supnuevoMergeSupnuevoCommodityGroupMobile.do",
+                        url:Config.server+"/func/commodity/mergeSupnuevoCommodityGroupMobile",
                         headers: {
-                            'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                            'Content-Type': 'application/x-www-form-urlencoded'
+                            //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                            'Content-Type': 'application/json'
                         },
-                        body: "groupIds=" + groupIds.toString() + "&groupName=" + groupName+'&supnuevoMerchantId='+merchantId
+                        //body: "groupIds=" + groupIds.toString() + "&groupName=" + groupName+'&supnuevoMerchantId='+merchantId
+                        body:{
+                            groupIds:groupIds.toString(),
+                            groupName:groupName,
+                            supnuevoMerchantId:merchantId
+                        }
                     },(json)=> {
                         var errorMsg=json.errorMsg;
                         if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -408,12 +425,15 @@ class GroupMaintain extends Component{
         var groupNum=this.state.query.groupNum;
 
         Proxy.post({
-            url:Config.server+"supnuevo/supnuevoDeleteSupnuevoBuyerCommodityGroupMobile.do",
+            url:Config.server+"/func/commodity/deleteSupnuevoBuyerCommodityGroupMobile",
             headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
+                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/json'
             },
-            body: "groupId=" +groupId
+            //body: "groupId=" +groupId
+            body:{
+                groupId:groupId
+            }
         },(json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -445,12 +465,17 @@ class GroupMaintain extends Component{
         if(groupName!==undefined&&groupName!==null&&groupName!='')
         {
             Proxy.post({
-                url:Config.server+'supnuevo/supnuevoSaveOrUpdateSupnuevoBuyerCommodityGroupMobile.do',
+                url:Config.server+'/func/commodity/saveOrUpdateSupnuevoBuyerCommodityGroupMobile',
                 headers: {
-                    'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                    'Content-Type':'application/json'
                 },
-                body: "groupName=" + groupName + "&groupId=" + ''+'&supnuevoMerchantId='+merchantId
+                //body: "groupName=" + groupName + "&groupId=" + ''+'&supnuevoMerchantId='+merchantId
+                body:{
+                    groupName:groupName,
+                    groupId:'',
+                    supnuevoMerchantId:merchantId
+                }
             },(json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){

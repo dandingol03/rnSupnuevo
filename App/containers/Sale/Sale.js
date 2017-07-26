@@ -32,14 +32,6 @@ import Camera from 'react-native-camera';
 
 class Sale extends Component{
 
-    codeQuery(){
-
-
-    }
-
-    codeMatch(){
-
-    }
 
     renderRow(rowData,sectionId,rowId){
 
@@ -181,7 +173,7 @@ class Sale extends Component{
                             <View style={{flex:2,flexDirection:'row',marginLeft:15,justifyContent:'center',alignItems:'center'}}>
                                 <Text style={{flex:1,color:'#343434',fontSize:15,}}>TOTAL:</Text>
                                 <Text style={{flex:1,margin:15,justifyContent:'center',alignItems:'center'}}>
-                                   3435.5
+                                    3435.5
                                 </Text>
                             </View>
 
@@ -216,14 +208,17 @@ class Sale extends Component{
                                 this.state.codeNum = data;
 
                                 var str = this.state.codeNum.substr(0, 3);
-                                if(str!==200&&str!==210&&str!==220&&str!==230){
-                                    this.codeQuery(this.state.codeNum);
+                                if(str!==200&&str!==210&&str!==220&&str!==230)
+                                {
+
                                 }
                                 else{
-                                    this.codeMatch(this.state.codeNum);
-                                }
 
+                                }
+                                this.queryGoodsCode(data);
                                 this.closeCamera();
+
+
                                 }
 
                             }}
@@ -280,4 +275,3 @@ module.exports = connect(state=>({
         weightService:state.sale.weightService
     })
 )(Sale);
-

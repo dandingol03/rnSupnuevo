@@ -122,12 +122,16 @@ class GoodsInGroup extends Component{
         if(groupInfo&&groupInfo.groupId!==undefined&&groupInfo.groupId!==null)
         {
             Proxy.post({
-                url:Config.server+"supnuevo/supnuevoRemoveSupnuevoCommodityFromGroupMobile.do",
+                url:Config.server+"/func/commodity/removeSupnuevoCommodityFromGroupMobile",
                 headers: {
-                    'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/x-www-form-urlencoded'
+                    //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                    'Content-Type': 'application/json'
                 },
-                body: "commodityIds=" + commodityIds.toString() + "&groupId=" + groupInfo.groupId
+                //body: "commodityIds=" + commodityIds.toString() + "&groupId=" + groupInfo.groupId
+                body:{
+                    commodityIds:commodityIds.toString(),
+                    groupId:groupInfo.groupId
+                }
             },(json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
