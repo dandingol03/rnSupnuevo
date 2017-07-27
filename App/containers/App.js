@@ -124,9 +124,9 @@ class App extends React.Component {
 
             <TabNavigator  tabBarStyle={defaultStyle} sceneStyle={defaultSceneStyle}>
                 {this._createNavigatorItem('公告','home')}
-                {this._createNavigatorItem('改价','comment-o')}
+                {this._createNavigatorItem('改价','edit')}
                 {this._createNavigatorItem('收银','search')}
-                {this._createNavigatorItem('进货','user-o')}
+                {this._createNavigatorItem('进货','tag')}
                 {this._createNavigatorItem('我的','user-o')}
             </TabNavigator>
 

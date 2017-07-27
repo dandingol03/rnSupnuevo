@@ -26,19 +26,37 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scrollable-tab-view';
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
+import PriceModal from './PriceModal';
 
+import PopupDialog,{ScaleAnimation} from 'react-native-popup-dialog';
+const scaleAnimation = new ScaleAnimation();
 
 class CommodityClass extends Component{
 
+    goBack(){
+        const { navigator } = this.props;
+        if(navigator) {
+            navigator.pop();
+        }
+    }
+
+    showPriceDialog()
+    {
+        this.setState({priceModalVisible:true});
+    }
 
     renderRow(rowData,sectionId,rowId){
 
         var row=(
-            <View style={{flex:1,backgroundColor:'#fff',marginTop:5,marginBottom:5,}}>
+            <TouchableOpacity style={{flex:1,backgroundColor:'#fff',marginTop:5,marginBottom:5,padding:10,borderBottomWidth:1,borderColor:'#eee'}}
+                  onPress={()=>{
+                       this.showPriceDialog();
+                       this.state.commodity.nombre = rowData;
+            }}>
               <Text>
-                  {row}
+                  {rowData}
               </Text>
-            </View>
+            </TouchableOpacity>
         );
         return row;
     }
@@ -47,7 +65,9 @@ class CommodityClass extends Component{
     {
         super(props);
         this.state = {
+            priceModalVisible:false,
             goodsCount:1,
+            commodity:{codigo:'',nombre:null,price:null,}
         }
 
     }
@@ -73,9 +93,20 @@ class CommodityClass extends Component{
             <View style={{flex:1}}>
                 {/* header bar */}
                 <View style={[{backgroundColor:'#387ef5',height:55,padding: 12,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
-                    <Text style={{fontSize:20,flex:3,textAlign:'center',color:'#fff'}}>
+                    <TouchableOpacity ref="menu" style={{flex:1,marginRight:2,flexDirection:'row',justifyContent:'center',alignItems: 'flex-end'}}
+                                      onPress={()=>{
+                                              this.goBack();
+                                          }}>
+                        <Icon name="angle-left" color="#fff" size={40}></Icon>
+                    </TouchableOpacity>
+
+                    <Text style={{fontSize:20,flex:5,textAlign:'center',color:'#fff'}}>
                         Supnuevo(3.0)-{this.props.username}
                     </Text>
+
+                    <View style={{flex:1}}>
+
+                    </View>
                 </View>
 
                 {/* body */}
@@ -89,6 +120,29 @@ class CommodityClass extends Component{
                     </View>
 
                 </View>
+
+                <Modal
+                    animationType={"slide"}
+                    transparent={true}
+                    visible={this.state.priceModalVisible}
+                    onRequestClose={() => {alert("Modal has been closed.")}}
+                >
+                    <PriceModal
+
+                        commodity={this.state.commodity}
+                        onClose={()=>{
+                               this.setState({priceModalVisible:false});
+                            }}
+
+                        onConfirm={(price)=>{
+                            this.state.commodity.price = price;
+                            this.props.codeClass(this.state.commodity);
+                            this.goBack();
+                            }}
+                    />
+
+                </Modal>
+
             </View>
         );
     }

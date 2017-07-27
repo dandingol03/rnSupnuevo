@@ -58,8 +58,22 @@ class My extends Component{
                     </View>
                 </View>
 
-                <View style={{flex:1,flexDirection:'row',justifyContent: 'center',alignItems: 'center'}}>
-                   <Text>我的</Text>
+                <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                    <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+
+                    </View>
+                   <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                       <Text>我的信息</Text>
+                   </View>
+                    <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                        <Text>我的二维码</Text>
+                    </View>
+                    <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+                        <Text>扫一扫商家二维码</Text>
+                    </View>
+                    <View style={{flex:1,justifyContent: 'center',alignItems: 'center'}}>
+
+                    </View>
                 </View>
             </View>
         );
@@ -86,8 +100,6 @@ var styles = StyleSheet.create({
 module.exports = connect(state=>({
         merchantId:state.user.supnuevoMerchantId,
         username:state.user.username,
-        commodityClassList:state.sale.commodityClassList,
-        weightService:state.sale.weightService
     })
 )(My);
 
