@@ -29,6 +29,7 @@ import CheckBox from 'react-native-check-box';
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../../proxy/Proxy');
+
 import Config from '../../../config';
 import _ from 'lodash';
 import CodesModal from '../../components/modal/CodesModal';

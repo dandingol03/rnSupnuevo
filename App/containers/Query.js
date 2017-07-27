@@ -40,7 +40,7 @@ import GroupManage from './GroupManage/index';
 import PriceSurvey from './PriceSurvey/PriceSurvey';
 import Camera from 'react-native-camera';
 
-import sale from './Sale/Sale';
+import sale from './SaleOld/saleOld';
 
 class Query extends Component{
 
@@ -1072,7 +1072,7 @@ class Query extends Component{
                                               this.closePopover();
                                               this.navigateSale();
                                           }}>
-                            <Text style={[styles.popoverText,{color:'#444'}]}>收银111</Text>
+                            <Text style={[styles.popoverText,{color:'#444'}]}>收银</Text>
                         </TouchableOpacity>
                     </Popover>
 
