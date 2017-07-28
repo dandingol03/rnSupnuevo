@@ -158,9 +158,6 @@ class My extends Component {
                     alignItems: 'center',
                     flexDirection: 'row'
                 }, styles.card]}>
-                    <View style={{flex: 1}}>
-
-                    </View>
                     <Text style={{fontSize: 22, flex: 3, textAlign: 'center', color: '#fff'}}>
                         {this.props.username}
                     </Text>
