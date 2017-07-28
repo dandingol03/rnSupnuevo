@@ -28,9 +28,6 @@ var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 import PriceModal from './PriceModal';
 
-import PopupDialog,{ScaleAnimation} from 'react-native-popup-dialog';
-const scaleAnimation = new ScaleAnimation();
-
 class CommodityClass extends Component{
 
     goBack(){

@@ -22,7 +22,7 @@ import Query from '../containers/Query';
 import Announcement from '../containers/Announcement';
 import Sale from '../containers/Sale/Sale';
 import Stock from '../containers/Stock';
-import My from '../containers/My';
+import My from './My/My';
 
 import { setNetInfo } from '../action/actionCreator';
 
@@ -71,7 +71,7 @@ class App extends React.Component {
                 title={route}
                 titleStyle={{color:'#C6C5CA',fontSize:13}}
                 renderIcon={() => <Icon name={icon} size={25}/>}
-                renderSelectedIcon={() => <Icon name={icon} size={25} color='#00f' />}
+                renderSelectedIcon={() => <Icon name={icon} size={25} color='#387ef5' />}
                 onPress={() => {
                     this.setState({ selectedTab: route });
                 }}

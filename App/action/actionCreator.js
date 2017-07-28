@@ -40,7 +40,8 @@ export let loginAction=function(username,password,cb) {
                 dispatch(getSession({
                     username: username,
                     merchantStates: json.dataMap.merchantStates,
-                    supnuevoMerchantId: json.dataMap.merchantId
+                    supnuevoMerchantId: json.dataMap.merchantId,
+                    merchantType:json.dataMap.merchantType
                 }));
                 dispatch(clearTimerAction());
             }

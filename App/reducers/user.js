@@ -4,6 +4,7 @@ import * as types from '../action/types';
 
 const initialState = {
     supnuevoMerchantId:null,
+    merchantType:null,
     merchantStates:null,
     validate:false,
     auth:false,
@@ -20,6 +21,7 @@ let user = (state = initialState, action) => {
                 validate:action.validate,
                 auth:action.auth,
                 supnuevoMerchantId:action.supnuevoMerchantId,
+                merchantType:action.merchantType,
                 merchantStates:action.merchantStates,
                 username:action.username
             });

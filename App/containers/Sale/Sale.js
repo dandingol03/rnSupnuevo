@@ -47,10 +47,10 @@ class Sale extends Component{
                 codigo:codeNum,
             }
         }).then((json)=>{
+            console.log('扫码返回成功');
             var errMessage=json.errMessage;
             if(errMessage !== null && errMessage !== undefined && errMessage !== ""){
-                alert(errorMsg);
-
+                alert(errMessage);
             }else{
                 var commodity = {codigo:json.codigo,nombre:json.nombre,price:json.price};
                 var commodityList = this.state.commodityList;
@@ -135,7 +135,7 @@ class Sale extends Component{
         }).then((json) => {
             var errMessage=json.errMessage;
             if(errMessage !== null && errMessage !== undefined && errMessage !== ""){
-                alert(errorMsg);
+                alert(errMessage);
 
             }else{
                 var commodityList = [];
@@ -391,10 +391,6 @@ var styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowRadius: 3,
     },
-    separator: {
-        height: 1,
-        backgroundColor: '#E8E8E8',
-    },
     body:{
         padding:10
     },
@@ -403,34 +399,6 @@ var styles = StyleSheet.create({
         height:50,
         borderBottomWidth:1,
         borderBottomColor:'#222'
-    },
-    discountUnselected:{
-        flex:1,flexDirection:'row',
-        justifyContent:'center',
-        backgroundColor:'#eee',
-        marginRight:.5,
-        borderTopLeftRadius:4,
-        borderBottomLeftRadius:4,
-        alignItems:'center'
-    },
-    discountSelected:{
-        flex:1,flexDirection:'row',
-        justifyContent:'center',
-        backgroundColor:'#387ef5',
-        marginRight:.5,
-        borderTopLeftRadius:4,
-        borderBottomLeftRadius:4,
-        alignItems:'center'
-    },
-    popoverContent: {
-        width: 140,
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    popoverText: {
-        color: '#ccc',
-        fontSize:18
     },
     preview: {
         flex: 1,
