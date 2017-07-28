@@ -61,7 +61,7 @@ class My extends Component{
                         '信息',
                         errMessage,
                         [
-                            {text: '确定', onPress: () => this.setState({barcodeFlag:false})},
+                            {text: '确定', onPress: () => this.setState({barcodeFlag:true})},
                         ]
                     )
                 },900)
@@ -74,7 +74,7 @@ class My extends Component{
                         '信息',
                         '已设置成功',
                         [
-                            {text: 'OK', onPress: () => this.setState({barcodeFlag:false})},
+                            {text: 'OK', onPress: () => this.setState({barcodeFlag:true})},
                         ]
                     )
                 },900)
@@ -94,7 +94,7 @@ class My extends Component{
             QrcodeModalVisible:false,
             cameraModalVisible:false,
             scanId:null,
-            barcodeFlag:false,
+            barcodeFlag:true,
             camera: {
                 aspect: Camera.constants.Aspect.fill,
                 captureTarget: Camera.constants.CaptureTarget.disk,
@@ -108,9 +108,9 @@ class My extends Component{
 
     render(){
 
-        if(this.state.scanId!==null&&this.state.scanId!==undefined&&this.state.barcodeFlag!==false){
-            this.setMerchantVisible(this.state.scanId);
-        }
+        // if(this.state.scanId!==null&&this.state.scanId!==undefined&&this.state.barcodeFlag!==false){
+        //     this.setMerchantVisible(this.state.scanId);
+        // }
 
         return (
             <View style={{flex:1}}>
@@ -192,8 +192,12 @@ class My extends Component{
                                     console.log('barcode data='+data+'barcode type='+type);
 
                                     this.state.scanId = data;
-                                    this.setState({barcodeFlag:true});
-                                    //this.setMerchantVisible(this.state.scanId);
+                                    if(this.state.barcodeFlag==true){
+                                         this.setState({barcodeFlag:false});
+                                         this.setMerchantVisible(this.state.scanId);
+
+                                    }
+
                                     this.closeCamera();
 
                                 }
