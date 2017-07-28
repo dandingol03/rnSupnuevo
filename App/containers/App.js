@@ -71,7 +71,7 @@ class App extends React.Component {
                 title={route}
                 titleStyle={{color:'#C6C5CA',fontSize:13}}
                 renderIcon={() => <Icon name={icon} size={25}/>}
-                renderSelectedIcon={() => <Icon name={icon} size={25} color='#00f' />}
+                renderSelectedIcon={() => <Icon name={icon} size={25} color='#387ef5' />}
                 onPress={() => {
                     this.setState({ selectedTab: route });
                 }}

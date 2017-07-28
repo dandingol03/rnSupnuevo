@@ -350,18 +350,6 @@ class Query extends Component{
         }
     }
 
-    navigateSale(){
-        const { navigator } = this.props;
-        if(navigator) {
-            navigator.push({
-                name: 'sale',
-                component: sale,
-                params: {
-                }
-            })
-        }
-    }
-
     navigate_priceGroupChange(){
         const { navigator } = this.props;
         const {merchantId}=this.props;
@@ -605,11 +593,9 @@ class Query extends Component{
 
                     {/* header bar */}
                     <View style={[{backgroundColor:'#387ef5',height:55,padding: 12,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
-                        <View style={{flex:1}}>
 
-                        </View>
-                        <Text style={{fontSize:22,flex:3,textAlign:'center',color:'#fff'}}>
-                            {username}
+                        <Text style={{fontSize:20,flex:4,textAlign:'center',color:'#fff'}}>
+                            Supnuevo(3.0)-{username}
                         </Text>
                         <TouchableOpacity ref="menu" style={{flex:1,marginRight:2,flexDirection:'row',justifyContent:'center'}}
                                           onPress={this.showPopover.bind(this, 'menu')}>
@@ -1067,13 +1053,7 @@ class Query extends Component{
                             <Text style={[styles.popoverText,{color:'#444'}]}>商品价格调查</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={[styles.popoverContent]}
-                                          onPress={()=>{
-                                              this.closePopover();
-                                              this.navigateSale();
-                                          }}>
-                            <Text style={[styles.popoverText,{color:'#444'}]}>收银</Text>
-                        </TouchableOpacity>
+
                     </Popover>
 
                     <Modal
@@ -1116,7 +1096,7 @@ class Query extends Component{
                                 var{type,data,bounds}=barcode;
 
                                 if(data!==undefined&&data!==null){
-                                  console.log('barcode data='+data);
+                                  console.log('barcode data='+data+'barcode type='+type);
 
                                 this.state.goods.codeNum = data;
                                 var goods =  this.state.goods;
