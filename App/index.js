@@ -6,8 +6,8 @@ import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import store from './store/index';
 
-//import App from './containers/App';
 import App from './containers/App';
+//import App from './containers/My/Myinfo';
 
 export default class Root extends Component {
     render() {

@@ -4,8 +4,8 @@
  */
 
 //login action
-
 export const AUTH_ACCESS__ACK = 'AUTH_ACCESS__ACK';
+export const SET_ANNOUNCEMENT='SET_ANNOUNCEMENT';
 
 //dashboard action
 export const SELECT_CUSTOMER_CAR='SELECT_CUSTOMER_CAR';
@@ -19,7 +19,9 @@ export const TIMER_CLEAR='TIMER_CLEAR';
 export const SET_NETINFO='SET_NETINFO';
 export const IS_CONNECTED='IS_CONNECTED';
 
-
+//sale
+export const SET_COMMODITY_CLASS_LIST='SET_COMMODITY_CLASS_LIST';
+export const SET_WEIGHT_SERVICE='SET_WEIGHT_SERVICE';
 
 
 
