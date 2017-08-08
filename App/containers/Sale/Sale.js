@@ -1,7 +1,3 @@
-
-/**
- * Created by danding on 16/11/21.
- */
 import React,{Component} from 'react';
 
 import  {
@@ -225,14 +221,15 @@ class Sale extends Component{
 
                     <View style={{flexDirection:'row',flex:1,justifyContent:'flex-start',}}>
 
-                        <View style={{flex:1,borderWidth:1,borderColor:'#ddd',flexDirection:'row',justifyContent:'flex-start',alignItems:'center'}}
-                              onPress={()=>{
-                                  var commodityList = []
-                                  this.setState({commodityList:commodityList});
+                        <View style={{flex:1,borderWidth:1,borderColor:'#ddd',flexDirection:'row',justifyContent:'flex-start',alignItems:'center'}}>
 
-                        }}>
+                            <TouchableOpacity style={{flex:1,flexDirection:'row',margin:5,justifyContent:'center',alignItems:'center',borderRadius:4,backgroundColor:'#CAE1FF'}}
+                                onPress={()=>{
+                                var commodityList = [];
+                                this.setState({commodityList:commodityList});
+                                this.state.total=0;
 
-                            <TouchableOpacity style={{flex:1,flexDirection:'row',margin:5,justifyContent:'center',alignItems:'center',borderRadius:4,backgroundColor:'#CAE1FF'}}>
+                            }}>
                                 <View style={{padding:10}}>
                                     <Text style={{color:'#343434',fontSize:15}}>作废</Text>
                                 </View>
