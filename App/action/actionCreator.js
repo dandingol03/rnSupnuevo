@@ -7,14 +7,16 @@
 import * as types from './types';
 import Config from '../../config';
 var Proxy = require('../proxy/Proxy');
+import PreferenceStore from '../utils/PreferenceStore';
 
 export let loginAction=function(username,password,cb) {
 
     return dispatch => {
 
         var versionName = "3.0";
+        var sessionId = null;
 
-        Proxy.postes({
+        Proxy.getSession({
             url: Config.server + '/func/auth/webLogin',
             headers: {
                 'Content-Type': 'application/json'
@@ -25,27 +27,47 @@ export let loginAction=function(username,password,cb) {
                 loginType:1,
                 parameter:{appVersion:versionName}
             }
-        }).then((json) => {
-            var errorMsg=json.errorMsg;
-            if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
-                dispatch(getSession(null));
-                dispatch(clearTimerAction());
-                if (cb)
-                    cb(errorMsg);
-            }
-            else {
-                dispatch(setAnnouncement(json.dataMap.helpContent));
-                dispatch(setCommodityClassList(json.dataMap.commodityClassList));
-                dispatch(setWeightService(json.dataMap.weightService));
-                dispatch(getSession({
-                    username: username,
-                    merchantStates: json.dataMap.merchantStates,
-                    supnuevoMerchantId: json.dataMap.merchantId,
-                    merchantType:json.dataMap.merchantType
-                }));
-                dispatch(clearTimerAction());
-            }
+        })  .then((response) =>{
+
+            sessionId = response.headers.map['set-cookie'][0];
+            return response.text();
         })
+
+            .then((res)=> {
+
+                resolve(JSON.parse(res))
+            })
+            .then((json)=>{
+
+                var errorMsg=json.errorMsg;
+                if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
+                    dispatch(getSession(null));
+                    dispatch(clearTimerAction());
+                    if (cb)
+                        cb(errorMsg);
+                }
+                else {
+
+                    dispatch(setAnnouncement(json.dataMap.helpContent));
+                    dispatch(setCommodityClassList(json.dataMap.commodityClassList));
+                    dispatch(setWeightService(json.dataMap.weightService));
+                    dispatch(getSession({
+                        username: username,
+                        merchantStates: json.dataMap.merchantStates,
+                        supnuevoMerchantId: json.dataMap.merchantId,
+                        merchantType:json.dataMap.merchantType,
+                        sessionId:sessionId
+                    }));
+
+
+                    PreferenceStore.put('username', username);
+                    PreferenceStore.put('password', password);
+
+                    dispatch(clearTimerAction());
+                }
+
+            })
+
     }
 
 }
@@ -111,7 +133,8 @@ let getSession= (ob)=>{
             merchantStates:ob.merchantStates,
             auth:true,
             validate:true,
-            username:ob.username
+            username:ob.username,
+            sessionId:ob.sessionId
         };
     else
         return {

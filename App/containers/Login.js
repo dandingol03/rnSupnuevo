@@ -35,6 +35,7 @@ import {BoxShadow} from 'react-native-shadow'
 import {loginAction,setTimerAction} from '../action/actionCreator';
 
 var Proxy = require('../proxy/Proxy');
+import PreferenceStore from '../utils/PreferenceStore';
 
 var  Login =React.createClass({
 
@@ -261,7 +262,32 @@ var  Login =React.createClass({
             </View>
         );
 
-    }
+    },
+
+    componentDidMount() {
+
+        //fetch username and password
+        var username=null;
+        var password=null;
+        PreferenceStore.get('username').then((val)=>{
+            username=val;
+            return PreferenceStore.get('password');
+        }).then((val)=>{
+            password=val;
+            if(username!==undefined&&username!==null&&username!=''
+                &&password!==undefined&&password!==null&&password!='')
+            {
+                //TODO:auto-login
+                this.setState({user:{
+                    username:username,
+                    password:password
+                }})
+
+            }
+        })
+
+
+    },
 });
 
 

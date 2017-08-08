@@ -136,11 +136,9 @@ class Query extends Component{
         Proxy.postes({
             url:Config.server+'/func/commodity/getQueryDataListByInputStringMobile',
             headers: {
-                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                //'Content-Type': 'application/x-www-form-urlencoded'
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
-            //body: "codigo=" + codeNum + "&merchantId=" + merchantId
             body: {
                 codigo:codeNum,
                 merchantId:merchantId
@@ -810,7 +808,7 @@ class Query extends Component{
                                 marginRight:.5,borderTopLeftRadius:4,borderBottomLeftRadius:4,alignItems:'center'}}>
                                         <TouchableOpacity style={{justifyContent:'center'}}
                                                           onPress={
-                                    ()=>{
+                                    ()=>{``
                                         this.updatePrintType1('0');
                                     }}>
                                             <Text style={{'fontSize':14,color:'#fff'}}>标签</Text>
@@ -1235,7 +1233,8 @@ var styles = StyleSheet.create({
 
 module.exports = connect(state=>({
         merchantId:state.user.supnuevoMerchantId,
-        username:state.user.username
+        username:state.user.username,
+        sessionId:state.user.sessionId
     })
 )(Query);
 
