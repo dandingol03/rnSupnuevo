@@ -92,12 +92,13 @@ class GoodAdd extends Component{
             }
 
 
-
+            var sessionId=this.props.sessionId;
             Proxy.post({
                 url:Config.server+'/func/commodity/saveOrUpdateSupnuevoCommonCommodityMobile',
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie':sessionId,
                 },
                // body: "taxId=" + this.state.newGoodInfo.taxId + "&supnuevoMerchantId=" + this.state.merchantId
                // + "&codigo=" + this.state.newGoodInfo.codigo+ "&nombre=" + this.state.newGoodInfo.nombre+
@@ -140,12 +141,13 @@ class GoodAdd extends Component{
             var sizeUnit = this.state.newGoodInfo.sizeUnit;
             this.setState({newGoodInfo:newGoodInfo});
         }
-
+        var sessionId=this.props.sessionId;
         Proxy.post({
             url:Config.server+'/func/commodity/getSupnuevoScaleInfoListMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
            // body: "sizeUnit=" + sizeUnit + "&merchantId=" + this.state.merchantId
             body:{
@@ -626,7 +628,8 @@ var styles = StyleSheet.create({
 
 
 module.exports = connect(state=>({
-        merchantId:state.user.supnuevoMerchantId
+        merchantId:state.user.supnuevoMerchantId,
+    sessionId:state.user.sessionId,
     })
 )(GoodAdd);
 

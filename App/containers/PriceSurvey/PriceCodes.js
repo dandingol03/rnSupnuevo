@@ -60,12 +60,13 @@ class PriceCodes extends Component{
     {
         const merchantId=this.props.merchantId;
         var commodityId=code.commodityId;
-
+        var sessionId=this.props.sessionId;
         Proxy.post({
             url:Config.server+"/func/commodity/getAreaGroupPriceByCommodityIdMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
            // body: "commodityId=" + commodityId + "&merchantId=" + merchantId
             body:{
@@ -217,7 +218,8 @@ var styles = StyleSheet.create({
 
 module.exports = connect(state=>({
         merchantId:state.user.supnuevoMerchantId,
-        username:state.user.username
+        username:state.user.username,
+    sessionId:state.user.sessionId,
     })
 )(PriceCodes);
 

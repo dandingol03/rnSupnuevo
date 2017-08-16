@@ -19,9 +19,6 @@ import {connect} from 'react-redux';
 import ModalDropdown from 'react-native-modal-dropdown';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon1 from 'react-native-vector-icons/Entypo';
-import AllCompany from './AllCompany';
-import MyConcernOffer from './MyConcernOffer';
-import MyOffer from './MyOffer';
 import PopupDialog from 'react-native-popup-dialog';
 import Camera from 'react-native-camera';
 import Picker from 'react-native-picker';
@@ -29,8 +26,11 @@ var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../../proxy/Proxy');
 var Popover = require('react-native-popover');
+import OfferCompany from './OfferCompany';
+import MyConcernOffer from './MyConcernOffer';
+//import Stock from './Stock';
 
-class Stock extends Component {
+class MyOffer extends Component {
 
     constructor(props) {
         super(props);
@@ -72,52 +72,6 @@ class Stock extends Component {
         this.popupDialog.show();
     }
 
-    navigateAllCompany(nubre, direccion, rubroDes, nomroDeTelePhono, merchantId) {
-        const {navigator} = this.props;
-        var nubre = nubre;
-        var direccion = direccion;
-        var rubroDes = rubroDes;
-        var nomroDeTelePhono = nomroDeTelePhono;
-        var merchantId = merchantId;
-        if (navigator) {
-            navigator.push({
-                name: 'AllCompany',
-                component: AllCompany,
-                params: {
-                    nubre: nubre,
-                    direccion: direccion,
-                    rubroDes: rubroDes,
-                    nomroDeTelePhono: nomroDeTelePhono,
-                    merchantId: merchantId,
-                }
-            })
-        }
-    }
-
-    navigateMyOffer() {
-        const {navigator} = this.props;
-
-        if (navigator) {
-            navigator.push({
-                name: 'MyOffer',
-                component: MyOffer,
-                params: {}
-            })
-        }
-    }
-
-    navigateMyConcernOffer() {
-        const {navigator} = this.props;
-
-        if (navigator) {
-            navigator.push({
-                name: 'MyConcernOffer',
-                component: MyConcernOffer,
-                params: {}
-            })
-        }
-    }
-
     fetchData() {
         var sessionId = this.props.sessionId;
         var state = this.state.state;
@@ -125,7 +79,7 @@ class Stock extends Component {
             url: Config.server + "/func/merchant/getSupnuevoMerchantInfoListOfBuyerMobile",
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId
+                'Cookie': sessionId,
             },
             body: {
                 state: state,
@@ -136,7 +90,8 @@ class Stock extends Component {
                 alert(errorMsg);
             } else {
                 var infoList = json.data;
-                this.setState({infoList: infoList});
+                if (infoList !== null)
+                    this.setState({infoList: infoList});
             }
         }, (err) => {
             alert(err);
@@ -193,11 +148,10 @@ class Stock extends Component {
     }
 
     renderRow(rowData) {
-        this.state.merchantId = rowData.merchantId;
         var row =
             <View>
                 <TouchableOpacity onPress={() => {
-                    this.navigateAllCompany(rowData.nubre, rowData.direccion, rowData.rubroDes, rowData.nomroDeTelePhono, rowData.merchantId)
+                    this.navigateOfferCompany(rowData.nubre, rowData.direccion, rowData.rubroDes, rowData.nomroDeTelePhono, rowData.merchantId)
                 }}>
                     <View style={{
                         flex: 1, padding: 10, borderBottomWidth: 1, borderColor: '#ddd',
@@ -212,7 +166,7 @@ class Stock extends Component {
                             <Text style={{flex: 3}}>{rowData.direccion}</Text>
                         </View>
                         <View style={{paddingTop: 5, flexDirection: 'row'}}>
-                            <Text style={{flex: 1}}>公司营业范围</Text>
+                            <Text style={{flex: 1}}>公司同营业范围</Text>
                             <Text style={{flex: 3}}>{rowData.rubroDes}</Text>
                         </View>
                         <View style={{paddingTop: 5, flexDirection: 'row'}}>
@@ -222,6 +176,49 @@ class Stock extends Component {
                 </TouchableOpacity>
             </View>;
         return row;
+    }
+
+    navigateMyconcernOffer() {
+        const {navigator} = this.props;
+
+        if (navigator) {
+            navigator.push({
+                name: 'MyConcernOffer',
+                component: MyConcernOffer,
+            })
+        }
+    }
+
+    navigateOfferCompany(nubre, direccion, rubroDes, nomroDeTelePhono, merchantId) {
+        const {navigator} = this.props;
+        var nubre = nubre;
+        var direccion = direccion;
+        var rubroDes = rubroDes;
+        var nomroDeTelePhono = nomroDeTelePhono;
+        var merchantId = merchantId;
+        if (navigator) {
+            navigator.push({
+                name: 'OfferCompany',
+                component: OfferCompany,
+                params: {
+                    nubre: nubre,
+                    direccion: direccion,
+                    rubroDes: rubroDes,
+                    nomroDeTelePhono: nomroDeTelePhono,
+                    merchantId: merchantId,
+                }
+            })
+        }
+    }
+
+    goBack() {
+        const {navigator} = this.props;
+
+        if (navigator) {
+            navigator.pop();
+            if (this.props.reset)
+                this.props.reset();
+        }
     }
 
     renderRow_Province(rowData) {
@@ -260,19 +257,12 @@ class Stock extends Component {
         return row;
     }
 
-    closePopover() {
-        this.setState({menuVisible: false});
-    }
-
     closeCamera() {
         this.setState({cameraModalVisible: false});
     }
 
-    componentDidMount() {
-    }
-
     render() {
-        var displayArea = {x: 5, y: 20, width: width, height: height - 25};
+
         var listView = null;
         const infoList = this.state.infoList;
         if (infoList !== undefined && infoList !== null) {
@@ -316,9 +306,18 @@ class Stock extends Component {
                     alignItems: 'center',
                     flexDirection: 'row'
                 }, styles.card]}>
+                    <View style={{flex: 1}}>
+                        <TouchableOpacity onPress={() => {
+                            this.goBack()
+                        }}>
+                            <Icon name="chevron-left" color="#fff" size={25}></Icon>
+                        </TouchableOpacity>
+                    </View>
                     <Text style={{fontSize: 22, flex: 3, textAlign: 'center', color: '#fff'}}>
                         {this.props.username}
                     </Text>
+                    <View style={{flex: 1, marginRight: 10, flexDirection: 'row', justifyContent: 'center'}}>
+                    </View>
                 </View>
                 <View style={{flex: 1}}>
                     <View style={{
@@ -343,10 +342,10 @@ class Stock extends Component {
                                     paddingBottom: 2,
                                     fontSize: 16,
                                 }}
-                                onChangeText={(companyinfo) => {
-                                    this.setState({companyinfo: companyinfo});
+                                onChangeText={(goodsCount) => {
+                                    this.setState({goodsCount: goodsCount});
                                 }}
-                                value={this.state.companyinfo}
+                                value={this.state.goodsCount}
                                 placeholder="搜索"
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"
@@ -361,7 +360,6 @@ class Stock extends Component {
                             }}
                                               onPress={() => {
                                                   this.showpopupDialog();
-                                                  this.fetchData_Province();
                                               }}>
                                 <Icon name="chevron-circle-down" color="#343434" size={25}></Icon>
                             </TouchableOpacity>
@@ -381,26 +379,27 @@ class Stock extends Component {
                         justifyContent: 'center',
                         alignItems: 'center'
                     }}>
-                        <Text style={{fontSize: 16}}>市场上所有供应商列表</Text>
+                        <Text style={{fontSize: 16}}>我的供应商列表</Text>
                     </View>
+
                     <View style={{flex: 5, borderBottomWidth: 1, borderColor: '#ddd'}}>
                         <ScrollView>
                             {listView}
                         </ScrollView>
                     </View>
+
                     <View style={{flex: 1, flexDirection: 'row'}}>
                         <TouchableOpacity style={{
                             flex: 1,
                             justifyContent: 'center',
                             alignItems: 'center',
-                            backgroundColor: '#CAE1FF',
+                            backgroundColor: '#FFDE4C',
                             marginLeft: 20,
                             marginRight: 20,
                             marginBottom: 20,
                             marginTop: 10,
                             borderRadius: 4,
                         }} onPress={() => {
-                            this.navigateMyOffer()
                         }}>
                             <View>
                                 <Text style={{fontSize: 16}}>我的供应商</Text>
@@ -417,7 +416,7 @@ class Stock extends Component {
                             marginTop: 10,
                             borderRadius: 4,
                         }} onPress={() => {
-                            this.navigateMyConcernOffer()
+                            this.navigateMyconcernOffer()
                         }}>
                             <View>
                                 <Text style={{fontSize: 16}}>我关注</Text>
@@ -428,7 +427,8 @@ class Stock extends Component {
                 <PopupDialog
                     ref={(popupDialog) => {
                         this.popupDialog = popupDialog;
-                    }}>
+                    }}
+                >
                     <View style={{flex: 1, backgroundColor: '#CAE1FF'}}>
                         <View style={styles.table}>
                             <TextInput style={{flex: 8, height: 40, marginLeft: 10}}
@@ -505,8 +505,6 @@ class Stock extends Component {
                             <TouchableOpacity style={{
                                 flex: 1, backgroundColor: 'transparent', borderLeftWidth: 1,
                                 borderLeftColor: '#ddd',
-                            }} onPress={() => {
-                                this.setState({cameraModalVisible: true})
                             }}>
                                 <View style={{flexDirection: 'row', justifyContent: 'center', paddingTop: 10}}>
                                     <Text style={{fontSize: 16}}>扫码</Text></View>
@@ -521,7 +519,6 @@ class Stock extends Component {
                                 marginRight: 120,
                                 marginBottom: 10,
                                 marginTop: 15
-                            }} onPress={() => {
                             }}>
                                 <View style={{paddingTop: 18, alignItems: 'center'}}>
                                     <Text style={{fontSize: 20}}>确定</Text>
@@ -530,22 +527,6 @@ class Stock extends Component {
                         </View>
                     </View>
                 </PopupDialog>
-                <Popover
-                    isVisible={this.state.menuVisible}
-                    fromRect={this.state.buttonRect}
-                    displayArea={displayArea}
-                    onClose={() => {
-                        this.closePopover();
-
-                    }}>
-                    <TouchableOpacity
-                        style={{borderBottomWidth: 1, borderBottomColor: '#ddd'}}
-                        onPress={() => {
-                            this.closePopover();
-                        }}>
-                        <Text style={[styles.popoverText, {color: '#444'}]}>1</Text>
-                    </TouchableOpacity>
-                </Popover>
                 {/*camera part*/}
                 <Modal
                     animationType={"slide"}
@@ -609,6 +590,7 @@ class Stock extends Component {
 
 
 var styles = StyleSheet.create({
+
     card: {
         borderTopWidth: 0,
         borderBottomWidth: 1,
@@ -628,50 +610,14 @@ var styles = StyleSheet.create({
         marginLeft: 10,
         backgroundColor: 'white',
         flexDirection: 'row'
-    },
-    box: {
-        position: 'absolute',
-        right: 1 / 2 * width - 100,
-        top: 1 / 2 * height - 100,
-        height: 200,
-        width: 200,
-        borderWidth: 1,
-        borderColor: '#387ef5',
-        backgroundColor: 'transparent'
-    },
-    preview: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-    },
-    bottomOverlay: {
-        bottom: 0,
-        backgroundColor: 'rgba(0,0,0,0.4)',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    overlay: {
-        position: 'absolute',
-        padding: 16,
-        right: 0,
-        left: 0,
-        alignItems: 'center',
-    },
-    captureButton: {
-        padding: 15,
-        backgroundColor: 'white',
-        borderRadius: 40,
-    },
+    }
+
 });
 
 
 module.exports = connect(state => ({
         merchantId: state.user.supnuevoMerchantId,
         username: state.user.username,
-        commodityClassList: state.sale.commodityClassList,
-        weightService: state.sale.weightService,
-        sessionId: state.user.sessionId,
+        sessionId: state.user.sessionId
     })
-)(Stock);
-
+)(MyOffer);

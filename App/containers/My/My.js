@@ -37,12 +37,14 @@ class My extends Component {
     }
 
     setMerchantVisible(scan) {
-        var scanId = parseInt(scan)
+        var scanId = parseInt(scan);
+        var sessionId=this.props.sessionId;
         Proxy.postes({
             url: Config.server + '/func/merchant/setMerchantVisibleEachOtherMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             //body: "codigo=" + codeNum + "&merchantId=" + merchantId
             body: {
@@ -107,10 +109,12 @@ class My extends Component {
 
     navigatemyinfo() {
         const {navigator} = this.props;
+        var sessionId=this.props.sessionId;
         Proxy.postes({
             url: Config.server + '/func/merchant/getSupnuevoMerchantInfoMobile',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             body: {}
         }).then((json) => {
@@ -131,13 +135,24 @@ class My extends Component {
                     direccion: direccion,
                     nomroDeTelePhono: nomroDeTelePhono
                 };
-                this.setState({info: info});
+                // this.setState({info: info});
+                // this.setState({nickName: nickName});
+                // this.setState({nubre: nubre});
+                // this.setState({cuit: cuit});
+                // this.setState({direccion: direccion});
+                // this.setState({nomroDeTelePhono: nomroDeTelePhono});
+
                 //TODO:跳转
                 navigator.push({
                     name: 'Myinfo',
                     component: Myinfo,
                     params: {
-                        info: this.state.info,
+                        info: info,
+                        // nickName:this.state.nickName,
+                        // nubre:this.state.nubre,
+                        // cuit:this.state.cuit,
+                        // direccion:this.state.direccion,
+                        // nomroDeTelePhono:this.state.nomroDeTelePhono,
                     }
                 })
             }
@@ -357,7 +372,8 @@ module
     .exports = connect(state => ({
         merchantId: state.user.supnuevoMerchantId,
         username: state.user.username,
-        supnuevoMerchantId: state.user.supnuevoMerchantId
+        supnuevoMerchantId: state.user.supnuevoMerchantId,
+    sessionId:state.user.sessionId,
     })
 )(My);
 

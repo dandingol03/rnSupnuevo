@@ -44,6 +44,12 @@ class Myinfo extends Component {
         super(props);
         this.state = {
             info: this.props.info,
+            nickName:this.props.nickName,
+            nubre:this.props.nubre,
+            cuit:this.props.cuit,
+            direccion:this.props.direccion,
+            nomroDeTelePhono:this.props.nomroDeTelePhono,
+
         };
     }
 
@@ -103,7 +109,7 @@ class Myinfo extends Component {
                             <Text style={styles.popoverText}>税号：</Text>
                         </View>
                         <View style={{flex:2}}>
-                            <Text style={styles.popoverText}> {info.cuit}</Text>
+                            <Text style={styles.popoverText}>{info.cuit}</Text>
                         </View>
                     </View>
                     <View style={styles.row}>

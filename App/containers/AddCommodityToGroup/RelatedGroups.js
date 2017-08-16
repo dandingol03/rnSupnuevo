@@ -63,12 +63,13 @@ class RelatedGroups extends Component{
     //同个组的所有商品信息
     queryCommodityListByGroupId(groupId,groupNum,groupName,code)
     {
-
+        var sessionId=this.props.sessionId;
         Proxy.post({
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityListOfGroupMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
            // body: 'groupId='+groupId
             body:{
@@ -295,7 +296,8 @@ var styles = StyleSheet.create({
 
 
 module.exports = connect(state=>({
-        merchantId:state.user.supnuevoMerchantId
+        merchantId:state.user.supnuevoMerchantId,
+    sessionId:state.user.sessionId
     })
 )(RelatedGroups);
 

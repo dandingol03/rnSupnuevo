@@ -31,12 +31,13 @@ class Sale extends Component{
 
 
     codeQuery(codeNum){
-
+        var sessionId=this.props.sessionId;
         Proxy.postes({
             url:Config.server+'/func/sale/gerCommodityInfoByCodigoMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             //body: "codigo=" + codeNum + "&merchantId=" + merchantId
             body: {
@@ -117,12 +118,13 @@ class Sale extends Component{
     }
 
     checkOut() {
-
+        var sessionId=this.props.sessionId;
         Proxy.postes({
             url: Config.server + '/func/sale/saveCommoditySaleMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             //body: "codigo=" + codeNum + "&merchantId=" + merchantId
             body: {
@@ -222,7 +224,6 @@ class Sale extends Component{
                     <View style={{flexDirection:'row',flex:1,justifyContent:'flex-start',}}>
 
                         <View style={{flex:1,borderWidth:1,borderColor:'#ddd',flexDirection:'row',justifyContent:'flex-start',alignItems:'center'}}>
-
                             <TouchableOpacity style={{flex:1,flexDirection:'row',margin:5,justifyContent:'center',alignItems:'center',borderRadius:4,backgroundColor:'#CAE1FF'}}
                                 onPress={()=>{
                                 var commodityList = [];
@@ -230,6 +231,7 @@ class Sale extends Component{
                                 this.state.total=0;
 
                             }}>
+
                                 <View style={{padding:10}}>
                                     <Text style={{color:'#343434',fontSize:15}}>作废</Text>
                                 </View>
@@ -440,6 +442,7 @@ module.exports = connect(state=>({
         merchantId:state.user.supnuevoMerchantId,
         username:state.user.username,
         commodityClassList:state.sale.commodityClassList,
-        weightService:state.sale.weightService
+        weightService:state.sale.weightService,
+    sessionId:state.user.sessionId,
     })
 )(Sale);

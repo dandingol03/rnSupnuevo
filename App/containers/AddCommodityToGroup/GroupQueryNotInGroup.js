@@ -191,7 +191,7 @@ class GroupQueryNotInGroup extends Component{
         var query=this.state.query;
         var codigo=code.codigo;
         query.codeNum=codigo;
-
+        var sessionId=this.props.sessionId;
         var body='';
         if(groupNum!==undefined&&groupNum!==null){
             body={
@@ -214,7 +214,8 @@ class GroupQueryNotInGroup extends Component{
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             body: body
         },(json)=> {
@@ -276,11 +277,13 @@ class GroupQueryNotInGroup extends Component{
     {
         var code = parseInt(codeNum);
         const { merchantId } = this.props;
+        var sessionId=this.props.sessionId;
         Proxy.post({
             url:Config.server+'/func/commodity/getSupnuevoCommonCommodityListByLastFourCodigoMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId
             },
            // body: "codigo=" + code + "&merchantId=" + merchantId
             body:{
@@ -305,13 +308,15 @@ class GroupQueryNotInGroup extends Component{
         var commodityIds=[commodityId];
         const {code}=this.state;
         const {groupInfo}=this.state;
+        var sessionId=this.props.sessionId;
         if(groupInfo&&groupInfo.groupId!==undefined&&groupInfo.groupId!==null)
         {
             Proxy.post({
                 url:Config.server+"/func/commodity/removeSupnuevoCommodityFromGroupMobile",
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie':sessionId,
                 },
                 //body: "commodityIds=" + commodityIds.toString() + "&groupId=" + groupInfo.groupId
                 body:{
@@ -361,7 +366,7 @@ class GroupQueryNotInGroup extends Component{
     {
 
         const {merchantId}=this.props;
-
+        var sessionId=this.props.sessionId;
         var code=this.state.code;
         if(code&&code.codigo)
         {
@@ -370,7 +375,8 @@ class GroupQueryNotInGroup extends Component{
                 url:Config.server+"/func/commodity/addSupnuevoCommodityIntoGroupMobile",
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie':sessionId
                 },
                 //body: "commodityId=" + code.commodityId + "&groupId=" + groupId+'&supnuevoMerchantId='+merchantId
                 body:{
@@ -426,6 +432,7 @@ class GroupQueryNotInGroup extends Component{
         if(groupName!==undefined&&groupName!==null&&groupName!='')
         {
             var code=this.state.code;
+            var sessionId=this.props.sessionId;
             if(code&&code.codigo)
             {
                 var codigo=code.codigo;
@@ -433,7 +440,8 @@ class GroupQueryNotInGroup extends Component{
                     url:Config.server+"/func/commodity/addSupnuevoBuyerCommodityGroupMobile",
                     headers: {
                         //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Cookie':sessionId
                     },
                     //body: "codigo=" + codigo + "&groupName=" + groupName+'&supnuevoMerchantId='+merchantId
                     body:{
@@ -491,14 +499,18 @@ class GroupQueryNotInGroup extends Component{
     commodityGroupAdd()
     {
         var groupName=this.state.groupName;
+        var sessionId=this.props.sessionId;
         const {merchantId}=this.props;
         if(groupName!==undefined&&groupName!==null&&groupName!='')
         {
+            var sessionId=this.props.sessionId;
             Proxy.post({
                 url:Config.server+'/func/commodity/saveOrUpdateSupnuevoBuyerCommodityGroupMobile',
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie':sessionId
+
                 },
                 //body: "groupName=" + groupName + "&groupId=" + ''+'&supnuevoMerchantId='+merchantId
                 body:{
@@ -800,7 +812,8 @@ var styles = StyleSheet.create({
 
 
 module.exports = connect(state=>({
-        merchantId:state.user.supnuevoMerchantId
+        merchantId:state.user.supnuevoMerchantId,
+    sessionId:state.user.sessionId,
     })
 )(GroupQueryNotInGroup);
 

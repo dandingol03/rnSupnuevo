@@ -54,7 +54,7 @@ class MultiPrices extends Component{
     submit(){
         const merchantId=this.props.merchantId;
         var commodityId=this.props.surveyDetail.commodityId;
-
+        var sessionId=this.props.sessionId;
         if(this.state.modifyType==0){
             Alert.alert(
                 '提示',
@@ -98,7 +98,8 @@ class MultiPrices extends Component{
             url:Config.server+"/func/commodity/setAreaGroupPriceByPriceIdMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             //body: "commodityId=" + commodityId + "&merchantId=" + merchantId+"&price=" +
             //this.state.price+"&internetId=" + this.state.internetId+"&storeId=" + this.state.storeId+"&modifyType=" + this.state.modifyType
@@ -774,7 +775,8 @@ var styles = StyleSheet.create({
 
 module.exports = connect(state=>({
         merchantId:state.user.supnuevoMerchantId,
-        username:state.user.username
+        username:state.user.username,
+    sessionId:state.user.sessionId,
     })
 )(MultiPrices);
 

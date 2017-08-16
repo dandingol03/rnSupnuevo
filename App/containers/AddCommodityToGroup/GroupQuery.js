@@ -124,6 +124,7 @@ class GroupQuery extends Component{
     onCodigoSelect(code,groupNum)
     {
         const {merchantId}=this.props;
+        var sessionId=this.props.sessionId;
         var query=this.state.query;
         if(code!==undefined&&code!==null){
             var codigo=code.codigo;
@@ -148,7 +149,8 @@ class GroupQuery extends Component{
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             body: body
         },(json)=> {
@@ -197,11 +199,13 @@ class GroupQuery extends Component{
     {
         //var code = parseInt(codeNum);
         const { merchantId } = this.props;
+        var sessionId=this.props.sessionId;
         Proxy.post({
             url:Config.server+'/func/commodity/getSupnuevoCommonCommodityListByLastFourCodigoMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
           // body: "codigo=" + codeNum + "&merchantId=" + merchantId
             body:{
@@ -230,11 +234,13 @@ class GroupQuery extends Component{
 //同个组的所有商品信息
     queryCommodityListByGroupId(groupId,groupNum,groupName)
     {
+        var sessionId=this.props.sessionId;
         Proxy.post({
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityListOfGroupMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId
             },
             //body: 'groupId='+groupId
             body:{
@@ -274,11 +280,13 @@ class GroupQuery extends Component{
 
     fetchData(){
         const merchantId=this.props.merchantId;
+        var sessionId=this.props.sessionId;
         Proxy.post({
             url:Config.server+"/func/commodity/getGroupInfoListOfMerchantMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             //body:"merchantId=" + merchantId
             body:{
@@ -671,7 +679,8 @@ var styles = StyleSheet.create({
 
 
 module.exports = connect(state=>({
-        merchantId:state.user.supnuevoMerchantId
+        merchantId:state.user.supnuevoMerchantId,
+    sessionId:state.user.sessionId,
     })
 )(GroupQuery);
 
