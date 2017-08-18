@@ -132,6 +132,7 @@ class Query extends Component{
 
         const { merchantId } = this.props;
 
+        var sessionId = this.props.sessionId;
 
         Proxy.postes({
             url:Config.server+'/func/commodity/getQueryDataListByInputStringMobile',

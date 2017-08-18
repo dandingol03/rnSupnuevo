@@ -13,33 +13,36 @@ export let loginAction=function(username,password,cb) {
 
     return dispatch => {
 
-        var versionName = "3.0";
-        var sessionId = null;
+        return new Promise((resolve, reject) => {
+            var versionName = "3.0";
+            var sessionId = null;
 
-        Proxy.getSession({
-            url: Config.server + '/func/auth/webLogin',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: {
-                loginName: username,
-                password: password,
-                loginType:1,
-                parameter:{appVersion:versionName}
-            }
-        })  .then((response) =>{
+            Proxy.getSession({
+                url: Config.server + '/func/auth/webLogin',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: {
+                    loginName: username,
+                    password: password,
+                    loginType: 1,
+                    parameter: {appVersion: versionName}
+                }
+            }).then((response) => {
 
-            sessionId = response.headers.map['set-cookie'][0];
-            return response.text();
-        })
+                sessionId = response.headers.map['set-cookie'][0];
+                return Proxy.postes({
+                    url: Config.server + '/func//merchant/getMerchantInitInfoMobile',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Cookie': sessionId,
+                    },
+                    body: {}
+                });
 
-            .then((res)=> {
+            }).then((json) => {
 
-                resolve(JSON.parse(res))
-            })
-            .then((json)=>{
-
-                var errorMsg=json.errorMsg;
+                var errorMsg = json.errorMsg;
                 if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                     dispatch(getSession(null));
                     dispatch(clearTimerAction());
@@ -48,15 +51,15 @@ export let loginAction=function(username,password,cb) {
                 }
                 else {
 
-                    dispatch(setAnnouncement(json.dataMap.helpContent));
-                    dispatch(setCommodityClassList(json.dataMap.commodityClassList));
-                    dispatch(setWeightService(json.dataMap.weightService));
+                    dispatch(setAnnouncement(json.data.helpContent));
+                    dispatch(setCommodityClassList(json.data.commodityClassList));
+                    dispatch(setWeightService(json.data.weightService));
                     dispatch(getSession({
                         username: username,
-                        merchantStates: json.dataMap.merchantStates,
-                        supnuevoMerchantId: json.dataMap.merchantId,
-                        merchantType:json.dataMap.merchantType,
-                        sessionId:sessionId
+                        merchantStates: json.data.merchantStates,
+                        supnuevoMerchantId: json.data.merchantId,
+                        merchantType: json.data.merchantType,
+                        sessionId: sessionId
                     }));
 
 
@@ -67,7 +70,7 @@ export let loginAction=function(username,password,cb) {
                 }
 
             })
-
+        })
     }
 
 }
