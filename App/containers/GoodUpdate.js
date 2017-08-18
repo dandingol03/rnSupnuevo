@@ -1,7 +1,7 @@
 /**
  * Created by danding on 16/11/21.
  */
-import React,{Component} from 'react';
+import React, {Component} from 'react';
 
 import  {
     AppRegistry,
@@ -18,10 +18,10 @@ import  {
     Button
 } from 'react-native';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scrollable-tab-view';
+import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import DatePicker from 'react-native-datepicker';
 import ActionSheet from 'react-native-actionsheet';
 
@@ -31,114 +31,112 @@ var Proxy = require('../proxy/Proxy');
 import Config from '../../config';
 
 
+class GoodUpdate extends Component {
 
-class GoodUpdate extends Component{
-
-    cancel(){
+    cancel() {
         //this.props.reset();
-        const { navigator } = this.props;
-        if(navigator) {
+        const {navigator} = this.props;
+        if (navigator) {
             navigator.pop();
         }
     }
 
-    goBack(){
-        var code = {codigo:this.state.selectedCodeInfo.codigo};
+    goBack() {
+        var code = {codigo: this.state.selectedCodeInfo.codigo};
         this.props.onCodigoSelect(code);
         this.props.setHasCodigo();
-        const { navigator } = this.props;
-        if(navigator) {
+        const {navigator} = this.props;
+        if (navigator) {
             navigator.pop();
         }
     }
 
-    confirm(){
+    confirm() {
         //修改信息
-        if(this.state.selectedCodeInfo!=undefined&&this.state.selectedCodeInfo!=null){
-            if(this.state.selectedCodeInfo.codigo === null || this.state.selectedCodeInfo.codigo === undefined || this.state.selectedCodeInfo.codigo === ''){
+        if (this.state.selectedCodeInfo != undefined && this.state.selectedCodeInfo != null) {
+            if (this.state.selectedCodeInfo.codigo === null || this.state.selectedCodeInfo.codigo === undefined || this.state.selectedCodeInfo.codigo === '') {
                 alert("商品条码不能为空");
                 return false;
             }
-            if(this.state.selectedCodeInfo.taxId === null || this.state.selectedCodeInfo.taxId === undefined || this.state.selectedCodeInfo.taxId === ''){
+            if (this.state.selectedCodeInfo.taxId === null || this.state.selectedCodeInfo.taxId === undefined || this.state.selectedCodeInfo.taxId === '') {
                 alert("商品税类不能为空");
                 return false;
             }
-            if(this.state.selectedCodeInfo.nombre === null || this.state.selectedCodeInfo.nombre === undefined || this.state.selectedCodeInfo.nombre === ''){
+            if (this.state.selectedCodeInfo.nombre === null || this.state.selectedCodeInfo.nombre === undefined || this.state.selectedCodeInfo.nombre === '') {
                 alert("商品名称不能为空");
                 return false;
             }
-            if(this.state.selectedCodeInfo.nombre !== null || this.state.selectedCodeInfo.nombre !== undefined || this.state.selectedCodeInfo.nombre !== ''){
-                if(this.state.selectedCodeInfo.nombre.length<10){
+            if (this.state.selectedCodeInfo.nombre !== null || this.state.selectedCodeInfo.nombre !== undefined || this.state.selectedCodeInfo.nombre !== '') {
+                if (this.state.selectedCodeInfo.nombre.length < 10) {
                     alert("商品名称不能少于10位");
                     return false;
                 }
             }
 
-            if(this.state.selectedCodeInfo.setSizeValue === null || this.state.selectedCodeInfo.setSizeValue === undefined || this.state.selectedCodeInfo.setSizeValue === ''){
+            if (this.state.selectedCodeInfo.setSizeValue === null || this.state.selectedCodeInfo.setSizeValue === undefined || this.state.selectedCodeInfo.setSizeValue === '') {
                 alert("商品含量不能为空");
                 return false;
             }
-            if(this.state.selectedCodeInfo.sizeUnit === null || this.state.selectedCodeInfo.sizeUnit === undefined || this.state.selectedCodeInfo.sizeUnit === ''){
+            if (this.state.selectedCodeInfo.sizeUnit === null || this.state.selectedCodeInfo.sizeUnit === undefined || this.state.selectedCodeInfo.sizeUnit === '') {
                 alert("含量单位不能为空");
                 return false;
             }
-            if(this.state.selectedCodeInfo.scaleUnit === null || this.state.selectedCodeInfo.scaleUnit === undefined || this.state.selectedCodeInfo.scaleUnit === ''){
+            if (this.state.selectedCodeInfo.scaleUnit === null || this.state.selectedCodeInfo.scaleUnit === undefined || this.state.selectedCodeInfo.scaleUnit === '') {
                 alert("比价单位不能为空");
                 return false;
             }
 
 
-
+            var sessionId = this.props.sessionId;
             Proxy.post({
-                url:Config.server+'/func/commodity/saveOrUpdateSupnuevoCommonCommodityMobile',
+                url: Config.server + '/func/commodity/saveOrUpdateSupnuevoCommonCommodityMobile',
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie': sessionId,
                 },
-               // body: "taxId=" + this.state.selectedCodeInfo.taxId + "&supnuevoMerchantId=" + this.state.merchantId
-               // + "&codigo=" + this.state.selectedCodeInfo.codigo+ "&nombre=" + this.state.selectedCodeInfo.nombre+
-               // "&sizeValue=" + this.state.selectedCodeInfo.setSizeValue+ "&sizeUnited=" + this.state.selectedCodeInfo.sizeUnit+
-               // "&scaleUnited=" + this.state.selectedCodeInfo.scaleUnit
-                body:{
-                    taxId:this.state.selectedCodeInfo.taxId,
-                    supnuevoMerchantId:this.state.merchantId,
-                    codigo:this.state.selectedCodeInfo.codigo,
-                    nombre:this.state.selectedCodeInfo.nombre,
-                    sizeValue:this.state.selectedCodeInfo.setSizeValue,
-                    sizeUnited:this.state.selectedCodeInfo.sizeUnit,
-                    scaleUnited:this.state.selectedCodeInfo.scaleUnit
+                // body: "taxId=" + this.state.selectedCodeInfo.taxId + "&supnuevoMerchantId=" + this.state.merchantId
+                // + "&codigo=" + this.state.selectedCodeInfo.codigo+ "&nombre=" + this.state.selectedCodeInfo.nombre+
+                // "&sizeValue=" + this.state.selectedCodeInfo.setSizeValue+ "&sizeUnited=" + this.state.selectedCodeInfo.sizeUnit+
+                // "&scaleUnited=" + this.state.selectedCodeInfo.scaleUnit
+                body: {
+                    taxId: this.state.selectedCodeInfo.taxId,
+                    supnuevoMerchantId: this.state.merchantId,
+                    codigo: this.state.selectedCodeInfo.codigo,
+                    nombre: this.state.selectedCodeInfo.nombre,
+                    sizeValue: this.state.selectedCodeInfo.setSizeValue,
+                    sizeUnited: this.state.selectedCodeInfo.sizeUnit,
+                    scaleUnited: this.state.selectedCodeInfo.scaleUnit
                 }
-            },(json)=> {
-                var errorMsg=json.errorMsg;
+            }, (json) => {
+                var errorMsg = json.errorMsg;
                 var message = json.message;
-                if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+                if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                     alert(errorMsg);
                 }
-                if(message !== null && message !== undefined && message !== ""){
+                if (message !== null && message !== undefined && message !== "") {
                     alert(message);
-                   this.goBack();
+                    this.goBack();
                 }
 
-            }, (err) =>{
+            }, (err) => {
                 alert(err);
             });
 
         }
 
 
-
     }
 
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
         this.state = {
-            onCodigoSelect:props.onCodigoSelect,
-            merchantId:props.merchantId,
-            selectedCodeInfo:props.goodInfo,
-            taxArr:props.taxArr,
-            sizeArr:props.sizeArr,
-            scaleArr:[],
+            onCodigoSelect: props.onCodigoSelect,
+            merchantId: props.merchantId,
+            selectedCodeInfo: props.goodInfo,
+            taxArr: props.taxArr,
+            sizeArr: props.sizeArr,
+            scaleArr: [],
         };
 
     }
@@ -146,69 +144,73 @@ class GoodUpdate extends Component{
     _handlePress1(index) {
 
         var sizeUnit = this.state.selectedCodeInfo.sizeUnit;
-        if(index>0){
-            this.state.selectedCodeInfo.sizeUnit = this.state.sizeArr[index-1].label;
+        if (index > 0) {
+            this.state.selectedCodeInfo.sizeUnit = this.state.sizeArr[index - 1].label;
             var selectedCodeInfo = this.state.selectedCodeInfo;
             var sizeUnit = this.state.selectedCodeInfo.sizeUnit;
-            this.setState({selectedCodeInfo:selectedCodeInfo});
+            this.setState({selectedCodeInfo: selectedCodeInfo});
         }
-
+        var sessionId = this.props.sessionId;
         Proxy.post({
-            url:Config.server+'/func/commodity/getSupnuevoScaleInfoListMobile',
+            url: Config.server + '/func/commodity/getSupnuevoScaleInfoListMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie': sessionId,
             },
-           // body: "sizeUnit=" + sizeUnit + "&merchantId=" + this.state.merchantId
-            body:{
-                sizeUnit:sizeUnit,
-                merchantId:this.state.merchantId
+            // body: "sizeUnit=" + sizeUnit + "&merchantId=" + this.state.merchantId
+            body: {
+                sizeUnit: sizeUnit,
+                merchantId: this.state.merchantId
             }
-        },(json)=> {
+        }, (json) => {
             var scaleArr = new Array();
-            json.scaleArr.map(function(index,i){
+            json.scaleArr.map(function (index, i) {
                 scaleArr.push(index);
             })
 
-            this.setState({scaleArr:scaleArr});
+            this.setState({scaleArr: scaleArr});
 
-        }, (err) =>{
+        }, (err) => {
             alert(err);
         });
     }
+
     _handlePress2(index) {
-        this.state.selectedCodeInfo.scaleUnit = this.state.scaleArr[index-1].label;
+        this.state.selectedCodeInfo.scaleUnit = this.state.scaleArr[index - 1].label;
         var selectedCodeInfo = this.state.selectedCodeInfo;
-        this.setState({selectedCodeInfo:selectedCodeInfo});
+        this.setState({selectedCodeInfo: selectedCodeInfo});
 
 
     }
+
     _handlePress3(index) {
-        this.state.selectedCodeInfo.taxId = index-1;
+        this.state.selectedCodeInfo.taxId = index - 1;
         var selectedCodeInfo = this.state.selectedCodeInfo;
-        this.setState({selectedCodeInfo:selectedCodeInfo});
+        this.setState({selectedCodeInfo: selectedCodeInfo});
     }
+
     show(actionSheet) {
-        if(actionSheet=='actionSheet2'){
-            if(this.state.scaleArr!==undefined&&this.state.scaleArr!==null&&this.state.scaleArr.length>0){
+        if (actionSheet == 'actionSheet2') {
+            if (this.state.scaleArr !== undefined && this.state.scaleArr !== null && this.state.scaleArr.length > 0) {
                 this[actionSheet].show();
-            }else{
+            } else {
                 alert('请先选择含量单位');
             }
-        }else{
+        } else {
             this[actionSheet].show();
         }
     }
 
 
-    render(){
+    render() {
 
         var selectedCodeInfo = this.state.selectedCodeInfo;
-        if(selectedCodeInfo.setSizeValue!==undefined&&selectedCodeInfo.setSizeValue!==null){
-            selectedCodeInfo.setSizeValue=selectedCodeInfo.setSizeValue.toString();
+        if (selectedCodeInfo.setSizeValue !== undefined && selectedCodeInfo.setSizeValue !== null) {
+            selectedCodeInfo.setSizeValue = selectedCodeInfo.setSizeValue.toString();
         }
 
-        var codigo =selectedCodeInfo.codigo;
+        var codigo = selectedCodeInfo.codigo;
         var name = selectedCodeInfo.nombre;
         var sizeValue = selectedCodeInfo.setSizeValue;
 
@@ -219,72 +221,96 @@ class GoodUpdate extends Component{
         const CANCEL_INDEX = 0;
         const DESTRUCTIVE_INDEX = 1;
         const buttons = ['取消', '确认退出', '😄😄😄', '哈哈哈'];
-        const sizeUnitButtons=[];
-        const scaleUnitButtons=[];
-        const taxButtons=[];
+        const sizeUnitButtons = [];
+        const scaleUnitButtons = [];
+        const taxButtons = [];
 
         sizeUnitButtons.push('取消');
         taxButtons.push('取消');
         scaleUnitButtons.push('取消');
 
-        this.state.sizeArr.map(function(index,i){
+        this.state.sizeArr.map(function (index, i) {
             sizeUnitButtons.push(index.label);
         })
-        this.state.taxArr.map(function(index,i){
+        this.state.taxArr.map(function (index, i) {
             taxButtons.push(index.label);
-            if((index.value-1)==selectedCodeInfo.taxId){
+            if ((index.value - 1) == selectedCodeInfo.taxId) {
                 selectTax = index.label;
             }
         })
-        this.state.scaleArr.map(function(index,i){
+        this.state.scaleArr.map(function (index, i) {
             scaleUnitButtons.push(index.label);
         })
 
 
         return (
-            <View style={{flex:1}}>
+            <View style={{flex: 1}}>
 
                 {/* header bar */}
-                <View style={[{backgroundColor:'#387ef5',padding: 12,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
-                    <View style={{flex:1}}>
-                        <TouchableOpacity style={{flex:1}}
-                                          onPress={()=>{
-                                                this.cancel();
+                <View style={[{
+                    backgroundColor: '#387ef5',
+                    padding: 12,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    flexDirection: 'row'
+                }, styles.card]}>
+                    <View style={{flex: 1}}>
+                        <TouchableOpacity style={{flex: 1}}
+                                          onPress={() => {
+                                              this.cancel();
                                           }}>
                             <Icon name="chevron-left" color="#fff" size={25}></Icon>
                         </TouchableOpacity>
                     </View>
-                    <Text style={{fontSize:17,flex:3,textAlign:'center',color:'#fff'}}>
+                    <Text style={{fontSize: 17, flex: 3, textAlign: 'center', color: '#fff'}}>
                         修改商品
                     </Text>
-                    <View style={{flex:1,marginRight:10,flexDirection:'row',justifyContent:'center'}}>
+                    <View style={{flex: 1, marginRight: 10, flexDirection: 'row', justifyContent: 'center'}}>
                     </View>
                 </View>
 
                 {/* body */}
-                <View style={{padding:10,marginTop:20}}>
+                <View style={{padding: 10, marginTop: 20}}>
 
 
                     {/*表单*/}
-                    <View style={[styles.row,{borderTopWidth:1,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:0,borderColor:'#aaa',borderBottomColor:'#aaa'
-                            ,paddingLeft:12,paddingRight:12}]}>
+                    <View style={[styles.row, {
+                        borderTopWidth: 1,
+                        borderLeftWidth: 1,
+                        borderRightWidth: 1,
+                        borderBottomWidth: 0,
+                        borderColor: '#aaa',
+                        borderBottomColor: '#aaa'
+                        ,
+                        paddingLeft: 12,
+                        paddingRight: 12
+                    }]}>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex: 3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                             <Text >商品内码:</Text>
                         </View>
-                        <View style={{flex:6,padding:5,justifyContent:'center'}}>
+                        <View style={{flex: 6, padding: 5, justifyContent: 'center'}}>
 
                         </View>
                     </View>
 
 
-                    <View style={[styles.row,{borderTopWidth:1,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:0,borderColor:'#aaa',borderBottomColor:'#aaa'
-                            ,paddingLeft:12,paddingRight:12}]}>
+                    <View style={[styles.row, {
+                        borderTopWidth: 1,
+                        borderLeftWidth: 1,
+                        borderRightWidth: 1,
+                        borderBottomWidth: 0,
+                        borderColor: '#aaa',
+                        borderBottomColor: '#aaa'
+                        ,
+                        paddingLeft: 12,
+                        paddingRight: 12
+                    }]}>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex: 3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                             <Text >商品条码:</Text>
                         </View>
-                        <View style={{flex:6,padding:5,justifyContent:'center'}}>
+                        <View style={{flex: 6, padding: 5, justifyContent: 'center'}}>
                             <Text>
                                 {codigo}
                             </Text>
@@ -292,20 +318,29 @@ class GoodUpdate extends Component{
                     </View>
 
 
-                    <View style={[styles.row,{borderTopWidth:1,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:0,borderColor:'#aaa',borderBottomColor:'#aaa'
-                            ,paddingLeft:12,paddingRight:12}]}>
+                    <View style={[styles.row, {
+                        borderTopWidth: 1,
+                        borderLeftWidth: 1,
+                        borderRightWidth: 1,
+                        borderBottomWidth: 0,
+                        borderColor: '#aaa',
+                        borderBottomColor: '#aaa'
+                        ,
+                        paddingLeft: 12,
+                        paddingRight: 12
+                    }]}>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex: 3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                             <Text >商品名称:</Text>
                         </View>
-                        <View style={{flex:6,padding:5,justifyContent:'center'}}>
+                        <View style={{flex: 6, padding: 5, justifyContent: 'center'}}>
 
                             <TextInput
                                 style={{height: 40}}
                                 onChangeText={(nombre) => {
-                                   this.state.selectedCodeInfo.nombre=nombre;
-                                   var selectedCodeInfo =  this.state.selectedCodeInfo;
-                                   this.setState({selectedCodeInfo:selectedCodeInfo});
+                                    this.state.selectedCodeInfo.nombre = nombre;
+                                    var selectedCodeInfo = this.state.selectedCodeInfo;
+                                    this.setState({selectedCodeInfo: selectedCodeInfo});
                                 }}
                                 value={this.state.selectedCodeInfo.nombre}
                                 placeholder={name}
@@ -315,22 +350,31 @@ class GoodUpdate extends Component{
                         </View>
                     </View>
 
-                    <View style={[styles.row,{borderTopWidth:1,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:1,borderColor:'#aaa',borderBottomColor:'#aaa'
-                            ,paddingLeft:12,paddingRight:12}]}>
+                    <View style={[styles.row, {
+                        borderTopWidth: 1,
+                        borderLeftWidth: 1,
+                        borderRightWidth: 1,
+                        borderBottomWidth: 1,
+                        borderColor: '#aaa',
+                        borderBottomColor: '#aaa'
+                        ,
+                        paddingLeft: 12,
+                        paddingRight: 12
+                    }]}>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex: 3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                             <Text >商品含量:</Text>
                         </View>
-                        <View style={{flex:6,padding:5,justifyContent:'center'}}>
+                        <View style={{flex: 6, padding: 5, justifyContent: 'center'}}>
                             <TextInput
                                 style={{height: 40}}
                                 onChangeText={(sizeValue) => {
-                                    this.state.selectedCodeInfo.setSizeValue=sizeValue;
+                                    this.state.selectedCodeInfo.setSizeValue = sizeValue;
                                     var selectedCodeInfoNew = this.state.selectedCodeInfo;
-                                    this.setState({selectedCodeInfo:selectedCodeInfoNew});
+                                    this.setState({selectedCodeInfo: selectedCodeInfoNew});
                                 }}
-                                value={(selectedCodeInfo.setSizeValue!==undefined&&selectedCodeInfo.setSizeValue!==null)
-                                ?selectedCodeInfo.setSizeValue+'':''}
+                                value={(selectedCodeInfo.setSizeValue !== undefined && selectedCodeInfo.setSizeValue !== null)
+                                    ? selectedCodeInfo.setSizeValue + '' : ''}
                                 placeholder={sizeValue}
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"
@@ -338,20 +382,37 @@ class GoodUpdate extends Component{
                         </View>
                     </View>
 
-                    <View style={[styles.row,{borderTopWidth:1,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:1,borderColor:'#aaa',borderBottomColor:'#aaa'
-                            ,paddingLeft:12,paddingRight:12}]}>
+                    <View style={[styles.row, {
+                        borderTopWidth: 1,
+                        borderLeftWidth: 1,
+                        borderRightWidth: 1,
+                        borderBottomWidth: 1,
+                        borderColor: '#aaa',
+                        borderBottomColor: '#aaa'
+                        ,
+                        paddingLeft: 12,
+                        paddingRight: 12
+                    }]}>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex: 3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                             <Text >含量单位:</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',paddingLeft:12}}>
+                        <View style={{
+                            flex: 3,
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            paddingLeft: 12
+                        }}>
                             <Text >{sizeUnit}</Text>
                         </View>
 
-                        <View style={{flex:3,padding:5}}>
+                        <View style={{flex: 3, padding: 5}}>
 
-                            <TouchableOpacity style={{justifyContent:'center'}}
-                                              onPress={()=>{ this.show('actionSheet1'); }}>
+                            <TouchableOpacity style={{justifyContent: 'center'}}
+                                              onPress={() => {
+                                                  this.show('actionSheet1');
+                                              }}>
                                 <Icon name="chevron-circle-down" color="#aaa" size={30}></Icon>
                                 <ActionSheet
                                     ref={(o) => {
@@ -362,29 +423,46 @@ class GoodUpdate extends Component{
                                     cancelButtonIndex={CANCEL_INDEX}
                                     destructiveButtonIndex={DESTRUCTIVE_INDEX}
                                     onPress={
-                                        (data)=>{ this._handlePress1(data); }
+                                        (data) => {
+                                            this._handlePress1(data);
+                                        }
                                     }
                                 />
                             </TouchableOpacity>
                         </View>
                     </View>
 
-                    <View style={[styles.row,{borderTopWidth:1,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:1,borderColor:'#aaa',borderBottomColor:'#aaa'
-                            ,paddingLeft:12,paddingRight:12}]}>
+                    <View style={[styles.row, {
+                        borderTopWidth: 1,
+                        borderLeftWidth: 1,
+                        borderRightWidth: 1,
+                        borderBottomWidth: 1,
+                        borderColor: '#aaa',
+                        borderBottomColor: '#aaa'
+                        ,
+                        paddingLeft: 12,
+                        paddingRight: 12
+                    }]}>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex: 3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                             <Text >比价单位:</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',paddingLeft:12}}>
+                        <View style={{
+                            flex: 3,
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            paddingLeft: 12
+                        }}>
                             <Text >{scaleUnit}</Text>
                         </View>
-                        <View style={{flex:3,padding:5}}>
+                        <View style={{flex: 3, padding: 5}}>
 
-                            <TouchableOpacity style={{justifyContent:'center'}}
+                            <TouchableOpacity style={{justifyContent: 'center'}}
                                               onPress={
-                                    ()=>{
-                                        this.show('actionSheet2');
-                                    }}>
+                                                  () => {
+                                                      this.show('actionSheet2');
+                                                  }}>
                                 <Icon name="chevron-circle-down" color="#aaa" size={30}></Icon>
                                 <ActionSheet
                                     ref={(p) => this.actionSheet2 = p}
@@ -393,29 +471,46 @@ class GoodUpdate extends Component{
                                     cancelButtonIndex={CANCEL_INDEX}
                                     destructiveButtonIndex={DESTRUCTIVE_INDEX}
                                     onPress={
-                                        (data)=>{ this._handlePress2(data); }
+                                        (data) => {
+                                            this._handlePress2(data);
+                                        }
                                     }
                                 />
                             </TouchableOpacity>
                         </View>
                     </View>
 
-                    <View style={[styles.row,{borderTopWidth:1,borderLeftWidth:1,borderRightWidth:1,borderBottomWidth:1,borderColor:'#aaa',borderBottomColor:'#aaa'
-                            ,paddingLeft:12,paddingRight:12}]}>
+                    <View style={[styles.row, {
+                        borderTopWidth: 1,
+                        borderLeftWidth: 1,
+                        borderRightWidth: 1,
+                        borderBottomWidth: 1,
+                        borderColor: '#aaa',
+                        borderBottomColor: '#aaa'
+                        ,
+                        paddingLeft: 12,
+                        paddingRight: 12
+                    }]}>
 
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <View style={{flex: 3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                             <Text >商品税类:</Text>
                         </View>
-                        <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',paddingLeft:12}}>
+                        <View style={{
+                            flex: 3,
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            paddingLeft: 12
+                        }}>
                             <Text >{selectTax}</Text>
                         </View>
-                        <View style={{flex:3,padding:5}}>
+                        <View style={{flex: 3, padding: 5}}>
 
-                            <TouchableOpacity style={{justifyContent:'center'}}
+                            <TouchableOpacity style={{justifyContent: 'center'}}
                                               onPress={
-                                    ()=>{
-                                        this.show('actionSheet3');
-                                    }}>
+                                                  () => {
+                                                      this.show('actionSheet3');
+                                                  }}>
                                 <Icon name="chevron-circle-down" color="#aaa" size={30}></Icon>
                                 <ActionSheet
                                     ref={(q) => this.actionSheet3 = q}
@@ -424,21 +519,32 @@ class GoodUpdate extends Component{
                                     cancelButtonIndex={CANCEL_INDEX}
                                     destructiveButtonIndex={DESTRUCTIVE_INDEX}
                                     onPress={
-                                        (data)=>{ this._handlePress3(data); }
+                                        (data) => {
+                                            this._handlePress3(data);
+                                        }
                                     }
                                 />
                             </TouchableOpacity>
                         </View>
                     </View>
 
-                    <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:40}}>
-                        <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#11c1f3',
-                                    borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center',padding:8,borderRadius:4}}
+                    <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 40}}>
+                        <TouchableOpacity style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            backgroundColor: '#11c1f3',
+                            borderTopRightRadius: 4,
+                            borderBottomRightRadius: 4,
+                            alignItems: 'center',
+                            padding: 8,
+                            borderRadius: 4
+                        }}
                                           onPress={
-                                            ()=>{
-                                                this.confirm();
-                                            }}>
-                            <Text style={{color:'#fff',fontSize:18}}>确认</Text>
+                                              () => {
+                                                  this.confirm();
+                                              }}>
+                            <Text style={{color: '#fff', fontSize: 18}}>确认</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -456,11 +562,11 @@ var styles = StyleSheet.create({
         alignItems: 'center',
     },
     card: {
-        borderTopWidth:0,
+        borderTopWidth: 0,
         borderBottomWidth: 1,
         borderBottomColor: 'rgba(0,0,0,0.1)',
         shadowColor: '#ccc',
-        shadowOffset: { width: 2, height: 2, },
+        shadowOffset: {width: 2, height: 2,},
         shadowOpacity: 0.5,
         shadowRadius: 3,
     },
@@ -468,14 +574,14 @@ var styles = StyleSheet.create({
         height: 1,
         backgroundColor: '#E8E8E8',
     },
-    body:{
-        padding:10
+    body: {
+        padding: 10
     },
-    row:{
-        flexDirection:'row',
+    row: {
+        flexDirection: 'row',
         height: 50,
-        borderBottomWidth:1,
-        borderBottomColor:'#222'
+        borderBottomWidth: 1,
+        borderBottomColor: '#222'
     },
     button: {
         width: 100,
@@ -489,9 +595,9 @@ var styles = StyleSheet.create({
 });
 
 
-
-module.exports = connect(state=>({
-        merchantId:state.user.supnuevoMerchantId
+module.exports = connect(state => ({
+        merchantId: state.user.supnuevoMerchantId,
+        sessionId: state.user.sessionId,
     })
 )(GoodUpdate);
 

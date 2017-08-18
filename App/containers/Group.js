@@ -68,11 +68,13 @@ class Group extends Component{
     getCommoditiesByPriceId(commodityId){
 
         var merchantId=this.props.merchantId;
+        var sessionId=this.props.sessionId;
         Proxy.post({
             url:Config.server+'/func/commodity/getSupnuevoBuyerCommodityPriceFormListOfGroupMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
            // body: "commodityId=" + commodityId + "&merchantId=" + merchantId
             body:{
@@ -340,13 +342,15 @@ class Group extends Component{
         });
         const {goodInfo}=this.props;
         const {merchantId}=this.props;
+        var sessionId=this.props.sessionId;
         //TODO:make a fetch
 
         Proxy.post({
             url:Config.server+'/func/commodity/updateSupnuevoBuyerCommodityPriceGroupMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             //body: "commodityIds=" + selectedRelativePriceIds.toString() +
             //"&merchantId=" + merchantId+
@@ -570,7 +574,8 @@ var styles = StyleSheet.create({
 
 module.exports = connect(state=>({
     merchantId:state.user.supnuevoMerchantId,
-    username:state.user.username
+    username:state.user.username,
+    sessionId:state.user.sessionId,
     })
 )(Group);
 

@@ -1,13 +1,4 @@
-/**
- * Created by danding on 17/1/15.
- */
-/**
- * Created by danding on 17/1/15.
- */
-/**
- * Created by danding on 16/11/21.
- */
-import React,{Component} from 'react';
+import React, {Component} from 'react';
 
 import  {
     AppRegistry,
@@ -24,10 +15,10 @@ import  {
     TouchableOpacity
 } from 'react-native';
 
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scrollable-tab-view';
+import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import DatePicker from 'react-native-datepicker';
 import CheckBox from 'react-native-check-box';
 import Modalbox from 'react-native-modalbox';
@@ -40,77 +31,116 @@ import Config from '../../config';
 import CodesModal from '../components/modal/CodesModal';
 
 
-class GroupInfoManage extends Component{
+class GroupInfoManage extends Component {
 
-    goBack(){
-        const { navigator } = this.props;
-        if(navigator) {
+    goBack() {
+        const {navigator} = this.props;
+        if (navigator) {
             navigator.pop();
         }
     }
 
 
-    toggleAll(){
-        if(this.state.relatedGoods!==undefined&&this.state.relatedGoods!==null)
-        {
-            var relatedGoods=_.cloneDeep(this.state.relatedGoods);
-            if(this.state.selectAll!=true)
-            {
-                relatedGoods.map(function (good, i){
-                    good.checked=true;
+    toggleAll() {
+        if (this.state.relatedGoods !== undefined && this.state.relatedGoods !== null) {
+            var relatedGoods = _.cloneDeep(this.state.relatedGoods);
+            if (this.state.selectAll != true) {
+                relatedGoods.map(function (good, i) {
+                    good.checked = true;
                 });
-            }else{
-                relatedGoods.map(function (good, i){
-                    good.checked=false;
+            } else {
+                relatedGoods.map(function (good, i) {
+                    good.checked = false;
                 });
             }
             var dataSource = this.state.dataSource.cloneWithRows(relatedGoods);
             this.setState({
                 relatedGoods: relatedGoods,
-                selectAll:!this.state.selectAll,
-                dataSource:dataSource
+                selectAll: !this.state.selectAll,
+                dataSource: dataSource
             });
         }
     }
 
 
-    closeCodesModal(val){
-        this.setState({codesModalVisible:val});
+    closeCodesModal(val) {
+        this.setState({codesModalVisible: val});
     }
 
 
-    renderRow(rowData,sectionId,rowId){
+    renderRow(rowData, sectionId, rowId) {
 
-        var lineStyle=null;
-        if(parseInt(rowId)%2==0)
-        {
-            lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
-                borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#C4D9FF'};
-        }else{
-            lineStyle={flex:1,flexDirection:'row',padding:8,borderBottomWidth:1,borderLeftWidth:1,borderRightWidth:1,
-                borderColor:'#ddd',justifyContent:'flex-start',backgroundColor:'#fff'}
+        var lineStyle = null;
+        if (parseInt(rowId) % 2 == 0) {
+            lineStyle = {
+                flex: 1,
+                flexDirection: 'row',
+                padding: 8,
+                borderBottomWidth: 1,
+                borderLeftWidth: 1,
+                borderRightWidth: 1,
+                borderColor: '#ddd',
+                justifyContent: 'flex-start',
+                backgroundColor: '#C4D9FF'
+            };
+        } else {
+            lineStyle = {
+                flex: 1,
+                flexDirection: 'row',
+                padding: 8,
+                borderBottomWidth: 1,
+                borderLeftWidth: 1,
+                borderRightWidth: 1,
+                borderColor: '#ddd',
+                justifyContent: 'flex-start',
+                backgroundColor: '#fff'
+            }
         }
 
-        if(rowData.codigo==this.state.code.codigo)
-            lineStyle=Object.assign(lineStyle,{borderColor:'#284bff',borderWidth:2,borderBottomWidth:2,borderLeftWidth:2,borderRightWidth:2});
+        if (rowData.codigo == this.state.code.codigo)
+            lineStyle = Object.assign(lineStyle, {
+                borderColor: '#284bff',
+                borderWidth: 2,
+                borderBottomWidth: 2,
+                borderLeftWidth: 2,
+                borderRightWidth: 2
+            });
 
-        var row=
+        var row =
             <View>
                 <View>
                     <View style={lineStyle}>
 
-                        <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.codigo}</Text>
+                        <View style={{
+                            flex: 5,
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            padding: 8
+                        }}>
+                            <Text style={{color: '#222', fontWeight: 'bold'}}>{rowData.codigo}</Text>
                         </View>
 
-                        <View style={{flex:5,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:8}}>
-                            <Text style={{color:'#222',fontWeight:'bold'}}>{rowData.goodName}</Text>
+                        <View style={{
+                            flex: 5,
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            padding: 8
+                        }}>
+                            <Text style={{color: '#222', fontWeight: 'bold'}}>{rowData.goodName}</Text>
                         </View>
 
-                        <TouchableOpacity style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',padding:8}}
-                                          onPress={()=>{
-                                      this.removeCommodity(rowData.commodityId);
-                              }}>
+                        <TouchableOpacity style={{
+                            flex: 3,
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            padding: 8
+                        }}
+                                          onPress={() => {
+                                              this.removeCommodity(rowData.commodityId);
+                                          }}>
                             <Icon name='remove' color="#ef473a" size={30}></Icon>
                         </TouchableOpacity>
 
@@ -122,43 +152,43 @@ class GroupInfoManage extends Component{
         return row;
     }
 
-    changePriceRelated()
-    {
-        var selectedRelativePriceIds=[];
-        var relatedGoods=this.state.relatedGoods;
-        relatedGoods.map(function(good,i) {
-            if(good.checked==true){
+    changePriceRelated() {
+        var selectedRelativePriceIds = [];
+        var relatedGoods = this.state.relatedGoods;
+        relatedGoods.map(function (good, i) {
+            if (good.checked == true) {
                 selectedRelativePriceIds.push(good.priceId);
             }
         });
-        const {goodInfo}=this.props;
-        const {merchantId}=this.props;
+        const {goodInfo} = this.props;
+        const {merchantId} = this.props;
         //TODO:make a fetch
-
+        var sessionId = this.props.sessionId;
         Proxy.post({
-            url:Config.server+'/func/commodity/updateSupnuevoBuyerCommodityPriceGroupMobile',
+            url: Config.server + '/func/commodity/updateSupnuevoBuyerCommodityPriceGroupMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie': sessionId,
             },
             //body: "priceIds=" + selectedRelativePriceIds.toString() +
             //"&merchantId=" + merchantId+
             //'&priceShow='+goodInfo.priceShow+
             //'&printType='+goodInfo.printType+
-           // '&price='+goodInfo.price
-            body:{
-                priceIds:selectedRelativePriceIds.toString(),
-                merchantId:merchantId,
-                priceShow:goodInfo.priceShow,
-                printType:goodInfo.printType,
-                price:goodInfo.price
+            // '&price='+goodInfo.price
+            body: {
+                priceIds: selectedRelativePriceIds.toString(),
+                merchantId: merchantId,
+                priceShow: goodInfo.priceShow,
+                printType: goodInfo.printType,
+                price: goodInfo.price
             }
-        },(json)=> {
-            var errorMsg=json.errorMsg;
-            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+        }, (json) => {
+            var errorMsg = json.errorMsg;
+            if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
 
-            }else{
+            } else {
                 Alert.alert(
                     'Alert Title',
                     '组改价成功',
@@ -167,76 +197,76 @@ class GroupInfoManage extends Component{
                     ]
                 );
             }
-        }, (err) =>{
+        }, (err) => {
             alert(err);
         });
 
     }
 
 
-    addCommodity(){
+    addCommodity() {
 
-        const {groupInfo}=this.props;
-        var code=this.state.selectedCodeInfo;
-
+        const {groupInfo} = this.props;
+        var code = this.state.selectedCodeInfo;
+        var sessionId = this.props.sessionId;
         Proxy.post({
-            url:Config.server+"/func/commodity/addSupnuevoCommodityIntoGroupMobile",
+            url: Config.server + "/func/commodity/addSupnuevoCommodityIntoGroupMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie': sessionId,
             },
             //body: "commodityId=" + code.commodityId + "&groupId=" + groupInfo.groupId
-            body:{
-                commodityId:code.commodityId,
-                groupId:groupInfo.groupId
+            body: {
+                commodityId: code.commodityId,
+                groupId: groupInfo.groupId
             }
-        },(json)=> {
-            var errorMsg=json.errorMsg;
-            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+        }, (json) => {
+            var errorMsg = json.errorMsg;
+            if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
-            }else{
+            } else {
                 //TODO:return to previous page
-                if(json.groupNum!==undefined&&json.groupNum!==null)
-                {
+                if (json.groupNum !== undefined && json.groupNum !== null) {
                     Alert.alert(
                         '信息',
                         '商品添加成功',
                         [
-                            {text: 'OK', onPress: () => this.setState({selectedCodeInfo:{}})},
+                            {text: 'OK', onPress: () => this.setState({selectedCodeInfo: {}})},
                         ]
                     );
                 }
             }
-        }, (err) =>{
+        }, (err) => {
             alert(err);
 
         });
     }
 
-    removeCommodity(commodityId){
+    removeCommodity(commodityId) {
 
-        var commodityIds=[commodityId];
-
-        const {groupInfo}=this.props;
+        var commodityIds = [commodityId];
+        var sessionId = this.props.sessionId;
+        const {groupInfo} = this.props;
         Proxy.post({
-            url:Config.server+"/func/commodity/removeSupnuevoCommodityFromGroupMobile",
+            url: Config.server + "/func/commodity/removeSupnuevoCommodityFromGroupMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie': sessionId,
             },
             //body: "commodityIds=" + commodityIds + "&groupId=" + groupInfo.groupId
-            body:{
-                commodityIds:commodityIds,
-                groupId:groupInfo.groupId
+            body: {
+                commodityIds: commodityIds,
+                groupId: groupInfo.groupId
             }
-        },(json)=> {
-            var errorMsg=json.errorMsg;
-            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+        }, (json) => {
+            var errorMsg = json.errorMsg;
+            if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
-            }else{
+            } else {
                 //TODO:return to previous page
-                if(json.groupNum!==undefined&&json.groupNum!==null)
-                {
+                if (json.groupNum !== undefined && json.groupNum !== null) {
                     Alert.alert(
                         '信息',
                         '商品删除成功',
@@ -246,52 +276,52 @@ class GroupInfoManage extends Component{
                     );
                 }
             }
-        }, (err) =>{
+        }, (err) => {
             alert(err);
 
         });
     }
 
-    updateGroupName(groupName)
-    {
+    updateGroupName(groupName) {
 
     }
 
-    commodityGroupNameUpdate(){
-        var groupName=this.state.groupName;
-        const {merchantId}=this.props;
-        const {groupInfo}=this.props;
-        if(groupName!==undefined&&groupName!==null&&groupName!='')
-        {
+    commodityGroupNameUpdate() {
+        var groupName = this.state.groupName;
+        const {merchantId} = this.props;
+        const {groupInfo} = this.props;
+        var sessionId = this.props.sessionId;
+        if (groupName !== undefined && groupName !== null && groupName != '') {
             Proxy.post({
-                url:Config.server+'/func/commodity/saveOrUpdateSupnuevoBuyerCommodityGroupMobile',
+                url: Config.server + '/func/commodity/saveOrUpdateSupnuevoBuyerCommodityGroupMobile',
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie': sessionId,
                 },
                 //body: "groupName=" + groupName + "&groupId="+groupInfo.groupId+ ''+'&supnuevoMerchantId='+merchantId
-                body:{
-                    groupName:groupName,
-                    groupId:groupInfo.groupId,
-                    supnuevoMerchantId:merchantId
+                body: {
+                    groupName: groupName,
+                    groupId: groupInfo.groupId,
+                    supnuevoMerchantId: merchantId
                 }
-            },(json)=> {
-                var errorMsg=json.errorMsg;
-                if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+            }, (json) => {
+                var errorMsg = json.errorMsg;
+                if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                     alert(errorMsg);
-                }else{
+                } else {
                     Alert.alert(
                         '信息',
                         '商品组名修改成功',
                         [
-                            {text: 'OK',onPress: () =>  this.refs.modal3.close()}
+                            {text: 'OK', onPress: () => this.refs.modal3.close()}
                         ]
                     );
                 }
-            }, (err) =>{
+            }, (err) => {
                 alert(err);
             });
-        }else {
+        } else {
             Alert.alert(
                 '错误',
                 '请填写完组名再点击确认',
@@ -303,16 +333,13 @@ class GroupInfoManage extends Component{
 
     }
 
-    openGroupNameUpdateModal()
-    {
+    openGroupNameUpdateModal() {
         this.refs.modal3.open();
     }
 
-    onCodigoSelect(code)
-    {
+    onCodigoSelect(code) {
 
-        if(code.codigo==this.state.code.codigo)
-        {
+        if (code.codigo == this.state.code.codigo) {
             Alert.alert(
                 '错误',
                 '您不能选择已在组的商品进行添加',
@@ -320,65 +347,65 @@ class GroupInfoManage extends Component{
                     {text: 'OK', onPress: () => console.log('...')},
                 ]
             );
-        }else{
-            this.state.selectedCodeInfo=code;
-            this.setState({selectedCodeInfo:this.state.selectedCodeInfo});
+        } else {
+            this.state.selectedCodeInfo = code;
+            this.setState({selectedCodeInfo: this.state.selectedCodeInfo});
         }
     }
 
 
-    queryGoodsCodigo(codigo)
-    {
+    queryGoodsCodigo(codigo) {
         var codigo = parseInt(codigo);
-        const { merchantId } = this.props;
+        const {merchantId} = this.props;
+        var sessionId = this.props.sessionId;
         Proxy.post({
-            url:Config.server+'/func/commodity/getSupnuevoCommonCommodityListByLastFourCodigoMobile',
+            url: Config.server + '/func/commodity/getSupnuevoCommonCommodityListByLastFourCodigoMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie': sessionId,
             },
             //body: "codigo=" + codigo + "&merchantId=" + merchantId
-            body:{
-                codigo:codigo,
-                merchantId:merchantId
+            body: {
+                codigo: codigo,
+                merchantId: merchantId
             }
-        },(json)=> {
-            var errorMsg=json.errorMsg;
-            if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
+        }, (json) => {
+            var errorMsg = json.errorMsg;
+            if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
-            }else{
-                var codes=json.array;
-                this.setState({codes: codes,codesModalVisible:true});
+            } else {
+                var codes = json.array;
+                this.setState({codes: codes, codesModalVisible: true});
             }
-        }, (err) =>{
+        }, (err) => {
             alert(err);
         });
     }
 
-    constructor(props)
-    {
+    constructor(props) {
         super(props);
-        var groupInfo=props.groupInfo;
-        var goods=groupInfo.array;
-        var code=props.code;
+        var groupInfo = props.groupInfo;
+        var goods = groupInfo.array;
+        var code = props.code;
         goods.map(function (good, i) {
-            if(good.codigo==code.codigo)
-                good.checked=true;
+            if (good.codigo == code.codigo)
+                good.checked = true;
             else
-                good.checked=false;
+                good.checked = false;
         });
         this.state = {
-            merchantId:props.merchantId,
-            groupInfo:groupInfo,
-            groupName:null,
-            goods:goods,
-            code:code,
-            selectedCodeInfo:{},
-            selectAll:false,
-            codesModalVisible:false,
-            containedInGroup:props.containedInGroup,
-            dataSource : new ListView.DataSource({
-                rowHasChanged: (r1, r2)=> {
+            merchantId: props.merchantId,
+            groupInfo: groupInfo,
+            groupName: null,
+            goods: goods,
+            code: code,
+            selectedCodeInfo: {},
+            selectAll: false,
+            codesModalVisible: false,
+            containedInGroup: props.containedInGroup,
+            dataSource: new ListView.DataSource({
+                rowHasChanged: (r1, r2) => {
                     if (r1 !== r2) {
                     } else {
                     }
@@ -389,20 +416,19 @@ class GroupInfoManage extends Component{
     }
 
 
-    render(){
+    render() {
 
-        var groupInfo=this.state.groupInfo;
-        const {code}=this.props;
-        const {containedInGroup}=this.props;
-        var goods=this.state.goods;
+        var groupInfo = this.state.groupInfo;
+        const {code} = this.props;
+        const {containedInGroup} = this.props;
+        var goods = this.state.goods;
 
-        var listView=null;
-        if(goods!==undefined&&goods!==null&&Object.prototype.toString.call(goods)=='[object Array]')
-        {
+        var listView = null;
+        if (goods !== undefined && goods !== null && Object.prototype.toString.call(goods) == '[object Array]') {
 
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-            listView=
+            listView =
                 <ScrollView>
                     <ListView
                         automaticallyAdjustContentInsets={false}
@@ -410,54 +436,92 @@ class GroupInfoManage extends Component{
                         renderRow={this.renderRow.bind(this)}
                     />
                 </ScrollView>;
-        }else{}
+        } else {
+        }
 
 
         return (
-            <View style={{flex:1}}>
+            <View style={{flex: 1}}>
                 <ScrollView>
 
                     {/* header bar */}
-                    <View style={[{backgroundColor:'#387ef5',padding: 8,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
-                        <TouchableOpacity style={{flex:1}}
-                              onPress={()=>{
-                                    this.goBack();
-                              }}>
+                    <View style={[{
+                        backgroundColor: '#387ef5',
+                        padding: 8,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        flexDirection: 'row'
+                    }, styles.card]}>
+                        <TouchableOpacity style={{flex: 1}}
+                                          onPress={() => {
+                                              this.goBack();
+                                          }}>
                             <Icon name="chevron-left" color="#fff" size={25}></Icon>
                         </TouchableOpacity>
-                        <Text style={{fontSize:22,flex:3,textAlign:'center',color:'#fff'}}>
+                        <Text style={{fontSize: 22, flex: 3, textAlign: 'center', color: '#fff'}}>
                             商品管理
                         </Text>
-                        <TouchableOpacity ref="menu" style={{flex:1,marginRight:2,flexDirection:'row',justifyContent:'center'}}
+                        <TouchableOpacity ref="menu" style={{
+                            flex: 1,
+                            marginRight: 2,
+                            flexDirection: 'row',
+                            justifyContent: 'center'
+                        }}
                         >
                         </TouchableOpacity>
                     </View>
 
                     {/*搜索框*/}
-                    <View style={[styles.card,{marginTop:10,padding:8}]}>
-                        <View style={{flex:1,padding:8,paddingLeft:10,paddingRight:10,backgroundColor:'#eee',borderRadius:8}}>
+                    <View style={[styles.card, {marginTop: 10, padding: 8}]}>
+                        <View style={{
+                            flex: 1,
+                            padding: 8,
+                            paddingLeft: 10,
+                            paddingRight: 10,
+                            backgroundColor: '#eee',
+                            borderRadius: 8
+                        }}>
 
                             {/* 条码 */}
-                            <View style={[styles.row,{borderBottomWidth:0,marginBottom:8}]}>
-                                <View style={{flex:2,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:0}}>
-                                    <Text style={{color:'#222'}}>条码</Text>
+                            <View style={[styles.row, {borderBottomWidth: 0, marginBottom: 8}]}>
+                                <View style={{
+                                    flex: 2,
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    padding: 4,
+                                    marginLeft: 0
+                                }}>
+                                    <Text style={{color: '#222'}}>条码</Text>
                                 </View>
-                                <View style={{flex:6,flexDirection:'row',alignItems:'center',padding:4,marginLeft:0}}>
+                                <View style={{
+                                    flex: 6,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    padding: 4,
+                                    marginLeft: 0
+                                }}>
 
                                     <TextInput
-                                        style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
+                                        style={{
+                                            height: 40,
+                                            width: width * 2 / 4,
+                                            backgroundColor: '#fff',
+                                            paddingLeft: 15,
+                                            borderRadius: 4,
+                                            flexDirection: 'row',
+                                            alignItems: 'center'
+                                        }}
                                         onChangeText={(codigo) => {
-                                             this.state.selectedCodeInfo.codigo=codigo;
-                                            if(codigo.toString().length==4)
-                                            {
-                                                this.setState({selectedCodeInfo:this.state.selectedCodeInfo});
-                                                this.queryGoodsCodigo(codigo.toString().substring(0,4));
-                                            }else if(codigo.toString().length>4){
-                                                this.setState({selectedCodeInfo:this.state.selectedCodeInfo});
+                                            this.state.selectedCodeInfo.codigo = codigo;
+                                            if (codigo.toString().length == 4) {
+                                                this.setState({selectedCodeInfo: this.state.selectedCodeInfo});
+                                                this.queryGoodsCodigo(codigo.toString().substring(0, 4));
+                                            } else if (codigo.toString().length > 4) {
+                                                this.setState({selectedCodeInfo: this.state.selectedCodeInfo});
                                             }
-                                            else{
-                                                this.setState({selectedCodeInfo:this.state.selectedCodeInfo});
+                                            else {
+                                                this.setState({selectedCodeInfo: this.state.selectedCodeInfo});
                                             }
                                         }}
                                         value={this.state.selectedCodeInfo.codigo}
@@ -468,12 +532,25 @@ class GroupInfoManage extends Component{
 
                                 </View>
 
-                                <TouchableOpacity style={{flex:2,flexDirection:'row',justifyContent:'center',alignItems:'center',marginLeft:5,padding:4}}
-                                                  onPress={()=>{
-                                            this.addCommodity();
-                                          }}>
-                                    <View style={{backgroundColor:'#00f',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
-                                        <Text style={{color:'#fff',fontSize:14}}>添加</Text>
+                                <TouchableOpacity style={{
+                                    flex: 2,
+                                    flexDirection: 'row',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    marginLeft: 5,
+                                    padding: 4
+                                }}
+                                                  onPress={() => {
+                                                      this.addCommodity();
+                                                  }}>
+                                    <View style={{
+                                        backgroundColor: '#00f',
+                                        padding: 8,
+                                        paddingLeft: 12,
+                                        paddingRight: 12,
+                                        borderRadius: 8
+                                    }}>
+                                        <Text style={{color: '#fff', fontSize: 14}}>添加</Text>
                                     </View>
                                 </TouchableOpacity>
 
@@ -481,54 +558,99 @@ class GroupInfoManage extends Component{
                             </View>
 
                             {/*组特征码*/}
-                            <View style={[styles.row,{borderBottomWidth:0,marginBottom:8}]}>
-                                <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:0}}>
-                                    <Text style={{color:'#222'}}>组特征码</Text>
+                            <View style={[styles.row, {borderBottomWidth: 0, marginBottom: 8}]}>
+                                <View style={{
+                                    flex: 1,
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    padding: 4,
+                                    marginLeft: 0
+                                }}>
+                                    <Text style={{color: '#222'}}>组特征码</Text>
                                 </View>
-                                <View style={{flex:4,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:9}}>
-                                    <Text style={{color:'#222'}}>
+                                <View style={{
+                                    flex: 4,
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    padding: 4,
+                                    marginLeft: 9
+                                }}>
+                                    <Text style={{color: '#222'}}>
                                         {groupInfo.groupNum}
                                     </Text>
                                 </View>
 
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center',padding:4}}>
+                                <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', padding: 4}}>
                                 </View>
                             </View>
 
                             {/*商品组名*/}
-                            <View style={[styles.row,{borderBottomWidth:0}]}>
-                                <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:0}}>
-                                    <Text style={{color:'#222'}}>商品组名</Text>
+                            <View style={[styles.row, {borderBottomWidth: 0}]}>
+                                <View style={{
+                                    flex: 1,
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    padding: 4,
+                                    marginLeft: 0
+                                }}>
+                                    <Text style={{color: '#222'}}>商品组名</Text>
                                 </View>
-                                <View style={{flex:3,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:2}}>
-                                    <Text style={{color:'#222'}}>
+                                <View style={{
+                                    flex: 3,
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    padding: 4,
+                                    marginLeft: 2
+                                }}>
+                                    <Text style={{color: '#222'}}>
                                         {groupInfo.groupName}
                                     </Text>
                                 </View>
-                                <View style={{flex:1,flexDirection:'row',alignItems:'center',padding:4,borderRadius:8,height:30,
-                                              paddingLeft:12,paddingRight:12,paddingTop:0,paddingBottom:0,justifyContent:'center'}}>
+                                <View style={{
+                                    flex: 1,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    padding: 4,
+                                    borderRadius: 8,
+                                    height: 30,
+                                    paddingLeft: 12,
+                                    paddingRight: 12,
+                                    paddingTop: 0,
+                                    paddingBottom: 0,
+                                    justifyContent: 'center'
+                                }}>
                                 </View>
                             </View>
 
                         </View>
                     </View>
 
-                    <View style={{padding:10}}>
+                    <View style={{padding: 10}}>
                         <View>
-                            <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start'}}>
+                            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'flex-start'}}>
 
 
-                                <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                        borderColor:'#aaa',borderWidth:1,borderRightWidth:0,padding:8}}>
+                                <View style={{
+                                    flex: 5, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+                                    borderColor: '#aaa', borderWidth: 1, borderRightWidth: 0, padding: 8
+                                }}>
                                     <Text>条码</Text>
                                 </View>
 
-                                <View style={{flex:5,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                    borderColor:'#aaa',borderWidth:1,padding:8}}>
+                                <View style={{
+                                    flex: 5, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+                                    borderColor: '#aaa', borderWidth: 1, padding: 8
+                                }}>
                                     <Text>名称</Text>
                                 </View>
-                                <View style={{flex:3,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                           borderColor:'#aaa',borderWidth:1,padding:8}}>
+                                <View style={{
+                                    flex: 3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+                                    borderColor: '#aaa', borderWidth: 1, padding: 8
+                                }}>
                                     <Text>
                                         删除
                                     </Text>
@@ -544,22 +666,37 @@ class GroupInfoManage extends Component{
 
 
                 <Modalbox
-                    style={[ styles.modal3,{borderRadius:12,padding:4,paddingLeft:12,paddingRight:12}]} position={"center"} ref={"modal3"}
+                    style={[styles.modal3, {borderRadius: 12, padding: 4, paddingLeft: 12, paddingRight: 12}]}
+                    position={"center"} ref={"modal3"}
                     animationType={"slide"}>
 
 
-                    <View style={[styles.row,{borderWidth:0,borderBottomWidth:1,borderBottomColor:'#ddd'}]}>
-                        <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start',alignItems:'center',padding:4,marginLeft:5}}>
-                            <Text style={{color:'#222'}}>组名</Text>
+                    <View style={[styles.row, {borderWidth: 0, borderBottomWidth: 1, borderBottomColor: '#ddd'}]}>
+                        <View style={{
+                            flex: 1,
+                            flexDirection: 'row',
+                            justifyContent: 'flex-start',
+                            alignItems: 'center',
+                            padding: 4,
+                            marginLeft: 5
+                        }}>
+                            <Text style={{color: '#222'}}>组名</Text>
                         </View>
-                        <View style={{flex:5,flexDirection:'row',alignItems:'center',padding:4}}>
+                        <View style={{flex: 5, flexDirection: 'row', alignItems: 'center', padding: 4}}>
                             <TextInput
-                                style={{height:40,width:width*2/4,backgroundColor:'#fff',paddingLeft:15,borderRadius:4,
-                                                flexDirection:'row',alignItems:'center'}}
-                                    onChangeText={(groupName) => {
-                                            this.state.groupName=groupName;
-                                            this.setState({groupName:this.state.groupName});
-                                        }}
+                                style={{
+                                    height: 40,
+                                    width: width * 2 / 4,
+                                    backgroundColor: '#fff',
+                                    paddingLeft: 15,
+                                    borderRadius: 4,
+                                    flexDirection: 'row',
+                                    alignItems: 'center'
+                                }}
+                                onChangeText={(groupName) => {
+                                    this.state.groupName = groupName;
+                                    this.setState({groupName: this.state.groupName});
+                                }}
                                 value={this.state.groupName}
                                 placeholder='在此输入更新的组名'
                                 placeholderTextColor="#aaa"
@@ -569,12 +706,18 @@ class GroupInfoManage extends Component{
                     </View>
 
 
-                    <View style={[styles.row,{borderBottomWidth:0,marginTop:10,justifyContent:'center'}]}>
-                        <TouchableOpacity style={{backgroundColor:'#00f',borderRadius:8,padding:8,paddingLeft:20,paddingRight:20}}
-                                          onPress={()=>{
-                               this.commodityGroupNameUpdate();
-                            }}>
-                            <Text style={{color:'#fff',fontSize:16}}>确认</Text>
+                    <View style={[styles.row, {borderBottomWidth: 0, marginTop: 10, justifyContent: 'center'}]}>
+                        <TouchableOpacity style={{
+                            backgroundColor: '#00f',
+                            borderRadius: 8,
+                            padding: 8,
+                            paddingLeft: 20,
+                            paddingRight: 20
+                        }}
+                                          onPress={() => {
+                                              this.commodityGroupNameUpdate();
+                                          }}>
+                            <Text style={{color: '#fff', fontSize: 16}}>确认</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -586,17 +729,19 @@ class GroupInfoManage extends Component{
                     animationType={"slide"}
                     transparent={false}
                     visible={this.state.codesModalVisible}
-                    onClose={()=>{
-                            this.closeCodesModal(!this.state.codesModalVisible)
-                        }}
-                    onRequestClose={() => {alert("Modal has been closed.")}}>
+                    onClose={() => {
+                        this.closeCodesModal(!this.state.codesModalVisible)
+                    }}
+                    onRequestClose={() => {
+                        alert("Modal has been closed.")
+                    }}>
 
                     <CodesModal
-                        onClose={()=>{
+                        onClose={() => {
                             this.closeCodesModal(!this.state.codesModalVisible)
                         }}
                         onCodigoSelect={
-                            (code)=>{
+                            (code) => {
                                 this.onCodigoSelect(code);
                             }}
                         codes={this.state.codes}
@@ -619,7 +764,7 @@ var styles = StyleSheet.create({
         paddingTop: 1,
         paddingBottom: 1,
         shadowColor: ' rgba(0, 0, 0, 0.1)',
-        shadowOffset: { width: 2, height: 2, },
+        shadowOffset: {width: 2, height: 2,},
         shadowOpacity: 0.5,
         shadowRadius: 3
     },
@@ -627,13 +772,13 @@ var styles = StyleSheet.create({
         height: 1,
         backgroundColor: '#E8E8E8'
     },
-    body:{
-        padding:10
+    body: {
+        padding: 10
     },
-    row:{
-        flexDirection:'row',
-        borderBottomWidth:1,
-        borderBottomColor:'#222'
+    row: {
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: '#222'
     },
     modal3: {
         height: 120,
@@ -646,9 +791,9 @@ var styles = StyleSheet.create({
 });
 
 
-
-module.exports = connect(state=>({
-        merchantId:state.user.supnuevoMerchantId
+module.exports = connect(state => ({
+        merchantId: state.user.supnuevoMerchantId,
+        sessionId: state.user.sessionId
     })
 )(GroupInfoManage);
 

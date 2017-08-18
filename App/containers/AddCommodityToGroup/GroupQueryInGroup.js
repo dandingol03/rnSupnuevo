@@ -120,7 +120,7 @@ class GroupQueryInGroup extends Component{
         var query=this.state.query;
         var codigo=code.codigo;
         query.codeNum=codigo;
-
+        var sessionId=this.props.sessionId;
         var body='';
         if(groupNum!==undefined&&groupNum!==null)
             //body='groupNum='+groupNum+"&supnuevoMerchantId=" + merchantId;
@@ -139,7 +139,8 @@ class GroupQueryInGroup extends Component{
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             body: body
         },(json)=> {
@@ -188,7 +189,7 @@ class GroupQueryInGroup extends Component{
             if(good.checked==true)
                 commodityIds.push(good.commodityId)
         });
-
+        var sessionId=this.props.sessionId;
         const {groupInfo}=this.state;
         if(groupInfo&&groupInfo.groupId!==undefined&&groupInfo.groupId!==null)
         {
@@ -196,7 +197,8 @@ class GroupQueryInGroup extends Component{
                 url:Config.server+"/func/commodity/removeSupnuevoCommodityFromGroupMobile",
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie':sessionId,
                 },
                 //body: "commodityIds=" + commodityIds.toString() + "&groupId=" + groupInfo.groupId
                 body:{
@@ -441,7 +443,8 @@ var styles = StyleSheet.create({
 
 
 module.exports = connect(state=>({
-        merchantId:state.user.supnuevoMerchantId
+        merchantId:state.user.supnuevoMerchantId,
+    sessionId:state.user.sessionId,
     })
 )(GroupQueryInGroup);
 

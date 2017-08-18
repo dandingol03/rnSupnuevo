@@ -152,11 +152,13 @@ class GroupManage extends Component{
 
     fetchData(){
         const merchantId=this.props.merchantId;
+        var sessionId=this.props.sessionId;
         Proxy.post({
             url:Config.server+"/func/commodity/getGroupInfoListOfMerchantMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId
             },
             //body:"merchantId=" + merchantId
             body:{
@@ -210,7 +212,7 @@ class GroupManage extends Component{
         var query=this.state.query;
         var codigo=code.codigo;
         query.codeNum=codigo;
-
+        var sessionId=this.props.sessionId;
         var body='';
         if(groupNum!==undefined&&groupNum!==null)
             //body='groupNum='+groupNum+"&supnuevoMerchantId=" + merchantId;
@@ -229,7 +231,8 @@ class GroupManage extends Component{
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             body: body
         },(json)=> {
@@ -276,11 +279,13 @@ class GroupManage extends Component{
     {
 
         const { merchantId } = this.props;
+        var sessionId=this.props.sessionId;
         Proxy.post({
             url:Config.server+'/func/commodity/getSupnuevoCommonCommodityGroupListByGroupNumMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             //body: "groupNum=" + groupNum
             body:{
@@ -311,7 +316,7 @@ class GroupManage extends Component{
     {
 
         const {merchantId}=this.props;
-
+        var sessionId=this.props.sessionId;
         var groupName=this.state.query.groupName;
         if(groupName!==undefined&&groupName!==null&&groupName!='')
         {
@@ -336,7 +341,8 @@ class GroupManage extends Component{
                         url:Config.server+"/func/commodity/mergeSupnuevoCommodityGroupMobile",
                         headers: {
                             //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/json',
+                            'Cookie':sessionId,
                         },
                         //body: "groupIds=" + groupIds.toString() + "&groupName=" + groupName+'&supnuevoMerchantId='+merchantId
                         body:{
@@ -402,12 +408,13 @@ class GroupManage extends Component{
     {
 
         var groupNum=this.state.query.groupNum;
-
+        var sessionId=this.props.sessionId;
         Proxy.post({
             url:Config.server+"/func/commodity/deleteSupnuevoBuyerCommodityGroupMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Cookie':sessionId,
             },
             //body: "groupId=" +groupId
             body:{
@@ -442,13 +449,15 @@ class GroupManage extends Component{
     {
         var groupName=this.state.groupName;
         const {merchantId}=this.props;
+        var sessionId=this.props.sessionId;
         if(groupName!==undefined&&groupName!==null&&groupName!='')
         {
             Proxy.post({
                 url:Config.server+'/func/commodity/saveOrUpdateSupnuevoBuyerCommodityGroupMobile',
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie':sessionId,
                 },
                 //body: "groupName=" + groupName + "&groupId=" + ''+'&supnuevoMerchantId='+merchantId
                 body:{
@@ -929,7 +938,8 @@ var styles = StyleSheet.create({
 
 
 module.exports = connect(state=>({
-        merchantId:state.user.supnuevoMerchantId
+        merchantId:state.user.supnuevoMerchantId,
+    sessionId:state.user.sessionId,
     })
 )(GroupManage);
 

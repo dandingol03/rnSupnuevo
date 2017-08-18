@@ -32,7 +32,9 @@ export let loginAction=function(username,password,cb) {
 
                 sessionId = response.headers.map['set-cookie'][0];
                 return Proxy.postes({
-                    url: Config.server + '/func//merchant/getMerchantInitInfoMobile',
+
+                    url: Config.server + '/func/merchant/getMerchantInitInfoMobile',
+
                     headers: {
                         'Content-Type': 'application/json',
                         'Cookie': sessionId,

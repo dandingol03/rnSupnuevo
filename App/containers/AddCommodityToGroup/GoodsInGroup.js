@@ -113,6 +113,7 @@ class GoodsInGroup extends Component{
     commodityGroupRemove(groupInfoArray){
 
         var commodityIds=[];
+        var sessionId=this.props.sessionId;
         groupInfoArray.map(function(good,i) {
             if(good.checked==true)
                 commodityIds.push(good.commodityId)
@@ -125,7 +126,8 @@ class GoodsInGroup extends Component{
                 url:Config.server+"/func/commodity/removeSupnuevoCommodityFromGroupMobile",
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie':sessionId,
                 },
                 //body: "commodityIds=" + commodityIds.toString() + "&groupId=" + groupInfo.groupId
                 body:{
@@ -345,7 +347,8 @@ var styles = StyleSheet.create({
 
 
 module.exports = connect(state=>({
-        merchantId:state.user.supnuevoMerchantId
+        merchantId:state.user.supnuevoMerchantId,
+    sessionId:state.user.sessionId,
     })
 )(GoodsInGroup);
 
