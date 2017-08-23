@@ -16,7 +16,7 @@ import  {
     Alert,
     Modal,
     TouchableOpacity
-} from 'react-native';
+    } from 'react-native';
 
 import {connect} from 'react-redux';
 import Myinfo from './Myinfo';
@@ -31,6 +31,7 @@ var {height, width} = Dimensions.get('window');
 import QrcodeModal from './QrcodeModal';
 import Camera from 'react-native-camera';
 import Config from '../../../config';
+
 class My extends Component {
     closeCamera() {
         this.setState({cameraModalVisible: false});
@@ -38,13 +39,13 @@ class My extends Component {
 
     setMerchantVisible(scan) {
         var scanId = parseInt(scan);
-        var sessionId=this.props.sessionId;
+        var sessionId = this.props.sessionId;
         Proxy.postes({
             url: Config.server + '/func/merchant/setMerchantVisibleEachOtherMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie':sessionId,
+                'Cookie': sessionId,
             },
             //body: "codigo=" + codeNum + "&merchantId=" + merchantId
             body: {
@@ -91,7 +92,7 @@ class My extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            info:null,
+            info: null,
             QrcodeModalVisible: false,
             cameraModalVisible: false,
             scanId: null,
@@ -109,12 +110,12 @@ class My extends Component {
 
     navigatemyinfo() {
         const {navigator} = this.props;
-        var sessionId=this.props.sessionId;
+        var sessionId = this.props.sessionId;
         Proxy.postes({
             url: Config.server + '/func/merchant/getSupnuevoMerchantInfoMobile',
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie':sessionId,
+                'Cookie': sessionId,
             },
             body: {}
         }).then((json) => {
@@ -159,6 +160,14 @@ class My extends Component {
         })
     }
 
+    navigateMySuggestion() {
+        var MySuggestion = require('./MySuggestion');
+        this.props.navigator.push({
+            name:'MySuggestion',
+            component:MySuggestion,
+            pramas:{}
+        })
+    }
 
     render() {
 
@@ -178,10 +187,8 @@ class My extends Component {
                     </Text>
                 </View>
 
-                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                        </View>
-                        <TouchableOpacity style={{
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <TouchableOpacity style={{
                             flex: 1,
                             height: 10,
                             paddingTop: 2,
@@ -194,73 +201,75 @@ class My extends Component {
                             marginBottom: 0,
                             borderRadius: 4,
                         }}
-                                          onPress={() => {
+                                      onPress={() => {
                                               this.navigatemyinfo();
                                           }}>
-                            <Text >我的信息</Text>
-                        </TouchableOpacity>
+                        <Text >我的信息</Text>
+                    </TouchableOpacity>
 
-                        <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-                                          onPress={() => {
+                    <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                                      onPress={() => {
                                               this.setState({QrcodeModalVisible: true});
 
                                           }}>
-                            <Text>我的二维码</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
-                                          onPress={() => {
+                        <Text>我的二维码</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                                      onPress={() => {
                                               this.setState({cameraModalVisible: true})
                                               //this.setMerchantVisible('54');
                                           }}>
-                            <Text>扫一扫商家二维码</Text>
-                        </TouchableOpacity>
-                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-
-                        </View>
-                    </View>
-                    {/*我的二维码*/}
-                    <Modal
-                        animationType={"slide"}
-                        transparent={false}
-                        visible={this.state.QrcodeModalVisible}
-                        onRequestClose={() => {
+                        <Text>扫一扫商家二维码</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}
+                                      onPress={() => {this.navigateMySuggestion()}}>
+                        <Text>我的建议</Text>
+                    </TouchableOpacity>
+                    <View style={{flex:1}}></View>
+                </View>
+                {/*我的二维码*/}
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.QrcodeModalVisible}
+                    onRequestClose={() => {
                             alert("Modal has been closed.")
                         }}
                     >
-                        <QrcodeModal
-                            supnuevoMerchantId={this.props.supnuevoMerchantId}
-                            username={this.props.username}
-                            onClose={() => {
+                    <QrcodeModal
+                        supnuevoMerchantId={this.props.supnuevoMerchantId}
+                        username={this.props.username}
+                        onClose={() => {
                                 this.setState({QrcodeModalVisible: false});
                             }}
-                            onConfirm={(price) => {
+                        onConfirm={(price) => {
 
                             }}
                         />
 
-                    </Modal>
+                </Modal>
 
-                    {/*camera part*/}
-                    <Modal
-                        animationType={"slide"}
-                        transparent={false}
-                        visible={this.state.cameraModalVisible}
-                        onRequestClose={() => {
+                {/*camera part*/}
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.cameraModalVisible}
+                    onRequestClose={() => {
                             alert("Modal has been closed.")
                         }}
                     >
-                        <Camera
-                            ref={(cam) => {
+                    <Camera
+                        ref={(cam) => {
                                 this.camera = cam;
                             }}
-                            style={styles.preview}
-                            aspect={this.state.camera.aspect}
-                            captureTarget={this.state.camera.captureTarget}
-                            type={this.state.camera.type}
-                            flashMode={this.state.camera.flashMode}
-                            defaultTouchToFocus
-                            mirrorImage={false}
-                            onBarCodeRead={(barcode) => {
+                        style={styles.preview}
+                        aspect={this.state.camera.aspect}
+                        captureTarget={this.state.camera.captureTarget}
+                        type={this.state.camera.type}
+                        flashMode={this.state.camera.flashMode}
+                        defaultTouchToFocus
+                        mirrorImage={false}
+                        onBarCodeRead={(barcode) => {
                                 var {type, data, bounds} = barcode;
 
                                 if (data !== undefined && data !== null) {
@@ -280,10 +289,10 @@ class My extends Component {
                             }}
                         />
 
-                        <View style={[styles.box]}>
+                    <View style={[styles.box]}>
 
-                        </View>
-                        <View style={{
+                    </View>
+                    <View style={{
                             position: 'absolute',
                             right: 1 / 2 * width - 100,
                             top: 1 / 2 * height,
@@ -294,23 +303,23 @@ class My extends Component {
                             backgroundColor: 'transparent'
                         }}>
 
-                        </View>
+                    </View>
 
-                        <View style={[styles.overlay, styles.bottomOverlay]}>
+                    <View style={[styles.overlay, styles.bottomOverlay]}>
 
-                            <TouchableOpacity
-                                style={styles.captureButton}
-                                onPress={() => {
+                        <TouchableOpacity
+                            style={styles.captureButton}
+                            onPress={() => {
                                     this.closeCamera()
                                 }}
                             >
-                                <Icon name="times-circle" size={50} color="#343434"/>
-                            </TouchableOpacity>
+                            <Icon name="times-circle" size={50} color="#343434"/>
+                        </TouchableOpacity>
 
-                        </View>
+                    </View>
 
 
-                    </Modal>
+                </Modal>
 
             </View>)
     }
@@ -373,7 +382,7 @@ module
         merchantId: state.user.supnuevoMerchantId,
         username: state.user.username,
         supnuevoMerchantId: state.user.supnuevoMerchantId,
-    sessionId:state.user.sessionId,
+        sessionId: state.user.sessionId,
     })
 )(My);
 

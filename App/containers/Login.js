@@ -105,14 +105,6 @@ var  Login =React.createClass({
         }
     },
 
-    // onPress:function () {
-    //     var form = this.refs.form.getValue();
-    //     console.log('struct=\r\n'+form);
-    //     this.setState({showProgress: true});
-    //     const {dispatch} = this.props;
-    //     dispatch(loginAction(form.用户名,form.密码));
-    // },
-
     getInitialState:function(){
         return ({
             user:{},

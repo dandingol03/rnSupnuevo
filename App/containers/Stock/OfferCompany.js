@@ -23,7 +23,7 @@ import Config from '../../../config';
 import Icon from 'react-native-vector-icons/FontAwesome';
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-import Myconcerncpy from './ConcernOfferCompany';
+
 import MyOffer from './MyOffer';
 
 class OfferCompany extends Component {
@@ -40,13 +40,14 @@ class OfferCompany extends Component {
         }
     }
 
-    navigateMyconcerncpy() {
+    navigateMyConcernOffer() {
+    var MyConcernOffer =require('./MyConcernOffer') ;
         const {navigator} = this.props;
 
         if (navigator) {
             navigator.push({
-                name: 'Myconcerncpy',
-                component: Myconcerncpy,
+                name: 'MyConcernOffer',
+                component: MyConcernOffer,
                 params: {}
             })
         }
@@ -55,29 +56,23 @@ class OfferCompany extends Component {
     goBack() {
         const {navigator} = this.props;
 
-        /*if (navigator) {
+        if (navigator) {
          navigator.pop();
          if (this.props.reset)
          this.props.reset();
-         }*/
-        if (navigator) {
-            navigator.push({
-                name: "MyOffer",
-                component: MyOffer,
-                params: {}
-            })
-        }
+         }
+
     }
 
     laruguanzhu() {
-        var sessionId = this.props.sessionId;
+       // var sessionId = this.props.sessionId;
         var state = 1;
         var merchantId = this.state.merchantId;
         Proxy.post({
             url: Config.server + '/func/merchant/setBuyerSellerStateMobile',
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+               // 'Cookie': sessionId,
             },
             body: {
                 sellerId: merchantId,
@@ -97,13 +92,13 @@ class OfferCompany extends Component {
 
     buzaiguanzhu() {
         var state = 0;
-        var sessionId = this.props.sessionId;
+       // var sessionId = this.props.sessionId;
         var merchantId = this.state.merchantId;
         Proxy.post({
             url: Config.server + '/func/merchant/setBuyerSellerStateMobile',
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+               // 'Cookie': sessionId,
             },
             body: {
                 sellerId: merchantId,
@@ -253,7 +248,7 @@ class OfferCompany extends Component {
                             marginTop: 10,
                             borderRadius: 4,
                         }} onPress={() => {
-                            this.navigateMyconcerncpy()
+                            this.navigateMyConcernOffer()
                         }}>
                             <View>
                                 <Text style={{fontSize: 16}}>我关注</Text>

@@ -12,8 +12,8 @@ import  {
     View,
     Alert,
     Modal,
-    TouchableOpacity
-} from 'react-native';
+    TouchableOpacity,
+    } from 'react-native';
 import Config from '../../../config';
 import {connect} from 'react-redux';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -24,7 +24,6 @@ import MyConcernOffer from './MyConcernOffer';
 import MyOffer from './MyOffer';
 import PopupDialog from 'react-native-popup-dialog';
 import Camera from 'react-native-camera';
-import Picker from 'react-native-picker';
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../../proxy/Proxy');
@@ -36,16 +35,23 @@ class Stock extends Component {
         super(props);
         this.state = {
             state: 0,
+            start: 0,
+            limit: 4,
+            arrlong: 0,
             companyinfo: null,
             dialogShow: false,
             infoList: null,
             merchantId: 0,
+            modalDropdown: false,
+            shangpinzhonglei: null,
+            zhongleiList: null,
             provinceList: null,
             provinceId: null,
             provinceId2: null,
             cityList: null,
             province: null,
             city: null,
+            menuVisible: false,
             showDropdown: false,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2) => {
@@ -119,16 +125,20 @@ class Stock extends Component {
     }
 
     fetchData() {
-        var sessionId = this.props.sessionId;
+        //var sessionId = this.props.sessionId;
+        var start = this.state.start;
         var state = this.state.state;
+        var limit = this.state.limit;
         Proxy.post({
             url: Config.server + "/func/merchant/getSupnuevoMerchantInfoListOfBuyerMobile",
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId
+                // 'Cookie': sessionId
             },
             body: {
+                start: start,
                 state: state,
+                limit: limit,
             }
         }, (json) => {
             var errorMsg = json.message;
@@ -136,20 +146,20 @@ class Stock extends Component {
                 alert(errorMsg);
             } else {
                 var infoList = json.data;
+                var arrlong = json.data.length;
                 this.setState({infoList: infoList});
+                this.setState({arrlong: arrlong});
             }
-        }, (err) => {
-            alert(err);
-        });
+        })
     }
 
     fetchData_Province() {
-        var sessionId = this.props.sessionId;
+        // var sessionId = this.props.sessionId;
         Proxy.post({
             url: Config.server + "/func/merchant/getSupnuevoProvinceListMobile",
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId
+                // 'Cookie': sessionId
             },
             body: {}
         }, (json) => {
@@ -167,13 +177,11 @@ class Stock extends Component {
     }
 
     fetchData_City() {
-        var sessionId = this.props.sessionId;
         var provinceId = this.state.provinceId;
         Proxy.post({
             url: Config.server + "/func/merchant/getSupnuevoCityListMobile",
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId
             },
             body: {
                 provinceId: provinceId
@@ -185,7 +193,27 @@ class Stock extends Component {
             } else {
                 var cityList = json.data;
                 this.setState({cityList: cityList});
-                //this.state.cityList = cityList;
+            }
+        }, (err) => {
+            alert(err);
+        });
+    }
+
+    fetchData_Zhonglei() {
+        var zhongleiList = this.state.zhongleiList;
+        Proxy.post({
+            url: Config.server + "/func/merchant/getSupnuevoCommodityRubroList",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {}
+        }, (json) => {
+            var errorMsg = json.message;
+            if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
+                alert(errorMsg);
+            } else {
+                zhongleiList = json.data;
+                this.setState({zhongleiList: zhongleiList});
             }
         }, (err) => {
             alert(err);
@@ -260,6 +288,23 @@ class Stock extends Component {
         return row;
     }
 
+    renderRow_zhonglei(rowData) {
+        var row =
+            <View>
+                <TouchableOpacity onPress={() =>  this.setState({shangpinzhonglei: rowData.label})}>
+                    <View style={{
+                        flex: 1, padding: 10, borderBottomWidth: 1, borderColor: '#ddd',
+                        justifyContent: 'flex-start', backgroundColor: '#fff'
+                    }}>
+                        <View style={{paddingTop: 5, flexDirection: 'row'}}>
+                            <Text style={{flex: 3}}>{rowData.label}</Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            </View>;
+        return row;
+    }
+
     closePopover() {
         this.setState({menuVisible: false});
     }
@@ -268,8 +313,51 @@ class Stock extends Component {
         this.setState({cameraModalVisible: false});
     }
 
+    /*
+     searchInfo(){
+     var sInfo=
+     }
+     */
+
+    renderModal() {
+        if (this.state.modalDropdown) {
+        }
+    }
+
     componentDidMount() {
     }
+
+    /*    _toEnd() {
+     const { reducer } = this.props;
+     //ListView滚动到底部，根据是否正在加载更多 是否正在刷新 是否已加载全部来判断是否执行加载更多
+     if (reducer.isLoadingMore || reducer.products.length >= reducer.totalProductCount || reducer.isRefreshing) {
+     return;
+     }
+     InteractionManager.runAfterInteractions(() => {
+     console.log("触发加载更多 toEnd() --> ");
+     this._loadMoreData();
+     });
+     }
+
+     _loadMoreData() {
+     this.state.start = this.state.limit + 1;
+     this.fetchData();
+     }
+
+     _renderFooter() {
+     //通过当前product数量和刷新状态（是否正在下拉刷新）来判断footer的显示
+     if (reducer.products.length < 1 || reducer.isRefreshing) {
+     return null
+     }
+     ;
+     if (reducer.products.length < reducer.totalProductCount) {
+     //还有更多，默认显示‘正在加载更多...’
+     return <LoadMoreFooter />
+     } else {
+     // 加载全部
+     return <LoadMoreFooter isLoadAll={true}/>
+     }
+     }*/
 
     render() {
         var displayArea = {x: 5, y: 20, width: width, height: height - 25};
@@ -279,17 +367,23 @@ class Stock extends Component {
             var data = infoList;
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
             listView =
-                <ScrollView>
-                    <ListView
-                        automaticallyAdjustContentInsets={false}
-                        dataSource={ds.cloneWithRows(data)}
-                        renderRow={this.renderRow.bind(this)}
+                <ListView
+                    automaticallyAdjustContentInsets={false}
+                    dataSource={ds.cloneWithRows(data)}
+                    renderRow={this.renderRow.bind(this)}
+                    /*onEndReached={ this._toEnd.bind(this) }
+                    onEndReachedThreshold={10}*/
+                    // renderFooter={ this._renderFooter.bind(this) }
+                    //enableEmptySections={true}
                     />
-                </ScrollView>;
         } else {
             this.state.infoList = [];
             this.fetchData();
         }
+
+        var zhongleiList = this.state.zhongleiList;
+        if (zhongleiList === null)
+            this.fetchData_Zhonglei();
 
         var provinceList = this.state.provinceList;
         if (provinceList === null)
@@ -350,7 +444,7 @@ class Stock extends Component {
                                 placeholder="搜索"
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"
-                            />
+                                />
                             <TouchableOpacity style={{
                                 flex: 1,
                                 marginRight: 2,
@@ -361,14 +455,15 @@ class Stock extends Component {
                             }}
                                               onPress={() => {
                                                   this.showpopupDialog();
-                                                  this.fetchData_Province();
+                                                  //this.fetchData_Province();
+                                                  //this.fetchData_Zhonglei();
                                               }}>
                                 <Icon name="chevron-circle-down" color="#343434" size={25}></Icon>
                             </TouchableOpacity>
                         </View>
                         <TouchableOpacity
                             style={{flex: 1, backgroundColor: '#CAE1FF', marginRight: 10, borderRadius: 4}}
-                        >
+                            >
                             <View style={{padding: 10, alignItems: 'center'}}>
                                 <Text style={{fontSize: 16}}>查询</Text>
                             </View>
@@ -402,9 +497,7 @@ class Stock extends Component {
                         }} onPress={() => {
                             this.navigateMyOffer()
                         }}>
-                            <View>
-                                <Text style={{fontSize: 16}}>我的供应商</Text>
-                            </View>
+                            <Text style={{fontSize: 16}}>我的供应商</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={{
                             flex: 1,
@@ -416,12 +509,14 @@ class Stock extends Component {
                             marginBottom: 20,
                             marginTop: 10,
                             borderRadius: 4,
-                        }} onPress={() => {
+                        }}
+                                          onPress={() => {
                             this.navigateMyConcernOffer()
+
                         }}>
-                            <View>
-                                <Text style={{fontSize: 16}}>我关注</Text>
-                            </View>
+
+                            <Text style={{fontSize: 16}}>我关注</Text>
+
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -433,12 +528,34 @@ class Stock extends Component {
                         <View style={styles.table}>
                             <TextInput style={{flex: 8, height: 40, marginLeft: 10}}
                                        placeholder="商品种类"
-                            />
+                                       onChangeText={(zhonglei) => {
+                                           if (zhonglei !== null) {
+                                               this.state.shangpinzhonglei = zhonglei;
+                                           }
+                                       }}
+                                       value={this.state.shangpinzhonglei}
+                                />
                             <TouchableOpacity style={{
                                 flex: 1, paddingRight: 10, backgroundColor: 'transparent', borderLeftWidth: 1,
                                 borderLeftColor: '#ddd',
                             }}>
-                                <Icon1 name="triangle-down" color="blue" size={40}/>
+                                <ModalDropdown options={zhongleiList}
+                                               style={{
+                                               flex: 1,
+                                               paddingRight: 10,
+                                               backgroundColor: 'transparent',
+                                               borderLeftWidth: 1,
+                                               borderLeftColor: '#ddd',
+                                           }}
+                                               dropdownStyle={{
+                                               width: 200,
+                                               borderWidth: 3,
+                                               paddingLeft: 5,
+                                               borderColor: '#20C3DD'
+                                           }}
+                                               renderRow={this.renderRow_zhonglei.bind(this)}>
+                                    <Icon1 name="triangle-down" color="blue" size={40}/>
+                                </ModalDropdown>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.table}>
@@ -450,7 +567,7 @@ class Stock extends Component {
                                            }
                                        }}
                                        value={this.state.province}
-                            />
+                                />
                             <ModalDropdown options={provinceList}
                                            style={{
                                                flex: 1,
@@ -478,7 +595,7 @@ class Stock extends Component {
                                            }
                                        }}
                                        value={this.state.city}
-                            />
+                                />
                             <ModalDropdown options={cityList}
                                            style={{
                                                flex: 1,
@@ -501,7 +618,7 @@ class Stock extends Component {
                         <View style={styles.table}>
                             <TextInput style={{flex: 4, height: 40, marginLeft: 10}}
                                        placeholder="条码尾数"
-                            />
+                                />
                             <TouchableOpacity style={{
                                 flex: 1, backgroundColor: 'transparent', borderLeftWidth: 1,
                                 borderLeftColor: '#ddd',
@@ -521,8 +638,8 @@ class Stock extends Component {
                                 marginRight: 120,
                                 marginBottom: 10,
                                 marginTop: 15
-                            }} onPress={() => {
-                            }}>
+                            }} onPress={() => {}
+                            }>
                                 <View style={{paddingTop: 18, alignItems: 'center'}}>
                                     <Text style={{fontSize: 20}}>确定</Text>
                                 </View>
@@ -554,7 +671,7 @@ class Stock extends Component {
                     onRequestClose={() => {
                         alert("Modal has been closed.")
                     }}
-                >
+                    >
                     <Camera
                         ref={(cam) => {
                             this.camera = cam;
@@ -577,7 +694,7 @@ class Stock extends Component {
                                 this.closeCamera();
                             }
                         }}
-                    />
+                        />
                     <View style={[styles.box]}>
                     </View>
                     <View style={{
@@ -597,7 +714,7 @@ class Stock extends Component {
                             onPress={() => {
                                 this.closeCamera()
                             }}
-                        >
+                            >
                             <Icon name="times-circle" size={50} color="#343434"/>
                         </TouchableOpacity>
                     </View>

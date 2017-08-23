@@ -41,10 +41,13 @@ class ConcernOfferCompany extends Component {
     }
 
     goBack() {
-        this.props.navigator.push({
-            component: MyConernOffer,
-            name: MyConernOffer,
-        })
+        const {navigator} = this.props;
+
+        if (navigator) {
+            navigator.pop();
+            if (this.props.reset)
+                this.props.reset();
+        }
     }
 
     navigateMycompany() {
@@ -60,14 +63,14 @@ class ConcernOfferCompany extends Component {
     }
 
     buzaiguanzhu() {
-        var sessionId = this.props.sessionId;
+       // var sessionId = this.props.sessionId;
         var state = 0;
         var merchantId = this.state.merchantId;
         Proxy.post({
             url: Config.server + '/func/merchant/setBuyerSellerStateMobile',
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+               // 'Cookie': sessionId,
             },
             body: {
                 sellerId: merchantId,
@@ -87,13 +90,13 @@ class ConcernOfferCompany extends Component {
 
     larugongyingshang() {
         var state = 2;
-        var sessionId = this.props.sessionId;
+       // var sessionId = this.props.sessionId;
         var merchantId = this.state.merchantId;
         Proxy.post({
             url: Config.server + '/func/merchant/setBuyerSellerStateMobile',
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+                //'Cookie': sessionId,
             },
             body: {
                 sellerId: merchantId,

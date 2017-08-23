@@ -24,7 +24,6 @@ let user = (state = initialState, action) => {
                 merchantType:action.merchantType,
                 merchantStates:action.merchantStates,
                 username:action.username,
-                sessionId:action.sessionId
             });
             break;
 

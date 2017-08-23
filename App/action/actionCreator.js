@@ -15,9 +15,8 @@ export let loginAction=function(username,password,cb) {
 
         return new Promise((resolve, reject) => {
             var versionName = "3.0";
-            var sessionId = null;
 
-            Proxy.getSession({
+            Proxy.posts({
                 url: Config.server + '/func/auth/webLogin',
                 headers: {
                     'Content-Type': 'application/json'
@@ -30,14 +29,12 @@ export let loginAction=function(username,password,cb) {
                 }
             }).then((response) => {
 
-                sessionId = response.headers.map['set-cookie'][0];
                 return Proxy.postes({
 
                     url: Config.server + '/func/merchant/getMerchantInitInfoMobile',
 
                     headers: {
                         'Content-Type': 'application/json',
-                        'Cookie': sessionId,
                     },
                     body: {}
                 });
@@ -61,9 +58,7 @@ export let loginAction=function(username,password,cb) {
                         merchantStates: json.data.merchantStates,
                         supnuevoMerchantId: json.data.merchantId,
                         merchantType: json.data.merchantType,
-                        sessionId: sessionId
                     }));
-
 
                     PreferenceStore.put('username', username);
                     PreferenceStore.put('password', password);
@@ -139,7 +134,6 @@ let getSession= (ob)=>{
             auth:true,
             validate:true,
             username:ob.username,
-            sessionId:ob.sessionId
         };
     else
         return {
