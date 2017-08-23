@@ -963,7 +963,6 @@ class Query extends Component {
                                         <TouchableOpacity style={{justifyContent: 'center'}}
                                                           onPress={
                                                               () => {
-                                                                  ``
                                                                   this.updatePrintType1('0');
                                                               }}>
                                             <Text style={{'fontSize': 14, color: '#fff'}}>标签</Text>
@@ -1217,7 +1216,7 @@ class Query extends Component {
                                 marginRight: .5, borderTopLeftRadius: 4, borderBottomLeftRadius: 4, alignItems: 'center'
                             }}
                                               onPress={
-                                                  () => {
+                                                      () => {
                                                       this.savePrice();
                                                   }}>
                                 <Text style={{color: '#fff', fontSize: 18}}>改价</Text>
