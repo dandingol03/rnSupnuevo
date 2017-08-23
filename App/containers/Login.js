@@ -6,7 +6,7 @@ import React from 'react';
 
 var {
     Component
-} = React;
+    } = React;
 
 import {
     Image,
@@ -23,7 +23,7 @@ import {
     Alert,
     Modal,
     TouchableOpacity
-} from 'react-native';
+    } from 'react-native';
 
 
 
@@ -63,7 +63,7 @@ var  Login =React.createClass({
 
                     }.bind(this)
                     ,
-                    600,
+                    600
                 );
                 dispatch(setTimerAction(this.timer));
 
@@ -185,7 +185,7 @@ var  Login =React.createClass({
                                     placeholder='在此输入用户名'
                                     placeholderTextColor="#aaa"
                                     underlineColorAndroid="transparent"
-                                />
+                                    />
                             </View>
                         </View>
                     </View>
@@ -214,7 +214,7 @@ var  Login =React.createClass({
                                     placeholder='在此输入密码'
                                     placeholderTextColor="#aaa"
                                     underlineColorAndroid="transparent"
-                                />
+                                    />
                             </View>
                         </View>
                     </View>
@@ -238,14 +238,14 @@ var  Login =React.createClass({
                         transparent={true}
                         visible={this.state.showProgress}
                         onRequestClose={() => {alert("Modal has been closed.")}}
-                    >
+                        >
                         <View style={[styles.modalContainer,styles.modalBackgroundStyle]}>
                             <ActivityIndicator
                                 animating={true}
                                 style={[styles.loader, {height: 80}]}
                                 size="large"
                                 color="#fff"
-                            />
+                                />
                             <View style={{flexDirection:'row',justifyContent:'center'}}>
                                 <Text style={{color:'#fff',fontSize:18,alignItems:'center'}}>
                                     登录中

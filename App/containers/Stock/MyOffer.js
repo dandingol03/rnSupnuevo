@@ -14,6 +14,8 @@ import  {
     Modal,
     TouchableOpacity
 } from 'react-native';
+//import myConcernOffer from './MyConcernOffer';
+
 import Config from '../../../config';
 import {connect} from 'react-redux';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -21,13 +23,12 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import Icon1 from 'react-native-vector-icons/Entypo';
 import PopupDialog from 'react-native-popup-dialog';
 import Camera from 'react-native-camera';
-import Picker from 'react-native-picker';
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../../proxy/Proxy');
 var Popover = require('react-native-popover');
-import OfferCompany from './OfferCompany';
-import MyConcernOffer from './MyConcernOffer';
+
+
 //import Stock from './Stock';
 
 class MyOffer extends Component {
@@ -35,7 +36,10 @@ class MyOffer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            state: 0,
+            state: 2,
+            start: 0,
+            limit: 4,
+            arrlong:0,
             companyinfo: null,
             dialogShow: false,
             infoList: null,
@@ -73,16 +77,20 @@ class MyOffer extends Component {
     }
 
     fetchData() {
-        var sessionId = this.props.sessionId;
+        //var sessionId = this.props.sessionId;
+        var start = this.state.start;
         var state = this.state.state;
+        var limit = this.state.limit;
         Proxy.post({
             url: Config.server + "/func/merchant/getSupnuevoMerchantInfoListOfBuyerMobile",
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+               // 'Cookie': sessionId,
             },
             body: {
+                start: start,
                 state: state,
+                limit: limit,
             }
         }, (json) => {
             var errorMsg = json.message;
@@ -92,6 +100,27 @@ class MyOffer extends Component {
                 var infoList = json.data;
                 if (infoList !== null)
                     this.setState({infoList: infoList});
+            }
+        }, (err) => {
+            alert(err);
+        });
+    }
+
+    fetchData_Zhonglei() {
+        var zhongleiList = this.state.zhongleiList;
+        Proxy.post({
+            url: Config.server + "/func/merchant/getSupnuevoCommodityRubroList",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {}
+        }, (json) => {
+            var errorMsg = json.message;
+            if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
+                alert(errorMsg);
+            } else {
+                zhongleiList = json.data;
+                this.setState({zhongleiList: zhongleiList});
             }
         }, (err) => {
             alert(err);
@@ -148,6 +177,7 @@ class MyOffer extends Component {
     }
 
     renderRow(rowData) {
+
         var row =
             <View>
                 <TouchableOpacity onPress={() => {
@@ -178,18 +208,20 @@ class MyOffer extends Component {
         return row;
     }
 
-    navigateMyconcernOffer() {
-        const {navigator} = this.props;
+    navigateMyConcernOffer1() {
+        var myConcernOffer=require('./MyConcernOffer');
 
-        if (navigator) {
-            navigator.push({
-                name: 'MyConcernOffer',
-                component: MyConcernOffer,
+            this.props.navigator.push({
+                name:'ConcernOffer',
+                component:myConcernOffer,
+                params:{}
             })
-        }
+
     }
 
     navigateOfferCompany(nubre, direccion, rubroDes, nomroDeTelePhono, merchantId) {
+
+        var OfferCompany = require('./OfferCompany');
         const {navigator} = this.props;
         var nubre = nubre;
         var direccion = direccion;
@@ -219,6 +251,23 @@ class MyOffer extends Component {
             if (this.props.reset)
                 this.props.reset();
         }
+    }
+
+    renderRow_zhonglei(rowData) {
+        var row =
+            <View>
+                <TouchableOpacity onPress={() =>  this.setState({shangpinzhonglei: rowData.label})}>
+                    <View style={{
+                        flex: 1, padding: 10, borderBottomWidth: 1, borderColor: '#ddd',
+                        justifyContent: 'flex-start', backgroundColor: '#fff'
+                    }}>
+                        <View style={{paddingTop: 5, flexDirection: 'row'}}>
+                            <Text style={{flex: 3}}>{rowData.label}</Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
+            </View>;
+        return row;
     }
 
     renderRow_Province(rowData) {
@@ -280,7 +329,9 @@ class MyOffer extends Component {
             this.state.infoList = [];
             this.fetchData();
         }
-
+        var zhongleiList = this.state.zhongleiList;
+        if (zhongleiList === null)
+            this.fetchData_Zhonglei();
         var provinceList = this.state.provinceList;
         if (provinceList === null)
             this.fetchData_Province();
@@ -416,7 +467,7 @@ class MyOffer extends Component {
                             marginTop: 10,
                             borderRadius: 4,
                         }} onPress={() => {
-                            this.navigateMyconcernOffer()
+                            this.navigateMyConcernOffer1()
                         }}>
                             <View>
                                 <Text style={{fontSize: 16}}>我关注</Text>
@@ -433,12 +484,34 @@ class MyOffer extends Component {
                         <View style={styles.table}>
                             <TextInput style={{flex: 8, height: 40, marginLeft: 10}}
                                        placeholder="商品种类"
-                            />
+                                       onChangeText={(zhonglei) => {
+                                           if (zhonglei !== null) {
+                                               this.state.shangpinzhonglei = zhonglei;
+                                           }
+                                       }}
+                                       value={this.state.shangpinzhonglei}
+                                />
                             <TouchableOpacity style={{
                                 flex: 1, paddingRight: 10, backgroundColor: 'transparent', borderLeftWidth: 1,
                                 borderLeftColor: '#ddd',
                             }}>
-                                <Icon1 name="triangle-down" color="blue" size={40}/>
+                                <ModalDropdown options={zhongleiList}
+                                               style={{
+                                               flex: 1,
+                                               paddingRight: 10,
+                                               backgroundColor: 'transparent',
+                                               borderLeftWidth: 1,
+                                               borderLeftColor: '#ddd',
+                                           }}
+                                               dropdownStyle={{
+                                               width: 200,
+                                               borderWidth: 3,
+                                               paddingLeft: 5,
+                                               borderColor: '#20C3DD'
+                                           }}
+                                               renderRow={this.renderRow_zhonglei.bind(this)}>
+                                    <Icon1 name="triangle-down" color="blue" size={40}/>
+                                </ModalDropdown>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.table}>
