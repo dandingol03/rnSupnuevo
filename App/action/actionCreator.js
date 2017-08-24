@@ -16,7 +16,7 @@ export let loginAction=function(username,password,cb) {
         return new Promise((resolve, reject) => {
             var versionName = "3.0";
 
-            Proxy.posts({
+            Proxy.postes({
                 url: Config.server + '/func/auth/webLogin',
                 headers: {
                     'Content-Type': 'application/json'
@@ -64,6 +64,7 @@ export let loginAction=function(username,password,cb) {
                     PreferenceStore.put('password', password);
 
                     dispatch(clearTimerAction());
+                    resolve(json);
                 }
 
             })
