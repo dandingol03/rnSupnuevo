@@ -199,13 +199,13 @@ class GroupQuery extends Component{
     {
         //var code = parseInt(codeNum);
         const { merchantId } = this.props;
-        var sessionId=this.props.sessionId;
+       // var sessionId=this.props.sessionId;
         Proxy.post({
             url:Config.server+'/func/commodity/getSupnuevoCommonCommodityListByLastFourCodigoMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie':sessionId,
+               // 'Cookie':sessionId,
             },
           // body: "codigo=" + codeNum + "&merchantId=" + merchantId
             body:{

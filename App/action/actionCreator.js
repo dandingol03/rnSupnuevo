@@ -12,12 +12,9 @@ import PreferenceStore from '../utils/PreferenceStore';
 export let loginAction=function(username,password,cb) {
 
     return dispatch => {
-
         return new Promise((resolve, reject) => {
             var versionName = "3.0";
-            var sessionId = null;
-
-            Proxy.getSession({
+            Proxy.postes({
                 url: Config.server + '/func/auth/webLogin',
                 headers: {
                     'Content-Type': 'application/json'
@@ -28,49 +25,56 @@ export let loginAction=function(username,password,cb) {
                     loginType: 1,
                     parameter: {appVersion: versionName}
                 }
-            }).then((response) => {
-
-                sessionId = response.headers.map['set-cookie'][0];
-                return Proxy.postes({
-
-                    url: Config.server + '/func/merchant/getMerchantInitInfoMobile',
-
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Cookie': sessionId,
-                    },
-                    body: {}
-                });
-
             }).then((json) => {
 
-                var errorMsg = json.errorMsg;
-                if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
-                    dispatch(getSession(null));
-                    dispatch(clearTimerAction());
-                    if (cb)
-                        cb(errorMsg);
+                if (json.errorMessageList !== null && json.errorMessageList !== undefined && json.errorMessageList.length > 0) {
+                    resolve({re: -1, data: json.errorMessageList[1]});
                 }
                 else {
+                    Proxy.postes({
 
-                    dispatch(setAnnouncement(json.data.helpContent));
-                    dispatch(setCommodityClassList(json.data.commodityClassList));
-                    dispatch(setWeightService(json.data.weightService));
-                    dispatch(getSession({
-                        username: username,
-                        merchantStates: json.data.merchantStates,
-                        supnuevoMerchantId: json.data.merchantId,
-                        merchantType: json.data.merchantType,
-                        sessionId: sessionId
-                    }));
+                        url: Config.server + '/func/merchant/getMerchantInitInfoMobile',
+
+                        headers: {
+                            'Content-Type': 'application/json'
+                            // 'Cookie': sessionId
+                        },
+                        body: {}
+                    }).then((json) => {
+                        var errorMsg = json.errorMsg;
+                        if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
+                            dispatch(getSession(null));
+                            dispatch(clearTimerAction());
+                            if (cb)
+                                cb(errorMsg);
+                        }
+                        else {
+                            dispatch(setAnnouncement(json.data.helpContent));
+                            dispatch(setCommodityClassList(json.data.commodityClassList));
+                            dispatch(setWeightService(json.data.weightService));
+                            dispatch(getSession({
+                                username: username,
+                                merchantStates: json.data.merchantStates,
+                                supnuevoMerchantId: json.data.merchantId,
+                                merchantType: json.data.merchantType,
+                                //sessionId: sessionId
+                            }));
 
 
-                    PreferenceStore.put('username', username);
-                    PreferenceStore.put('password', password);
+                            PreferenceStore.put('username', username);
+                            PreferenceStore.put('password', password);
 
-                    dispatch(clearTimerAction());
+                            dispatch(clearTimerAction());
+                        }
+
+                    }).catch((err)=>{
+                        alert(err.message);
+                    })
+
                 }
 
+            }).catch((err)=>{
+                alert(err.message);
             })
         })
     }

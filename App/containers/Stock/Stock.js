@@ -13,6 +13,7 @@ import  {
     Alert,
     Modal,
     TouchableOpacity,
+    RefreshControl,
     } from 'react-native';
 import Config from '../../../config';
 import {connect} from 'react-redux';
@@ -53,6 +54,9 @@ class Stock extends Component {
             city: null,
             menuVisible: false,
             showDropdown: false,
+            isLoadingTail: false,
+            isRefreshing: false,
+            isNoMoreData: false,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2) => {
                     if (r1 !== r2) {
@@ -313,51 +317,16 @@ class Stock extends Component {
         this.setState({cameraModalVisible: false});
     }
 
-    /*
-     searchInfo(){
-     var sInfo=
-     }
-     */
-
-    renderModal() {
-        if (this.state.modalDropdown) {
-        }
+    _onRefresh() {
+        this.setState({isRefreshing: true});
+        // console.log(this);
+        setTimeout(()=> {
+            this.setState({
+                isRefreshing: false
+            });
+            this.fetchData();
+        }, 100);
     }
-
-    componentDidMount() {
-    }
-
-    /*    _toEnd() {
-     const { reducer } = this.props;
-     //ListView滚动到底部，根据是否正在加载更多 是否正在刷新 是否已加载全部来判断是否执行加载更多
-     if (reducer.isLoadingMore || reducer.products.length >= reducer.totalProductCount || reducer.isRefreshing) {
-     return;
-     }
-     InteractionManager.runAfterInteractions(() => {
-     console.log("触发加载更多 toEnd() --> ");
-     this._loadMoreData();
-     });
-     }
-
-     _loadMoreData() {
-     this.state.start = this.state.limit + 1;
-     this.fetchData();
-     }
-
-     _renderFooter() {
-     //通过当前product数量和刷新状态（是否正在下拉刷新）来判断footer的显示
-     if (reducer.products.length < 1 || reducer.isRefreshing) {
-     return null
-     }
-     ;
-     if (reducer.products.length < reducer.totalProductCount) {
-     //还有更多，默认显示‘正在加载更多...’
-     return <LoadMoreFooter />
-     } else {
-     // 加载全部
-     return <LoadMoreFooter isLoadAll={true}/>
-     }
-     }*/
 
     render() {
         var displayArea = {x: 5, y: 20, width: width, height: height - 25};
@@ -371,10 +340,6 @@ class Stock extends Component {
                     automaticallyAdjustContentInsets={false}
                     dataSource={ds.cloneWithRows(data)}
                     renderRow={this.renderRow.bind(this)}
-                    /*onEndReached={ this._toEnd.bind(this) }
-                    onEndReachedThreshold={10}*/
-                    // renderFooter={ this._renderFooter.bind(this) }
-                    //enableEmptySections={true}
                     />
         } else {
             this.state.infoList = [];
@@ -414,14 +379,17 @@ class Stock extends Component {
                         {this.props.username}
                     </Text>
                 </View>
+                {/*nei rong*/}
                 <View style={{flex: 1}}>
                     <View style={{
                         flex: 1,
+                        height:50,
                         flexDirection: 'row',
                         alignItems: 'center'
                     }}>
                         <View style={{
                             flex: 3,
+                            height:40,
                             flexDirection: 'row',
                             justifyContent: 'center',
                             margin: 10,
@@ -470,7 +438,7 @@ class Stock extends Component {
                         </TouchableOpacity>
                     </View>
                     <View style={{
-                        flex: 0.6,
+                        flex: 0.5,
                         borderBottomWidth: 1,
                         borderColor: '#ddd',
                         justifyContent: 'center',
@@ -479,7 +447,19 @@ class Stock extends Component {
                         <Text style={{fontSize: 16}}>市场上所有供应商列表</Text>
                     </View>
                     <View style={{flex: 5, borderBottomWidth: 1, borderColor: '#ddd'}}>
-                        <ScrollView>
+                        <ScrollView
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.isRefreshing}
+                                    //onRefresh={this._onRefresh()}
+                                    onRefresh={this._onRefresh.bind(this)}
+
+                                    tintColor="black"
+                                    title="Loading"
+                                    titleColor="black"
+                                    progressBackgroundColor="white"
+                                 />
+                             }>
                             {listView}
                         </ScrollView>
                     </View>
@@ -512,11 +492,8 @@ class Stock extends Component {
                         }}
                                           onPress={() => {
                             this.navigateMyConcernOffer()
-
                         }}>
-
                             <Text style={{fontSize: 16}}>我关注</Text>
-
                         </TouchableOpacity>
                     </View>
                 </View>

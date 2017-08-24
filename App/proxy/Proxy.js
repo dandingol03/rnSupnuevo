@@ -9,7 +9,7 @@
 import  {
     NetInfo,
     Alert,
-} from 'react-native';
+    } from 'react-native';
 
 import store from '../store/index';
 
@@ -59,12 +59,22 @@ let Proxy={
                 if(Object.prototype.toString.call(params.body)=='[object Object]')
                     params.body = JSON.stringify(params.body);
 
+
                 var options={
                     method:'POST',
                     headers:params.headers!==undefined&&params.headers!==null?params.headers:null,
+                    credentials:'include',
                     cache:false,
-                    body:params.body
+                    body:params.body,
+                    data:params.data!==undefined&&params.data!==null?params.data:null,
                 };
+
+                //var options={
+                //    method:'POST',
+                //    headers:params.headers!==undefined&&params.headers!==null?params.headers:null,
+                //    cache:false,
+                //    body:params.body
+                //};
 
                 fetch(url,options)
                     .then((response) => response.text())
@@ -104,12 +114,23 @@ let Proxy={
             if(Object.prototype.toString.call(params.body)=='[object Object]')
                 params.body = JSON.stringify(params.body);
 
+
             var options={
                 method:'POST',
-                headers:params.headers!==undefined&&params.headers!==null?params.headers:null,
                 cache:'default',
-                body:params.body
+                headers:params.headers!==undefined&&params.headers!==null?params.headers:null,
+                credentials:'include',
+                body:params.body,
+                data:params.data!==undefined&&params.data!==null?params.data:null,
             };
+
+            //
+            //var options={
+            //    method:'POST',
+            //    headers:params.headers!==undefined&&params.headers!==null?params.headers:null,
+            //    cache:'default',
+            //    body:params.body
+            //};
 
             return new Promise((resolve,reject) => {
                 fetch(url,options)

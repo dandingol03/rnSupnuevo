@@ -21,7 +21,7 @@ import Login from '../containers/Login';
 import Query from '../containers/Query';
 import Announcement from '../containers/Announcement';
 import Sale from '../containers/Sale/Sale';
-import Stock from './Stock/Stock';
+import Stock from './Stock/Stock.js';
 import My from './My/My';
 
 import { setNetInfo } from '../action/actionCreator';

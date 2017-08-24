@@ -73,13 +73,13 @@ class Query extends Component {
     onCodigoSelect(code) {
         const merchantId = this.props.merchantId;
         var codigo = code.codigo;
-        var sessionId = this.props.sessionId;
+       // var sessionId = this.props.sessionId;
         Proxy.post({
             url: Config.server + "/func/commodity/getSupnuevoBuyerPriceFormByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+               // 'Cookie': sessionId,
             },
             //body: "codigo=" + codigo + "&supnuevoMerchantId=" + merchantId
             body: {
@@ -134,13 +134,13 @@ class Query extends Component {
     queryGoodsCode(codeNum) {
 
         const {merchantId} = this.props;
-        var sessionId = this.props.sessionId;
+        //var sessionId = this.props.sessionId;
 
         Proxy.postes({
             url: Config.server + '/func/commodity/getQueryDataListByInputStringMobile',
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+                //'Cookie': sessionId,
             },
             body: {
                 codigo: codeNum,
@@ -181,14 +181,14 @@ class Query extends Component {
     navigateGoodAdd() {
         const {navigator} = this.props;
         const {merchantId} = this.props;
-        var sessionId = this.props.sessionId;
+       // var sessionId = this.props.sessionId;
         Proxy.post({
             url: Config.server + '/func/commodity/getSupnuevoCommodityTaxInfoListMobile',
             //url:Config.server+'supnuevo/supnuevoGetSupnuevoCommodityTaxInfoListMobile.do',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+              //  'Cookie': sessionId,
             },
             //body:"merchantId=" + merchantId
             body: {
@@ -255,13 +255,13 @@ class Query extends Component {
     navigateGoodUpdate() {
         const {navigator} = this.props;
         const {merchantId} = this.props;
-        var sessionId = this.props.sessionId;
+       // var sessionId = this.props.sessionId;
         Proxy.post({
             url: Config.server + '/func/commodity/getSupnuevoCommodityTaxInfoListMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+              //  'Cookie': sessionId,
             },
             // body:"merchantId=" + merchantId
             body: {
@@ -469,7 +469,7 @@ class Query extends Component {
         var codigo = this.state.selectedCodeInfo.codigo;
         var printType = this.state.selectedCodeInfo.printType;
         var code = {codigo: codigo};
-        var sessionId = this.props.sessionId;
+       // var sessionId = this.props.sessionId;
 
         const {merchantId} = this.props;
 
@@ -480,7 +480,7 @@ class Query extends Component {
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                     'Content-Type': 'application/json',
-                    'Cookie': sessionId,
+                  //  'Cookie': sessionId,
                 },
                 //body:"merchantId=" + merchantId + "&price=" + priceShow+ "&commodityId=" + commodityId+ "&printType=" + printType+ "&codigo=" + codigo
                 body: {

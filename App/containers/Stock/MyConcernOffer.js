@@ -12,7 +12,8 @@ import  {
     View,
     Alert,
     Modal,
-    TouchableOpacity
+    TouchableOpacity,
+    RefreshControl
 } from 'react-native';
 import Config from '../../../config';
 import {connect} from 'react-redux';
@@ -49,6 +50,7 @@ class MyConcernOffer extends Component {
             cityList: null,
             province: null,
             city: null,
+            isRefreshing: false,
             showDropdown: false,
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2) => {
@@ -67,7 +69,7 @@ class MyConcernOffer extends Component {
                 flashMode: Camera.constants.FlashMode.auto
             },
         };
-        //this.showpopupDialog = this.showpopupDialog.bind(this);
+        this.showpopupDialog = this.showpopupDialog.bind(this);
 
     }
 
@@ -308,6 +310,17 @@ class MyConcernOffer extends Component {
         this.setState({cameraModalVisible: false});
     }
 
+    _onRefresh() {
+        this.setState({isRefreshing: true});
+        // console.log(this);
+        setTimeout(()=> {
+            this.setState({
+                isRefreshing: false
+            });
+            this.fetchData();
+        }, 100);
+    }
+
     render() {
 
         var listView = null;
@@ -434,7 +447,19 @@ class MyConcernOffer extends Component {
                     </View>
 
                     <View style={{flex: 5, borderBottomWidth: 1, borderColor: '#ddd'}}>
-                        <ScrollView>
+                        <ScrollView
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.isRefreshing}
+                                    //onRefresh={this._onRefresh()}
+                                    onRefresh={this._onRefresh.bind(this)}
+                                    tintColor="black"
+                                    title="Loading"
+                                    titleColor="black"
+                                    progressBackgroundColor="white"
+                                 />
+                             }
+                            >
                             {listView}
                         </ScrollView>
                     </View>

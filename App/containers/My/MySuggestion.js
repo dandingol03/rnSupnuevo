@@ -106,7 +106,7 @@ class MySuggestion extends Component {
                                         paddingRight: 10,
                                         paddingTop: 6,
                                         paddingBottom: 6,
-                                        borderColor:'black',
+                                        borderColor:'#ddd',
                                         borderBottomWidth:1,
                                         fontSize:20
                                     }}
