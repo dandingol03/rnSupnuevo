@@ -39,6 +39,7 @@ class Stock extends Component {
             start: 0,
             limit: 4,
             arrlong: 0,
+            firststate: 0,
             companyinfo: null,
             dialogShow: false,
             infoList: null,
@@ -128,11 +129,15 @@ class Stock extends Component {
         }
     }
 
-    fetchData() {
+    fetchData(state_1) {
         //var sessionId = this.props.sessionId;
         var start = this.state.start;
         var state = this.state.state;
         var limit = this.state.limit;
+        if(state_1===0||state_1===1){
+            start=0;
+            this.state.infoList=[];
+        }
         Proxy.post({
             url: Config.server + "/func/merchant/getSupnuevoMerchantInfoListOfBuyerMobile",
             headers: {
@@ -149,7 +154,8 @@ class Stock extends Component {
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
             } else {
-                var infoList = json.data;
+                var infoList = this.state.infoList;
+                infoList = infoList.concat(json.data);
                 var arrlong = json.data.length;
                 this.setState({infoList: infoList});
                 this.setState({arrlong: arrlong});
@@ -318,14 +324,22 @@ class Stock extends Component {
     }
 
     _onRefresh() {
+        var state=1;
         this.setState({isRefreshing: true});
         // console.log(this);
         setTimeout(()=> {
             this.setState({
                 isRefreshing: false
             });
-            this.fetchData();
+            this.fetchData(state);
         }, 100);
+    }
+
+    _endReached() {
+        var state=2;
+        this.state.start += this.state.arrlong;
+        if (this.state.arrlong === this.state.limit)
+            this.fetchData(state);
     }
 
     render() {
@@ -340,10 +354,13 @@ class Stock extends Component {
                     automaticallyAdjustContentInsets={false}
                     dataSource={ds.cloneWithRows(data)}
                     renderRow={this.renderRow.bind(this)}
+
+                    onEndReached={this._endReached.bind(this)}
+                    onEndReachedThreshold={20}
                     />
         } else {
             this.state.infoList = [];
-            this.fetchData();
+            this.fetchData(0);
         }
 
         var zhongleiList = this.state.zhongleiList;
@@ -768,4 +785,3 @@ module.exports = connect(state => ({
         sessionId: state.user.sessionId,
     })
 )(Stock);
-

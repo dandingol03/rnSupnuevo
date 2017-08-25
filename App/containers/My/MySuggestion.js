@@ -145,4 +145,3 @@ module.exports = connect(state => ({
         username: state.user.username,
     })
 )(MySuggestion);
-

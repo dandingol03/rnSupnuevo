@@ -162,6 +162,7 @@ let Proxy={
             var options={
                 method:'POST',
                 headers:params.headers!==undefined&&params.headers!==null?params.headers:null,
+                credentials:'include',
                 cache:'default',
                 body:params.body,
                 data:params.data!==undefined&&params.data!==null?params.data:null,

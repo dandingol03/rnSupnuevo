@@ -1,9 +1,3 @@
-/**
- * BrandAction
- * 因为没有api 只能拿固定数据
- */
-
-
 import * as types from './types';
 import Config from '../../config';
 var Proxy = require('../proxy/Proxy');
@@ -14,6 +8,7 @@ export let loginAction=function(username,password,cb) {
     return dispatch => {
         return new Promise((resolve, reject) => {
             var versionName = "3.0";
+
             Proxy.postes({
                 url: Config.server + '/func/auth/webLogin',
                 headers: {
@@ -59,20 +54,15 @@ export let loginAction=function(username,password,cb) {
                                 merchantType: json.data.merchantType,
                                 //sessionId: sessionId
                             }));
-
-
                             PreferenceStore.put('username', username);
                             PreferenceStore.put('password', password);
 
                             dispatch(clearTimerAction());
                         }
-
                     }).catch((err)=>{
                         alert(err.message);
                     })
-
                 }
-
             }).catch((err)=>{
                 alert(err.message);
             })
@@ -143,7 +133,6 @@ let getSession= (ob)=>{
             auth:true,
             validate:true,
             username:ob.username,
-            sessionId:ob.sessionId
         };
     else
         return {

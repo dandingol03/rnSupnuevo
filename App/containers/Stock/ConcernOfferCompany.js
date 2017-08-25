@@ -32,6 +32,11 @@ class ConcernOfferCompany extends Component {
         super(props);
         this.state = {
             goodsCount: 0,
+            start: 0,
+            limit: 5,
+            firststate: 0,
+            arrlong: 0,
+            infoList: null,
             nubre: this.props.nubre,
             direccion: this.props.direccion,
             rubroDes: this.props.rubroDes,
@@ -114,7 +119,69 @@ class ConcernOfferCompany extends Component {
         });
     }
 
+    fetchData() {
+        var start = this.state.start;
+        var merchantId = this.state.merchantId;
+        var limit = this.state.limit;
+        Proxy.post({
+            url: Config.server + "/func/merchant/getCommodityLabelListofSellerMobile",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+                sellerId: merchantId,
+                start: start,
+                limit: limit,
+            }
+        }, (json) => {
+            var errorMsg = json.message;
+            if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
+                alert(errorMsg);
+            } else {
+                var infoList = this.state.infoList;
+                infoList = infoList.concat(json.data);
+                /*json.data.map(function (item, i) {
+                 infoList.push(
+                 item
+                 );
+                 });*/
+                this.setState({infoList: infoList});
+                var arrlong = json.data.length;
+                this.setState({arrlong: arrlong});
+            }
+        })
+    }
+
+    _endReached() {
+        this.state.start += this.state.arrlong;
+        if (this.state.arrlong === this.state.limit)
+            this.fetchData();
+    }
+
     render() {
+        var listView = null;
+        var infoList = this.state.infoList;
+        if (infoList !== undefined && infoList !== null) {
+            var data = infoList;
+            var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+            listView =
+                <ScrollView>
+                    <ListView
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={true}
+                        padingEnable={true}
+                        automaticallyAdjustContentInsets={false}
+                        dataSource={ds.cloneWithRows(data)}
+                        renderRow={this.renderRow.bind(this)}
+
+                        onEndReached={this._endReached.bind(this)}
+                        onEndReachedThreshold={20}
+                        />
+                </ScrollView>;
+        } else {
+            this.state.infoList = [];
+            this.fetchData();
+        }
 
         return (
             <View style={{flex: 1}}>
@@ -216,7 +283,9 @@ class ConcernOfferCompany extends Component {
                             </View>
                         </View>
                         <View style={{flex: 2}}>
-
+                            <ScrollView>
+                                {listView}
+                            </ScrollView>
                         </View>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row'}}>

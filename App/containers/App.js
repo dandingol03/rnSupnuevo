@@ -1,5 +1,7 @@
 import React from 'react';
 import {
+    AppState,
+    Modal,
     NetInfo,
     View,
     StyleSheet,
@@ -20,12 +22,13 @@ import TabNavigator from 'react-native-tab-navigator';
 import Login from '../containers/Login';
 import Query from '../containers/Query';
 import Announcement from '../containers/Announcement';
+import Advertisement from '../containers/Advertisement';
+
 import Sale from '../containers/Sale/Sale';
 import Stock from './Stock/Stock.js';
 import My from './My/My';
 
 import { setNetInfo } from '../action/actionCreator';
-
 
 const tabBarTintColor = '#f8f8f8';// 标签栏的背景颜色
 const tabTintColor = '#3393F2'; // 被选中图标颜色
@@ -41,6 +44,7 @@ class App extends React.Component {
             isConnected: null,
         }
     }
+
     _createNavigatorItem(route,icon)
     {
         var component=Announcement;
@@ -59,6 +63,9 @@ class App extends React.Component {
                 break;
             case '我的':
                 component=My;
+                break;
+            case '广告':
+                component=Advertisement;
                 break;
             default:
                 break;
@@ -92,6 +99,7 @@ class App extends React.Component {
 
                     />
 
+
                 </View>
             </TabNavigator.Item>
         );
@@ -123,11 +131,12 @@ class App extends React.Component {
             return(
 
             <TabNavigator  tabBarStyle={defaultStyle} sceneStyle={defaultSceneStyle}>
-                {this._createNavigatorItem('公告','home')}
+                {this._createNavigatorItem('广告','home')}
                 {this._createNavigatorItem('改价','edit')}
                 {this._createNavigatorItem('收银','search')}
                 {this._createNavigatorItem('进货','tag')}
                 {this._createNavigatorItem('我的','user-o')}
+                {this._createNavigatorItem('公告','home')}
             </TabNavigator>
 
                 // <Navigator
@@ -160,6 +169,7 @@ class App extends React.Component {
             'change',
             this._handleConnectionInfoChange.bind(this)
         );
+
 
     }
 

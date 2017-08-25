@@ -23,7 +23,8 @@ import Config from '../../../config';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 var Dimensions = require('Dimensions');
-var {height, width} = Dimensions.get('window');
+var ScreenWidth = Dimensions.get('window').width;
+var ScreenHeight = Dimensions.get('window').height;
 
 class Bigpic extends Component {
 
@@ -66,7 +67,9 @@ class Bigpic extends Component {
     }
 
     render() {
-        if(this.state.img===null){
+        var pic_paddingLR = (ScreenWidth - 350) / 2;
+        var pic_paddingTB = (ScreenHeight - 350) / 4;
+        if (this.state.img === null) {
             this.fetchData();
         }
         return (
@@ -93,11 +96,14 @@ class Bigpic extends Component {
                     <View style={{flex: 1, marginRight: 10, flexDirection: 'row', justifyContent: 'center'}}>
                     </View>
                 </View>
-                <View>
+                <View
+                    style={{paddingLeft:pic_paddingLR,paddingTop:pic_paddingTB}}>
                     <Image
-                        resizeMode="stretch" style={{width:355,height:355}}
+                        resizeMode="stretch" style={{width:350,height:350}}
                         source={{uri:this.state.img}}
                         />
+                    <Text style={styles.ziti}>{ScreenWidth}</Text>
+                    <Text style={styles.ziti}>{ScreenHeight}</Text>
                 </View>
             </View>
         );
