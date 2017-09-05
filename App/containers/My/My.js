@@ -377,8 +377,7 @@ var styles = StyleSheet.create
 });
 
 
-module
-    .exports = connect(state => ({
+module.exports = connect(state => ({
         merchantId: state.user.supnuevoMerchantId,
         username: state.user.username,
         supnuevoMerchantId: state.user.supnuevoMerchantId,

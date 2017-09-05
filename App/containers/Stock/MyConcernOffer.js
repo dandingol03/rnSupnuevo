@@ -14,7 +14,7 @@ import  {
     Modal,
     TouchableOpacity,
     RefreshControl
-} from 'react-native';
+    } from 'react-native';
 import Config from '../../../config';
 import {connect} from 'react-redux';
 import ModalDropdown from 'react-native-modal-dropdown';
@@ -37,7 +37,7 @@ class MyConcernOffer extends Component {
             state: 1,
             start: 0,
             limit: 4,
-            arrlong:0,
+            arrlong: 0,
             shangpinzhonglei: null,
             zhongleiList: null,
             companyinfo: null,
@@ -46,7 +46,7 @@ class MyConcernOffer extends Component {
             merchantId: 0,
             provinceList: null,
             provinceId: null,
-            provinceId2:null,
+            provinceId2: null,
             cityList: null,
             province: null,
             city: null,
@@ -89,13 +89,13 @@ class MyConcernOffer extends Component {
         }
     }
 
-    navigateConcernOfferCompany(nubre, direccion, rubroDes,nomroDeTelePhono,merchantId) {
+    navigateConcernOfferCompany(nubre, direccion, rubroDes, nomroDeTelePhono, merchantId) {
         const {navigator} = this.props;
         var nubre = nubre;
         var direccion = direccion;
         var rubroDes = rubroDes;
         var nomroDeTelePhono = nomroDeTelePhono;
-        var merchantId=merchantId;
+        var merchantId = merchantId;
         if (navigator) {
             navigator.push({
                 name: 'ConcernOfferCompany',
@@ -104,8 +104,8 @@ class MyConcernOffer extends Component {
                     nubre: nubre,
                     direccion: direccion,
                     rubroDes: rubroDes,
-                    nomroDeTelePhono : nomroDeTelePhono,
-                    merchantId:merchantId,
+                    nomroDeTelePhono: nomroDeTelePhono,
+                    merchantId: merchantId,
                 }
             })
         }
@@ -115,12 +115,12 @@ class MyConcernOffer extends Component {
         var start = this.state.start;
         var state = this.state.state;
         var limit = this.state.limit;
-       // var sessionId = this.props.sessionId;
+        // var sessionId = this.props.sessionId;
         Proxy.post({
             url: Config.server + "/func/merchant/getSupnuevoMerchantInfoListOfBuyerMobile",
             headers: {
                 'Content-Type': 'application/json',
-               // 'Cookie': sessionId,
+                // 'Cookie': sessionId,
             },
             body: {
                 start: start,
@@ -133,9 +133,11 @@ class MyConcernOffer extends Component {
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
             } else {
-                var infoList = json.data;
-                if (infoList !== null)
+                var infoList = this.state.infoList;
+                infoList = infoList.concat(json.data);
+                var arrlong = json.data.length;
                 this.setState({infoList: infoList});
+                this.setState({arrlong: arrlong});
             }
         }, (err) => {
             alert(err);
@@ -245,54 +247,51 @@ class MyConcernOffer extends Component {
 
     renderRow_zhonglei(rowData) {
         var row =
-            <View>
-                <TouchableOpacity onPress={() =>  this.setState({shangpinzhonglei: rowData.label})}>
-                    <View style={{
+
+            <TouchableOpacity>
+                <View style={{
                         flex: 1, padding: 10, borderBottomWidth: 1, borderColor: '#ddd',
                         justifyContent: 'flex-start', backgroundColor: '#fff'
                     }}>
-                        <View style={{paddingTop: 5, flexDirection: 'row'}}>
-                            <Text style={{flex: 3}}>{rowData.label}</Text>
-                        </View>
+                    <View style={{paddingTop: 5, flexDirection: 'row'}}>
+                        <Text style={{flex: 3}}>{rowData.label}</Text>
                     </View>
-                </TouchableOpacity>
-            </View>;
+                </View>
+            </TouchableOpacity>;
+
         return row;
     }
 
     renderRow_Province(rowData) {
         var row =
-            <View>
-                <TouchableOpacity onPress={() => {
-                    this.setState({provinceId: rowData.value, province: rowData.label})
-                }}>
-                    <View style={{
+
+            <TouchableOpacity>
+                <View style={{
                         flex: 1, padding: 10, borderBottomWidth: 1, borderColor: '#ddd',
                         justifyContent: 'flex-start', backgroundColor: '#fff'
                     }}>
-                        <View style={{paddingTop: 5, flexDirection: 'row'}}>
-                            <Text>{rowData.label}</Text>
-                        </View>
+                    <View style={{paddingTop: 5, flexDirection: 'row'}}>
+                        <Text>{rowData.label}</Text>
                     </View>
-                </TouchableOpacity>
-            </View>;
+                </View>
+            </TouchableOpacity>;
+
         return row;
     }
 
     renderRow_City(rowData) {
         var row =
-            <View>
-                <TouchableOpacity onPress={() => this.setState({city: rowData.label})}>
-                    <View style={{
+            <TouchableOpacity>
+                <View style={{
                         flex: 1, padding: 10, borderBottomWidth: 1, borderColor: '#ddd',
                         justifyContent: 'flex-start', backgroundColor: '#fff'
                     }}>
-                        <View style={{paddingTop: 5, flexDirection: 'row'}}>
-                            <Text style={{flex: 3}}>{rowData.label}</Text>
-                        </View>
+                    <View style={{paddingTop: 5, flexDirection: 'row'}}>
+                        <Text style={{flex: 3}}>{rowData.label}</Text>
                     </View>
-                </TouchableOpacity>
-            </View>;
+                </View>
+            </TouchableOpacity>;
+
         return row;
     }
 
@@ -321,6 +320,24 @@ class MyConcernOffer extends Component {
         }, 100);
     }
 
+    _endReached() {
+        this.state.start += this.state.arrlong;
+        if (this.state.arrlong === this.state.limit)
+            this.fetchData();
+    }
+
+    resetzhonglei(idx, value) {
+        this.setState({shangpinzhonglei: value.label})
+    }
+
+    resetprovince(idx, value) {
+        this.setState({province: value.label, provinceId: value.value})
+    }
+
+    resetcity(idx, value) {
+        this.setState({city: value.label})
+    }
+
     render() {
 
         var listView = null;
@@ -335,11 +352,14 @@ class MyConcernOffer extends Component {
                         automaticallyAdjustContentInsets={false}
                         dataSource={ds.cloneWithRows(data)}
                         renderRow={this.renderRow.bind(this)}
-                    />
+
+                        onEndReached={this._endReached.bind(this)}
+                        onEndReachedThreshold={20}
+                        />
                 </ScrollView>;
         }
         else {
-            this.state.infoList=[];
+            this.state.infoList = [];
             this.fetchData();
         }
         var zhongleiList = this.state.zhongleiList;
@@ -356,7 +376,7 @@ class MyConcernOffer extends Component {
         provinceId = this.state.provinceId;
         if ((provinceId !== null && cityList === null) || state === 1) {
             this.fetchData_City();
-            this.state.provinceId2=provinceId;
+            this.state.provinceId2 = provinceId;
         }
 
         return (
@@ -413,7 +433,7 @@ class MyConcernOffer extends Component {
                                 placeholder="搜索"
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"
-                            />
+                                />
                             <TouchableOpacity style={{
                                 flex: 1,
                                 marginRight: 2,
@@ -430,7 +450,7 @@ class MyConcernOffer extends Component {
                         </View>
                         <TouchableOpacity
                             style={{flex: 1, backgroundColor: '#CAE1FF', marginRight: 10, borderRadius: 4}}
-                        >
+                            >
                             <View style={{padding: 10, alignItems: 'center'}}>
                                 <Text style={{fontSize: 16}}>查询</Text>
                             </View>
@@ -504,10 +524,10 @@ class MyConcernOffer extends Component {
                     ref={(popupDialog) => {
                         this.popupDialog = popupDialog;
                     }}
-                >
+                    >
                     <View style={{flex: 1, backgroundColor: '#CAE1FF'}}>
                         <View style={styles.table}>
-                            <TextInput style={{flex: 8, height: 40, marginLeft: 10}}
+                            <TextInput style={{flex: 8, height: 50, marginLeft: 10}}
                                        placeholder="商品种类"
                                        onChangeText={(zhonglei) => {
                                            if (zhonglei !== null) {
@@ -515,32 +535,29 @@ class MyConcernOffer extends Component {
                                            }
                                        }}
                                        value={this.state.shangpinzhonglei}
+                                       underlineColorAndroid="transparent"
                                 />
-                            <TouchableOpacity style={{
-                                flex: 1, paddingRight: 10, backgroundColor: 'transparent', borderLeftWidth: 1,
-                                borderLeftColor: '#ddd',
-                            }}>
-                                <ModalDropdown options={zhongleiList}
-                                               style={{
+                            <ModalDropdown options={zhongleiList}
+                                           style={{
                                                flex: 1,
                                                paddingRight: 10,
                                                backgroundColor: 'transparent',
                                                borderLeftWidth: 1,
                                                borderLeftColor: '#ddd',
                                            }}
-                                               dropdownStyle={{
+                                           dropdownStyle={{
                                                width: 200,
-                                               borderWidth: 3,
+                                               borderWidth: 1,
                                                paddingLeft: 5,
                                                borderColor: '#20C3DD'
                                            }}
-                                               renderRow={this.renderRow_zhonglei.bind(this)}>
-                                    <Icon1 name="triangle-down" color="blue" size={40}/>
-                                </ModalDropdown>
-                            </TouchableOpacity>
+                                           onSelect={(idx, value) => this.resetzhonglei(idx, value)}
+                                           renderRow={this.renderRow_zhonglei.bind(this)}>
+                                <Icon1 name="triangle-down" color="blue" size={40}/>
+                            </ModalDropdown>
                         </View>
                         <View style={styles.table}>
-                            <TextInput style={{flex: 8, height: 40, marginLeft: 10}}
+                            <TextInput style={{flex: 8, height: 50, marginLeft: 10}}
                                        placeholder="省"
                                        onChangeText={(province) => {
                                            if (province !== null) {
@@ -548,7 +565,8 @@ class MyConcernOffer extends Component {
                                            }
                                        }}
                                        value={this.state.province}
-                            />
+                                       underlineColorAndroid="transparent"
+                                />
                             <ModalDropdown options={provinceList}
                                            style={{
                                                flex: 1,
@@ -559,16 +577,17 @@ class MyConcernOffer extends Component {
                                            }}
                                            dropdownStyle={{
                                                width: 200,
-                                               borderWidth: 3,
+                                               borderWidth: 1,
                                                paddingLeft: 5,
                                                borderColor: '#20C3DD'
                                            }}
+                                           onSelect={(idx, value) => this.resetprovince(idx, value)}
                                            renderRow={this.renderRow_Province.bind(this)}>
                                 <Icon1 name="triangle-down" color="blue" size={40}/>
                             </ModalDropdown>
                         </View>
                         <View style={styles.table}>
-                            <TextInput style={{flex: 8, height: 40, marginLeft: 10}}
+                            <TextInput style={{flex: 8, height: 50, marginLeft: 10}}
                                        placeholder="市"
                                        onChangeText={(city) => {
                                            if (city !== null) {
@@ -576,7 +595,8 @@ class MyConcernOffer extends Component {
                                            }
                                        }}
                                        value={this.state.city}
-                            />
+                                       underlineColorAndroid="transparent"
+                                />
                             <ModalDropdown options={cityList}
                                            style={{
                                                flex: 1,
@@ -587,19 +607,20 @@ class MyConcernOffer extends Component {
                                            }}
                                            dropdownStyle={{
                                                width: 150,
-                                               borderWidth: 3,
+                                               borderWidth: 1,
                                                paddingLeft: 5,
                                                borderColor: '#20C3DD'
                                            }}
-                                           onDropdownWillShow={this.state.showDropdown}
+                                           onSelect={(idx, value) => this.resetcity(idx, value)}
                                            renderRow={this.renderRow_City.bind(this)}>
                                 <Icon1 name="triangle-down" color="blue" size={40}/>
                             </ModalDropdown>
                         </View>
                         <View style={styles.table}>
-                            <TextInput style={{flex: 4, height: 40, marginLeft: 10}}
+                            <TextInput style={{flex: 4, height: 50, marginLeft: 10}}
+                                       underlineColorAndroid="transparent"
                                        placeholder="条码尾数"
-                            />
+                                />
                             <TouchableOpacity style={{
                                 flex: 1, backgroundColor: 'transparent', borderLeftWidth: 1,
                                 borderLeftColor: '#ddd',
@@ -610,6 +631,8 @@ class MyConcernOffer extends Component {
                         </View>
                         <View style={{flex: 2}}>
                             <TouchableOpacity style={{
+                            justifyContent: 'center',
+                                alignItems: 'center',
                                 flex: 1,
                                 backgroundColor: 'white',
                                 borderRadius: 4,
@@ -633,7 +656,7 @@ class MyConcernOffer extends Component {
                     onRequestClose={() => {
                         alert("Modal has been closed.")
                     }}
-                >
+                    >
                     <Camera
                         ref={(cam) => {
                             this.camera = cam;
@@ -656,7 +679,7 @@ class MyConcernOffer extends Component {
                                 this.closeCamera();
                             }
                         }}
-                    />
+                        />
                     <View style={[styles.box]}>
                     </View>
                     <View style={{
@@ -676,7 +699,7 @@ class MyConcernOffer extends Component {
                             onPress={() => {
                                 this.closeCamera()
                             }}
-                        >
+                            >
                             <Icon name="times-circle" size={50} color="#343434"/>
                         </TouchableOpacity>
                     </View>

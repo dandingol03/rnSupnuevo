@@ -51,17 +51,17 @@ class MySuggestion extends Component {
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
             }
-            else{
+            else {
                 alert('提交成功');
                 this.navigatorMy();
             }
         });
     }
 
-    navigatorMy(){
-        var My=require('./My');
+    navigatorMy() {
+        var My = require('./My');
         this.props.navigator.push({
-            component:My,
+            component: My,
         })
     }
 
@@ -101,13 +101,16 @@ class MySuggestion extends Component {
                 }}>
                     <TextInput
                         style={{
+                        marginLeft:10,
+                        marginRight:10,
+                        marginTop:30,
                                         height: 150,
                                         paddingLeft: 10,
                                         paddingRight: 10,
                                         paddingTop: 6,
                                         paddingBottom: 6,
                                         borderColor:'#ddd',
-                                        borderBottomWidth:1,
+                                        borderWidth:1,
                                         fontSize:20
                                     }}
                         onChangeText={(suggestion)=>{
@@ -116,12 +119,14 @@ class MySuggestion extends Component {
                     }}
                         multiline={true}
                         value={this.state.suggestion}
-                        placeholder='想要回复，留下QQ'
+                        placeholder='如果您想要得到回复，请留下QQ'
                         placeholderTextColor="#aaa"
                         underlineColorAndroid="transparent"
                         />
                     <TouchableOpacity style={{ backgroundColor: '#CAE1FF',
-                    marginTop:20,marginLeft:120, marginRight: 120, borderRadius: 4,flexDirection: 'row',
+                    marginTop:20,marginLeft:150, marginRight: 150,
+                     paddingTop:5,paddingBottom:5,
+                     borderRadius: 4,flexDirection: 'row',
                                     justifyContent: 'center',
                                     alignItems: 'center'}}
                                       onPress={() => {
@@ -129,9 +134,9 @@ class MySuggestion extends Component {
                                        if (suggestion !== undefined && suggestion !== null)
                                       this.subsuggestion();
                                       else
-                                      alert('没写东西');
+                                      alert('您没有填写任何信息');
                                       }}>
-                        <Text style={{'fontSize': 30, color: 'black'}}>提交</Text>
+                        <Text style={{'fontSize': 25, color: 'black'}}>提交</Text>
                     </TouchableOpacity>
                 </View>
             </View>

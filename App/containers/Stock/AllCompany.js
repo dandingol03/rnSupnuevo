@@ -33,7 +33,7 @@ class AllCompany extends Component {
         this.state = {
             goodsCount: 0,
             start: 0,
-            limit: 5,
+            limit: 4,
             firststate: 0,
             arrlong: 0,
             infoList: null,
@@ -113,7 +113,7 @@ class AllCompany extends Component {
                             />
                     </View>
                     <View style={{padding:10}}>
-                        <Text style={{fontsize:15}}>
+                        <Text style={{fontSize:15}}>
                             价格:{rowData.precio}
                         </Text>
                     </View>
@@ -235,7 +235,7 @@ class AllCompany extends Component {
                         renderRow={this.renderRow.bind(this)}
 
                         onEndReached={this._endReached.bind(this)}
-                        onEndReachedThreshold={20}
+                        onEndReachedThreshold={200}
                         />
                 </ScrollView>;
         } else {

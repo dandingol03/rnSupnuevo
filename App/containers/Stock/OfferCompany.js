@@ -15,7 +15,8 @@ import  {
     View,
     Alert,
     Modal,
-    TouchableOpacity
+    TouchableOpacity,
+    ListView
 } from 'react-native';
 var Proxy = require('../../proxy/Proxy');
 import {connect} from 'react-redux';
@@ -42,6 +43,14 @@ class OfferCompany extends Component {
             rubroDes: this.props.rubroDes,
             nomroDeTelePhono: this.props.nomroDeTelePhono,
             merchantId: this.props.merchantId,
+            dataSource: new ListView.DataSource({
+                rowHasChanged: (r1, r2) => {
+                    if (r1 !== r2) {
+                    } else {
+                    }
+                    return r1 !== r2;
+                }
+            })
         }
     }
 
@@ -142,13 +151,8 @@ class OfferCompany extends Component {
             } else {
                 var infoList = this.state.infoList;
                 infoList = infoList.concat(json.data);
-                /*json.data.map(function (item, i) {
-                 infoList.push(
-                 item
-                 );
-                 });*/
-                this.setState({infoList: infoList});
                 var arrlong = json.data.length;
+                this.setState({infoList: infoList});
                 this.setState({arrlong: arrlong});
             }
         })
@@ -158,6 +162,33 @@ class OfferCompany extends Component {
         this.state.start += this.state.arrlong;
         if (this.state.arrlong === this.state.limit)
             this.fetchData();
+    }
+
+    renderRow(rowData) {
+        // var base64Icon = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEsAAABLCAQAAACSR7JhAAADtUlEQVR4Ac3YA2Bj6QLH0XPT1Fzbtm29tW3btm3bfLZtv7e2ObZnms7d8Uw098tuetPzrxv8wiISrtVudrG2JXQZ4VOv+qUfmqCGGl1mqLhoA52oZlb0mrjsnhKpgeUNEs91Z0pd1kvihA3ULGVHiQO2narKSHKkEMulm9VgUyE60s1aWoMQUbpZOWE+kaqs4eLEjdIlZTcFZB0ndc1+lhB1lZrIuk5P2aib1NBpZaL+JaOGIt0ls47SKzLC7CqrlGF6RZ09HGoNy1lYl2aRSWL5GuzqWU1KafRdoRp0iOQEiDzgZPnG6DbldcomadViflnl/cL93tOoVbsOLVM2jylvdWjXolWX1hmfZbGR/wjypDjFLSZIRov09BgYmtUqPQPlQrPapecLgTIy0jMgPKtTeob2zWtrGH3xvjUkPCtNg/tm1rjwrMa+mdUkPd3hWbH0jArPGiU9ufCsNNWFZ40wpwn+62/66R2RUtoso1OB34tnLOcy7YB1fUdc9e0q3yru8PGM773vXsuZ5YIZX+5xmHwHGVvlrGPN6ZSiP1smOsMMde40wKv2VmwPPVXNut4sVpUreZiLBHi0qln/VQeI/LTMYXpsJtFiclUN+5HVZazim+Ky+7sAvxWnvjXrJFneVtLWLyPJu9K3cXLWeOlbMTlrIelbMDlrLenrjEQOtIF+fuI9xRp9ZBFp6+b6WT8RrxEpdK64BuvHgDk+vUy+b5hYk6zfyfs051gRoNO1usU12WWRWL73/MMEy9pMi9qIrR4ZpV16Rrvduxazmy1FSvuFXRkqTnE7m2kdb5U8xGjLw/spRr1uTov4uOgQE+0N/DvFrG/Jt7i/FzwxbA9kDanhf2w+t4V97G8lrT7wc08aA2QNUkuTfW/KimT01wdlfK4yEw030VfT0RtZbzjeMprNq8m8tnSTASrTLti64oBNdpmMQm0eEwvfPwRbUBywG5TzjPCsdwk3IeAXjQblLCoXnDVeoAz6SfJNk5TTzytCNZk/POtTSV40NwOFWzw86wNJRpubpXsn60NJFlHeqlYRbslqZm2jnEZ3qcSKgm0kTli3zZVS7y/iivZTweYXJ26Y+RTbV1zh3hYkgyFGSTKPfRVbRqWWVReaxYeSLarYv1Qqsmh1s95S7G+eEWK0f3jYKTbV6bOwepjfhtafsvUsqrQvrGC8YhmnO9cSCk3yuY984F1vesdHYhWJ5FvASlacshUsajFt2mUM9pqzvKGcyNJW0arTKN1GGGzQlH0tXwLDgQTurS8eIQAAAABJRU5ErkJggg==';
+        // var img='data:image/jpeg;base64,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';
+        var row =
+            <View>
+                <TouchableOpacity onPress={() => {this.navigateBigpic(rowData.attachId)}}>
+                    <View style={{
+                    marginTop:50,marginRight:15,
+                        flex: 1, padding: 10,borderLeftWidth:1, borderBottomWidth: 1, borderColor: '#ddd',
+                        justifyContent: 'flex-start', backgroundColor: '#fff'
+                    }}>
+                        <Image resizeMode="stretch" style={{width:65,height:65}}
+                               source={{uri:rowData.imgData}}
+                            //source={{uri:base64Icon}}
+                            //source={{uri:img}}
+                            />
+                    </View>
+                    <View style={{padding:10}}>
+                        <Text style={{fontSize:15}}>
+                            价格:{rowData.precio}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+            </View>;
+        return row;
     }
 
     render() {
@@ -177,7 +208,7 @@ class OfferCompany extends Component {
                         renderRow={this.renderRow.bind(this)}
 
                         onEndReached={this._endReached.bind(this)}
-                        onEndReachedThreshold={20}
+                        onEndReachedThreshold={200}
                         />
                 </ScrollView>;
         } else {

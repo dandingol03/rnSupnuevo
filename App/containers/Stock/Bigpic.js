@@ -48,7 +48,7 @@ class Bigpic extends Component {
     fetchData() {
         var attachId = this.state.attachId;
         Proxy.post({
-            url: Config.server + "/func/merchant/getCommodityBigImageMobile",
+            url: Config.server + "/func/merchant/getImageByAttachIdMobile",
             headers: {
                 'Content-Type': 'application/json',
             },

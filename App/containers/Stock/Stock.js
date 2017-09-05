@@ -29,7 +29,7 @@ var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 var Proxy = require('../../proxy/Proxy');
 var Popover = require('react-native-popover');
-
+const DEMO_OPTIONS_1 = ['option 1', 'option 2', 'option 3', 'option 4', 'option 5', 'option 6', 'option 7', 'option 8', 'option 9'];
 class Stock extends Component {
 
     constructor(props) {
@@ -129,15 +129,11 @@ class Stock extends Component {
         }
     }
 
-    fetchData(state_1) {
+    fetchData() {
         //var sessionId = this.props.sessionId;
         var start = this.state.start;
         var state = this.state.state;
         var limit = this.state.limit;
-        if(state_1===0||state_1===1){
-            start=0;
-            this.state.infoList=[];
-        }
         Proxy.post({
             url: Config.server + "/func/merchant/getSupnuevoMerchantInfoListOfBuyerMobile",
             headers: {
@@ -264,54 +260,58 @@ class Stock extends Component {
 
     renderRow_Province(rowData) {
         var row =
-            <View>
-                <TouchableOpacity onPress={() => {
-                    this.setState({provinceId: rowData.value, province: rowData.label})
-                }}>
-                    <View style={{
+            <TouchableOpacity>
+                <View style={{
                         flex: 1, padding: 10, borderBottomWidth: 1, borderColor: '#ddd',
                         justifyContent: 'flex-start', backgroundColor: '#fff'
                     }}>
-                        <View style={{paddingTop: 5, flexDirection: 'row'}}>
-                            <Text>{rowData.label}</Text>
-                        </View>
+                    <View style={{paddingTop: 5, flexDirection: 'row'}}>
+                        <Text>{rowData.label}</Text>
                     </View>
-                </TouchableOpacity>
-            </View>;
+                </View>
+            </TouchableOpacity>;
         return row;
     }
 
     renderRow_City(rowData) {
         var row =
-            <View>
-                <TouchableOpacity onPress={() => this.setState({city: rowData.label})}>
-                    <View style={{
+            <TouchableOpacity>
+                <View style={{
                         flex: 1, padding: 10, borderBottomWidth: 1, borderColor: '#ddd',
                         justifyContent: 'flex-start', backgroundColor: '#fff'
                     }}>
-                        <View style={{paddingTop: 5, flexDirection: 'row'}}>
-                            <Text style={{flex: 3}}>{rowData.label}</Text>
-                        </View>
+                    <View style={{paddingTop: 5, flexDirection: 'row'}}>
+                        <Text style={{flex: 3}}>{rowData.label}</Text>
                     </View>
-                </TouchableOpacity>
-            </View>;
+                </View>
+            </TouchableOpacity>;
         return row;
+    }
+
+    resetzhonglei(idx, value) {
+        this.setState({shangpinzhonglei: value.label})
+    }
+
+    resetprovince(idx, value) {
+        this.setState({province: value.label, provinceId: value.value})
+    }
+
+    resetcity(idx, value) {
+        this.setState({city: value.label})
     }
 
     renderRow_zhonglei(rowData) {
         var row =
-            <View>
-                <TouchableOpacity onPress={() =>  this.setState({shangpinzhonglei: rowData.label})}>
-                    <View style={{
+            <TouchableOpacity>
+                <View style={{
                         flex: 1, padding: 10, borderBottomWidth: 1, borderColor: '#ddd',
                         justifyContent: 'flex-start', backgroundColor: '#fff'
                     }}>
-                        <View style={{paddingTop: 5, flexDirection: 'row'}}>
-                            <Text style={{flex: 3}}>{rowData.label}</Text>
-                        </View>
+                    <View style={{paddingTop: 5, flexDirection: 'row'}}>
+                        <Text style={{flex: 3}}>{rowData.label}</Text>
                     </View>
-                </TouchableOpacity>
-            </View>;
+                </View>
+            </TouchableOpacity>;
         return row;
     }
 
@@ -324,22 +324,26 @@ class Stock extends Component {
     }
 
     _onRefresh() {
-        var state=1;
         this.setState({isRefreshing: true});
         // console.log(this);
         setTimeout(()=> {
             this.setState({
                 isRefreshing: false
             });
-            this.fetchData(state);
+            this.fetchData();
         }, 100);
     }
 
     _endReached() {
-        var state=2;
         this.state.start += this.state.arrlong;
         if (this.state.arrlong === this.state.limit)
-            this.fetchData(state);
+            this.fetchData();
+    }
+
+    hide() {
+        this.setState({
+            showDropdown: false
+        });
     }
 
     render() {
@@ -366,7 +370,7 @@ class Stock extends Component {
         var zhongleiList = this.state.zhongleiList;
         if (zhongleiList === null)
             this.fetchData_Zhonglei();
-
+        //console.log(this.state.shangpinzhonglei);
         var provinceList = this.state.provinceList;
         if (provinceList === null)
             this.fetchData_Province();
@@ -520,7 +524,7 @@ class Stock extends Component {
                     }}>
                     <View style={{flex: 1, backgroundColor: '#CAE1FF'}}>
                         <View style={styles.table}>
-                            <TextInput style={{flex: 8, height: 40, marginLeft: 10}}
+                            <TextInput style={{flex: 8, height: 50, marginLeft: 10}}
                                        placeholder="商品种类"
                                        onChangeText={(zhonglei) => {
                                            if (zhonglei !== null) {
@@ -528,32 +532,18 @@ class Stock extends Component {
                                            }
                                        }}
                                        value={this.state.shangpinzhonglei}
+                                       underlineColorAndroid="transparent"
                                 />
-                            <TouchableOpacity style={{
-                                flex: 1, paddingRight: 10, backgroundColor: 'transparent', borderLeftWidth: 1,
-                                borderLeftColor: '#ddd',
-                            }}>
-                                <ModalDropdown options={zhongleiList}
-                                               style={{
-                                               flex: 1,
-                                               paddingRight: 10,
-                                               backgroundColor: 'transparent',
-                                               borderLeftWidth: 1,
-                                               borderLeftColor: '#ddd',
-                                           }}
-                                               dropdownStyle={{
-                                               width: 200,
-                                               borderWidth: 3,
-                                               paddingLeft: 5,
-                                               borderColor: '#20C3DD'
-                                           }}
-                                               renderRow={this.renderRow_zhonglei.bind(this)}>
-                                    <Icon1 name="triangle-down" color="blue" size={40}/>
-                                </ModalDropdown>
-                            </TouchableOpacity>
+                            <ModalDropdown style={styles.dropdown}
+                                           dropdownStyle={styles.dropdown_dropdownTextStyle}
+                                           options={this.state.zhongleiList}
+                                           renderRow={this.renderRow_zhonglei.bind(this)}
+                                           onSelect={(idx, value) => this.resetzhonglei(idx, value)}>
+                                <Icon1 name="triangle-down" color="blue" size={40}/>
+                            </ModalDropdown>
                         </View>
                         <View style={styles.table}>
-                            <TextInput style={{flex: 8, height: 40, marginLeft: 10}}
+                            <TextInput style={{flex: 8, height: 50, marginLeft: 10}}
                                        placeholder="省"
                                        onChangeText={(province) => {
                                            if (province !== null) {
@@ -561,27 +551,18 @@ class Stock extends Component {
                                            }
                                        }}
                                        value={this.state.province}
+                                       underlineColorAndroid="transparent"
                                 />
-                            <ModalDropdown options={provinceList}
-                                           style={{
-                                               flex: 1,
-                                               paddingRight: 10,
-                                               backgroundColor: 'transparent',
-                                               borderLeftWidth: 1,
-                                               borderLeftColor: '#ddd',
-                                           }}
-                                           dropdownStyle={{
-                                               width: 200,
-                                               borderWidth: 3,
-                                               paddingLeft: 5,
-                                               borderColor: '#20C3DD'
-                                           }}
+                            <ModalDropdown options={this.state.provinceList}
+                                           style={styles.dropdown}
+                                           dropdownStyle={styles.dropdown_dropdownTextStyle}
+                                           onSelect={(idx, value) => this.resetprovince(idx, value)}
                                            renderRow={this.renderRow_Province.bind(this)}>
                                 <Icon1 name="triangle-down" color="blue" size={40}/>
                             </ModalDropdown>
                         </View>
                         <View style={styles.table}>
-                            <TextInput style={{flex: 8, height: 40, marginLeft: 10}}
+                            <TextInput style={{flex: 8, height: 50, marginLeft: 10}}
                                        placeholder="市"
                                        onChangeText={(city) => {
                                            if (city !== null) {
@@ -589,28 +570,20 @@ class Stock extends Component {
                                            }
                                        }}
                                        value={this.state.city}
+                                       underlineColorAndroid="transparent"
                                 />
                             <ModalDropdown options={cityList}
-                                           style={{
-                                               flex: 1,
-                                               paddingRight: 10,
-                                               backgroundColor: 'transparent',
-                                               borderLeftWidth: 1,
-                                               borderLeftColor: '#ddd',
-                                           }}
-                                           dropdownStyle={{
-                                               width: 150,
-                                               borderWidth: 3,
-                                               paddingLeft: 5,
-                                               borderColor: '#20C3DD'
-                                           }}
+                                           style={styles.dropdown}
+                                           dropdownStyle={styles.dropdown_dropdownTextStyle}
                                            onDropdownWillShow={this.state.showDropdown}
+                                           onSelect={(idx, value) => this.resetcity(idx, value)}
                                            renderRow={this.renderRow_City.bind(this)}>
                                 <Icon1 name="triangle-down" color="blue" size={40}/>
                             </ModalDropdown>
                         </View>
                         <View style={styles.table}>
-                            <TextInput style={{flex: 4, height: 40, marginLeft: 10}}
+                            <TextInput style={{flex: 4,height:50, marginLeft: 10}}
+                                       underlineColorAndroid="transparent"
                                        placeholder="条码尾数"
                                 />
                             <TouchableOpacity style={{
@@ -625,6 +598,8 @@ class Stock extends Component {
                         </View>
                         <View style={{flex: 2}}>
                             <TouchableOpacity style={{
+                                justifyContent: 'center',
+                                alignItems: 'center',
                                 flex: 1,
                                 backgroundColor: 'white',
                                 borderRadius: 4,
@@ -634,29 +609,14 @@ class Stock extends Component {
                                 marginTop: 15
                             }} onPress={() => {}
                             }>
-                                <View style={{paddingTop: 18, alignItems: 'center'}}>
+                                <View style={{flexDirection:'row',justifyContent: 'center',alignItems: 'center'}}>
                                     <Text style={{fontSize: 20}}>确定</Text>
                                 </View>
                             </TouchableOpacity>
                         </View>
                     </View>
                 </PopupDialog>
-                <Popover
-                    isVisible={this.state.menuVisible}
-                    fromRect={this.state.buttonRect}
-                    displayArea={displayArea}
-                    onClose={() => {
-                        this.closePopover();
 
-                    }}>
-                    <TouchableOpacity
-                        style={{borderBottomWidth: 1, borderBottomColor: '#ddd'}}
-                        onPress={() => {
-                            this.closePopover();
-                        }}>
-                        <Text style={[styles.popoverText, {color: '#444'}]}>1</Text>
-                    </TouchableOpacity>
-                </Popover>
                 {/*camera part*/}
                 <Modal
                     animationType={"slide"}
@@ -773,6 +733,23 @@ var styles = StyleSheet.create({
         padding: 15,
         backgroundColor: 'white',
         borderRadius: 40,
+    },
+    dropdown: {
+        flex: 1,
+        paddingRight: 10,
+        backgroundColor: 'transparent',
+        borderLeftWidth: 1,
+        borderLeftColor: '#ddd',
+    },
+    dropdown_dropdownTextStyle: {
+        width: 200,
+        borderWidth: 1,
+        paddingLeft: 5,
+        borderColor: '#20C3DD'
+    },
+    dropdown_3_dropdownTextHighlightStyle: {
+        backgroundColor: '#fff',
+        color: '#000'
     },
 });
 
