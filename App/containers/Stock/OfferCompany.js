@@ -191,6 +191,18 @@ class OfferCompany extends Component {
         return row;
     }
 
+    navigateMyOffer() {
+        const {navigator} = this.props;
+
+        if (navigator) {
+            navigator.push({
+                name: 'MyOffer',
+                component: MyOffer,
+                params: {}
+            })
+        }
+    }
+
     render() {
         var listView = null;
         var infoList = this.state.infoList;
@@ -332,7 +344,7 @@ class OfferCompany extends Component {
                             marginBottom: 20,
                             marginTop: 10,
                             borderRadius: 4,
-                        }}>
+                        }} onPress={()=>{this.navigateMyOffer()}}>
                             <View>
                                 <Text style={{fontSize: 16}}>我的供应商</Text>
                             </View>
