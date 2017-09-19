@@ -242,6 +242,7 @@ class ConcernOfferCompany extends Component {
                         <View style={{flex: 1, flexDirection: 'row', borderWidth: 1, borderColor: '#ddd'}}>
                             <View style={{flex: 3}}>
                                 <View style={{
+                                flex:1,
                                     flexDirection: 'row',
                                     justifyContent: 'center',
                                     alignItems: 'center',
@@ -255,6 +256,7 @@ class ConcernOfferCompany extends Component {
                                     </View>
                                 </View>
                                 <View style={{
+                                flex:1,
                                     flexDirection: 'row',
                                     justifyContent: 'center',
                                     alignItems: 'center',
@@ -268,6 +270,7 @@ class ConcernOfferCompany extends Component {
                                     </View>
                                 </View>
                                 <View style={{
+                                flex:1,
                                     flexDirection: 'row',
                                     justifyContent: 'center',
                                     alignItems: 'center',
@@ -281,6 +284,7 @@ class ConcernOfferCompany extends Component {
                                     </View>
                                 </View>
                                 <View style={{
+                                flex:1,
                                     flexDirection: 'row',
                                     justifyContent: 'center',
                                     alignItems: 'center',
