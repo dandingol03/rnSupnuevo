@@ -70,7 +70,7 @@ var  Login =React.createClass({
                 dispatch(loginAction(username,password, (errorMsg)=> {
                     this.setState({showProgress: false,user:{}});
 
-                    var string = errorMsg
+                    var string = errorMsg;
                     setTimeout(()=>{
                         Alert.alert(
                             '错误',
@@ -229,7 +229,7 @@ var  Login =React.createClass({
                         animationType={"fade"}
                         transparent={true}
                         visible={this.state.showProgress}
-                        onRequestClose={() => {alert("Modal has been closed.")}}
+                        onRequestClose={() => {this.setState({showProgress:false})}}
                         >
                         <View style={[styles.modalContainer,styles.modalBackgroundStyle]}>
                             <ActivityIndicator

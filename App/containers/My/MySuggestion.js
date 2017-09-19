@@ -136,7 +136,7 @@ class MySuggestion extends Component {
                                       else
                                       alert('您没有填写任何信息');
                                       }}>
-                        <Text style={{'fontSize': 25, color: 'black'}}>提交</Text>
+                        <Text style={{'fontSize': 15, color: 'black'}}>提交</Text>
                     </TouchableOpacity>
                 </View>
             </View>

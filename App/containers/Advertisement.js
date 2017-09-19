@@ -171,7 +171,7 @@ class AdvertiseMent extends Component {
         var advbreif = this.state.advbreif;
         var attachIdList = this.state.attachIdList;
         if (this.state.img.length === 0 && attachIdList !== null) {
-            //this.getAdvPic();
+           // this.getAdvPic();
             this.fetchAdvPic_List(attachIdList);
         }
         if (advList !== null) {
@@ -208,7 +208,7 @@ class AdvertiseMent extends Component {
                             isLoop={true}
                             autoPlay={true}
                             locked={false}
-                            //renderPageIndicator={false}
+                            renderPageIndicator={false}
                             />
                     </View>
                     <View style={{flex:1,paddingTop:10,paddingLeft:10}}>

@@ -338,6 +338,20 @@ class MyConcernOffer extends Component {
         this.setState({city: value.label})
     }
 
+    surequary() {
+        this.dismisspopupDialog();
+        shangpinzhonglei = this.state.shangpinzhonglei;
+        province = this.state.province;
+        city = this.state.city;
+        //companyinfo=shangpinzhonglei.concat(province.concat(city));
+        companyinfo = shangpinzhonglei + ' ; ' + province + ' ; ' + city;
+        this.setState({companyinfo: companyinfo});
+    }
+
+    dismisspopupDialog() {
+        this.popupDialog.dismiss();
+    }
+
     render() {
 
         var listView = null;
@@ -410,7 +424,7 @@ class MyConcernOffer extends Component {
                         alignItems: 'center'
                     }}>
                         <View style={{
-                            flex: 3,
+                            flex: 5,
                             flexDirection: 'row',
                             justifyContent: 'center',
                             margin: 10,
@@ -419,17 +433,17 @@ class MyConcernOffer extends Component {
                         }}>
                             <TextInput
                                 style={{
-                                    flex: 3,
+                                    flex: 5,
                                     height: 40,
                                     marginLeft: 10,
                                     paddingTop: 2,
                                     paddingBottom: 2,
                                     fontSize: 16,
                                 }}
-                                onChangeText={(goodsCount) => {
-                                    this.setState({goodsCount: goodsCount});
+                                onChangeText={(companyinfo) => {
+                                    this.setState({companyinfo: companyinfo});
                                 }}
-                                value={this.state.goodsCount}
+                                value={this.state.companyinfo}
                                 placeholder="搜索"
                                 placeholderTextColor="#aaa"
                                 underlineColorAndroid="transparent"
@@ -640,8 +654,9 @@ class MyConcernOffer extends Component {
                                 marginRight: 120,
                                 marginBottom: 10,
                                 marginTop: 15
-                            }}>
-                                <View style={{paddingTop: 18, alignItems: 'center'}}>
+                            }} onPress={() => {this.surequary()}
+                            }>
+                                <View style={{flexDirection:'row',justifyContent: 'center',alignItems: 'center'}}>
                                     <Text style={{fontSize: 20}}>确定</Text>
                                 </View>
                             </TouchableOpacity>

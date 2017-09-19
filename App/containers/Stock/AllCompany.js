@@ -424,10 +424,7 @@ var styles = StyleSheet.create({
     },
 });
 
-
-module
-    .
-    exports = connect(state => ({
+module.exports = connect(state => ({
         username: state.user.username,
         sessionId: state.user.sessionId,
     })

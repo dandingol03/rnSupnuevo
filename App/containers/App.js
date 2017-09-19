@@ -28,6 +28,7 @@ import Sale from '../containers/Sale/Sale';
 import Stock from './Stock/Stock.js';
 import My from './My/My';
 
+
 import { setNetInfo } from '../action/actionCreator';
 
 const tabBarTintColor = '#f8f8f8';// 标签栏的背景颜色
@@ -169,7 +170,7 @@ class App extends React.Component {
             'change',
             this._handleConnectionInfoChange.bind(this)
         );
-
+        BackAndroid.addEventListener('hardwareBackPress', this.onBackAndroid.bind(this));
 
     }
 
@@ -193,8 +194,8 @@ class App extends React.Component {
         }
     }
 
-    onBackAndroid = () => {
-        const nav = this.navigator;
+/*    onBackAndroid=()=>{
+        var nav = this.navigator;
         const routers = nav.getCurrentRoutes();
         var route=routers[routers.length-1];
         if (routers.length ==1) {
@@ -215,8 +216,16 @@ class App extends React.Component {
             return true;
         }
 
+    };*/
+    onBackAndroid = () => {
+        if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+            //最近2秒内按过back键，可以退出应用。
+            return false;
+        }
+        this.lastBackPressed = Date.now();
+        ToastAndroid.show('再按一次退出应用',ToastAndroid.SHORT);
+        return true;
     };
-
 }
 
 var styles = StyleSheet.create({

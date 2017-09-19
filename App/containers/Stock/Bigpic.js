@@ -102,8 +102,6 @@ class Bigpic extends Component {
                         resizeMode="stretch" style={{width:350,height:350}}
                         source={{uri:this.state.img}}
                         />
-                    <Text style={styles.ziti}>{ScreenWidth}</Text>
-                    <Text style={styles.ziti}>{ScreenHeight}</Text>
                 </View>
             </View>
         );

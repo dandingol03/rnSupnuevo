@@ -75,12 +75,16 @@ class Stock extends Component {
                 flashMode: Camera.constants.FlashMode.auto
             },
         };
-        //this.showpopupDialog = this.showpopupDialog.bind(this);
+        this.showpopupDialog = this.showpopupDialog.bind(this);
 
     }
 
     showpopupDialog() {
         this.popupDialog.show();
+    }
+
+    dismisspopupDialog() {
+        this.popupDialog.dismiss();
     }
 
     navigateAllCompany(nubre, direccion, rubroDes, nomroDeTelePhono, merchantId) {
@@ -346,6 +350,16 @@ class Stock extends Component {
         });
     }
 
+    surequary() {
+        this.dismisspopupDialog();
+        shangpinzhonglei = this.state.shangpinzhonglei;
+        province = this.state.province;
+        city = this.state.city;
+        //companyinfo=shangpinzhonglei.concat(province.concat(city));
+        companyinfo = shangpinzhonglei + ' ; ' + province + ' ; ' + city;
+        this.setState({companyinfo: companyinfo});
+    }
+
     render() {
         var displayArea = {x: 5, y: 20, width: width, height: height - 25};
         var listView = null;
@@ -409,7 +423,7 @@ class Stock extends Component {
                         alignItems: 'center'
                     }}>
                         <View style={{
-                            flex: 3,
+                            flex: 5,
                             height:40,
                             flexDirection: 'row',
                             justifyContent: 'center',
@@ -419,9 +433,9 @@ class Stock extends Component {
                         }}>
                             <TextInput
                                 style={{
-                                    flex: 3,
+                                    flex: 5,
                                     height: 40,
-                                    marginLeft: 10,
+                                    marginLeft: 5,
                                     paddingTop: 2,
                                     paddingBottom: 2,
                                     fontSize: 16,
@@ -607,7 +621,7 @@ class Stock extends Component {
                                 marginRight: 120,
                                 marginBottom: 10,
                                 marginTop: 15
-                            }} onPress={() => {}
+                            }} onPress={() => {this.surequary()}
                             }>
                                 <View style={{flexDirection:'row',justifyContent: 'center',alignItems: 'center'}}>
                                     <Text style={{fontSize: 20}}>确定</Text>
