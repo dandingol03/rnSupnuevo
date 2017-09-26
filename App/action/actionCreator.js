@@ -23,7 +23,7 @@ export let loginAction=function(username,password,cb) {
             }).then((json) => {
 
                 if (json.errorMessageList !== null && json.errorMessageList !== undefined && json.errorMessageList.length > 0) {
-                    resolve({re: -1, data: json.errorMessageList[1]});
+                    resolve(json.errorMessageList[1]);
                 }
                 else {
                     Proxy.postes({

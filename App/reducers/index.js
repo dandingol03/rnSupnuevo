@@ -15,6 +15,6 @@ export default rootReducer = combineReducers({
     user,
     timer,
     netInfo,
-    sale
+    sale,
 })
 

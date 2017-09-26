@@ -37,29 +37,26 @@ import {loginAction,setTimerAction} from '../action/actionCreator';
 var Proxy = require('../proxy/Proxy');
 import PreferenceStore from '../utils/PreferenceStore';
 
-var  Login =React.createClass({
+var Login = React.createClass({
 
-    onLoginPressed:function () {
-        var user=this.state.user;
-        var username=user.username;
-        var password=user.password;
-        if(username!==undefined&&username!==null&&username!='')
-        {
-            if(password!==undefined&&password!==null&&password!='')
-            {
+    onLoginPressed: function () {
+        var user = this.state.user;
+        var username = user.username;
+        var password = user.password;
+        if (username !== undefined && username !== null && username != '') {
+            if (password !== undefined && password !== null && password != '') {
                 this.setState({showProgress: true});
                 const {dispatch} = this.props;
-                this.timer= setInterval(
-
+                this.timer = setInterval(
                     function () {
 
-                        var loginDot=this.state.loginDot;
-                        if(loginDot=='......')
-                            loginDot='.';
+                        var loginDot = this.state.loginDot;
+                        if (loginDot == '......')
+                            loginDot = '.';
                         else
-                            loginDot+='.';
+                            loginDot += '.';
 
-                        this.setState({loginDot:loginDot});
+                        this.setState({loginDot: loginDot});
 
                     }.bind(this)
                     ,
@@ -67,66 +64,62 @@ var  Login =React.createClass({
                 );
                 dispatch(setTimerAction(this.timer));
 
-                dispatch(loginAction(username,password, (errorMsg)=> {
-                    this.setState({showProgress: false,user:{}});
+                dispatch(loginAction(username, password))
+                    .then((json)=> {
+                        this.setState({showProgress:false});
+                        setTimeout(()=>{
+                            alert(json);
+                        },900)
+                    });
 
-                    var string = errorMsg;
-                    setTimeout(()=>{
-                        Alert.alert(
-                            '错误',
-                            string,
-                            [
-                                {text: 'OK', onPress: () => {
-                                }},
-                            ]
-                        );
-                    },900)
-                }));
-
-            }else{
+            } else {
                 Alert.alert(
                     '错误',
                     '请填写密码后再点击登录',
                     [
-                        {text: 'OK', onPress: () => {
-                        }},
+                        {
+                            text: 'OK', onPress: () => {
+                        }
+                        },
                     ]
                 );
             }
-        }else{
+        } else {
             Alert.alert(
                 '错误',
                 '请填写用户名后再点击登录',
                 [
-                    {text: 'OK', onPress: () => {
-                    }},
+                    {
+                        text: 'OK', onPress: () => {
+                    }
+                    },
                 ]
             );
         }
     },
 
-    getInitialState:function(){
+    getInitialState: function () {
         return ({
-            user:{},
-            modalVisible:false,
-            showProgress:false,
-            loginDot:'.'
+            user: {},
+            modalVisible: false,
+            showProgress: false,
+            loginDot: '.'
         });
     },
 
 
-    render:function () {
+    render: function () {
 
         const shadowOpt = {
-            width:width-20,
-            height:200,
-            color:"#000",
-            border:2,
-            radius:3,
-            opacity:0.2,
-            x:0,
-            y:1.5,
-            style:{marginVertical:5}
+            width: width - 20,
+            height: 200,
+            color: "#000",
+            border: 2,
+            radius: 3,
+            opacity: 0.2,
+            x: 0,
+            y: 1.5,
+            style: {marginVertical: 5}
         }
 
         return (
@@ -148,7 +141,7 @@ var  Login =React.createClass({
                         flexDirection:'row',
                         padding:15,
                         overflow:"hidden"}}>
-                            <Image style={styles.logo} source={require('../img/cart.png')} />
+                            <Image style={styles.logo} source={require('../img/cart.png')}/>
                         </View>
                     </BoxShadow>
                 </View>
@@ -223,8 +216,6 @@ var  Login =React.createClass({
                     </View>
 
 
-
-
                     <Modal
                         animationType={"fade"}
                         transparent={true}
@@ -259,21 +250,22 @@ var  Login =React.createClass({
     componentDidMount() {
 
         //fetch username and password
-        var username=null;
-        var password=null;
-        PreferenceStore.get('username').then((val)=>{
-            username=val;
+        var username = null;
+        var password = null;
+        PreferenceStore.get('username').then((val)=> {
+            username = val;
             return PreferenceStore.get('password');
-        }).then((val)=>{
-            password=val;
-            if(username!==undefined&&username!==null&&username!=''
-                &&password!==undefined&&password!==null&&password!='')
-            {
+        }).then((val)=> {
+            password = val;
+            if (username !== undefined && username !== null && username != ''
+                && password !== undefined && password !== null && password != '') {
                 //TODO:auto-login
-                this.setState({user:{
-                    username:username,
-                    password:password
-                }})
+                this.setState({
+                    user: {
+                        username: username,
+                        password: password
+                    }
+                })
 
             }
         })
@@ -292,18 +284,18 @@ export default connect(
 
 var styles = StyleSheet.create({
     container: {
-        flex:1
+        flex: 1
     },
-    modalContainer:{
-        flex:1,
+    modalContainer: {
+        flex: 1,
         justifyContent: 'center',
         padding: 20
     },
-    modalBackgroundStyle:{
-        backgroundColor:'rgba(0,0,0,0.3)'
+    modalBackgroundStyle: {
+        backgroundColor: 'rgba(0,0,0,0.3)'
     },
     logo: {
-        width: width/2,
+        width: width / 2,
         height: 170
     },
     heading: {
@@ -311,8 +303,8 @@ var styles = StyleSheet.create({
         marginTop: 10
     },
     input: {
-        width:240,
-        justifyContent:'center',
+        width: 240,
+        justifyContent: 'center',
         height: 42,
         marginTop: 10,
         padding: 4,
@@ -320,7 +312,7 @@ var styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#48bbec',
         color: '#48bbec',
-        borderBottomWidth:0
+        borderBottomWidth: 0
     },
     title: {
         fontSize: 38,
@@ -342,10 +334,10 @@ var styles = StyleSheet.create({
         paddingTop: 10,
         fontWeight: 'bold'
     },
-    row:{
-        flexDirection:'row',
-        borderBottomWidth:1,
-        borderBottomColor:'#222'
+    row: {
+        flexDirection: 'row',
+        borderBottomWidth: 1,
+        borderBottomColor: '#222'
     }
 
 });

@@ -25,6 +25,7 @@ import DatePicker from 'react-native-datepicker';
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 import Bigpic from './Bigpic'
+import Camera from 'react-native-camera';
 
 class AllCompany extends Component {
 
@@ -42,6 +43,14 @@ class AllCompany extends Component {
             rubroDes: this.props.rubroDes,
             nomroDeTelePhono: this.props.nomroDeTelePhono,
             merchantId: this.props.merchantId,
+            cameraModalVisible: false,
+            camera: {
+                aspect: Camera.constants.Aspect.fill,
+                captureTarget: Camera.constants.CaptureTarget.disk,
+                type: Camera.constants.Type.back,
+                orientation: Camera.constants.Orientation.auto,
+                flashMode: Camera.constants.FlashMode.auto
+            },
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2) => {
                     if (r1 !== r2) {
@@ -51,6 +60,10 @@ class AllCompany extends Component {
                 }
             })
         }
+    }
+
+    closeCamera() {
+        this.setState({cameraModalVisible: false});
     }
 
     goBack() {
@@ -341,12 +354,14 @@ class AllCompany extends Component {
                                                   }}>
                                     <Text style={{fontSize: 14, padding: 2,paddingLeft:5}}>拉入我的供应商</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.touchOty}>
+                                <TouchableOpacity style={styles.touchOty} onPress={() => {
+                                this.setState({cameraModalVisible: true})
+                            }}>
                                     <Text style={{fontSize: 14}}>扫描</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <View style={{flex: 2}}>
+                        <View style={{flex: 1}}>
                             <ScrollView>
                                 {listView}
                             </ScrollView>
@@ -389,6 +404,63 @@ class AllCompany extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
+
+                {/*camera part*/}
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.cameraModalVisible}
+                    onRequestClose={() => {
+                        alert("Modal has been closed.")
+                    }}
+                    >
+                    <Camera
+                        ref={(cam) => {
+                            this.camera = cam;
+                        }}
+                        style={styles.preview}
+                        aspect={this.state.camera.aspect}
+                        captureTarget={this.state.camera.captureTarget}
+                        type={this.state.camera.type}
+                        flashMode={this.state.camera.flashMode}
+                        defaultTouchToFocus
+                        mirrorImage={false}
+                        onBarCodeRead={(barcode) => {
+                            var {type, data, bounds} = barcode;
+                            if (data !== undefined && data !== null) {
+                                console.log('barcode data=' + data + 'barcode type=' + type);
+                                this.state.goods.codeNum = data;
+                                var goods = this.state.goods;
+                                goods.codeNum = data;
+                                this.queryGoodsCode(data);
+                                this.closeCamera();
+                            }
+                        }}
+                        />
+                    <View style={[styles.box]}>
+                    </View>
+                    <View style={{
+                        position: 'absolute',
+                        right: 1 / 2 * width - 100,
+                        top: 1 / 2 * height,
+                        height: 100,
+                        width: 200,
+                        borderTopWidth: 1,
+                        borderColor: '#e42112',
+                        backgroundColor: 'transparent'
+                    }}>
+                    </View>
+                    <View style={[styles.overlay, styles.bottomOverlay]}>
+                        <TouchableOpacity
+                            style={styles.captureButton}
+                            onPress={() => {
+                                this.closeCamera()
+                            }}
+                            >
+                            <Icon name="times-circle" size={50} color="#343434"/>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
             </View>
         );
     }
@@ -415,12 +487,41 @@ var styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#CAE1FF',
         borderRadius: 4,
-        marginTop: 7,
+        marginTop: 12,
         marginRight: 6,
-        marginBottom: 3
+        marginBottom: 12
     },
     popoverText: {
         fontSize: 14,
+    },
+    box: {
+        position: 'absolute',
+        right: 1 / 2 * width - 100,
+        top: 1 / 2 * height - 100,
+        height: 200,
+        width: 200,
+        borderWidth: 1,
+        borderColor: '#387ef5',
+        backgroundColor: 'transparent'
+    },
+    preview: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    bottomOverlay: {
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    overlay: {
+        position: 'absolute',
+        padding: 16,
+        right: 0,
+        left: 0,
+        alignItems: 'center',
     },
 });
 

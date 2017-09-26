@@ -204,9 +204,7 @@ class MyOffer extends Component {
                             <Text style={{flex: 1}}>公司营业范围</Text>
                             <Text style={{flex: 3}}>{rowData.rubroDes}</Text>
                         </View>
-                        <View style={{paddingTop: 5, flexDirection: 'row'}}>
-                            <Text style={{flex: 1}}>如果是商品，标注价格</Text>
-                        </View>
+
                     </View>
                 </TouchableOpacity>
             </View>;
@@ -312,9 +310,10 @@ class MyOffer extends Component {
         // console.log(this);
         setTimeout(()=> {
             this.setState({
-                isRefreshing: false
+                isRefreshing: false,
+                start: 0,
+                infoList: null
             });
-            this.fetchData();
         }, 100);
     }
 
@@ -338,12 +337,19 @@ class MyOffer extends Component {
 
     surequary() {
         this.dismisspopupDialog();
-        shangpinzhonglei = this.state.shangpinzhonglei;
-        province = this.state.province;
-        city = this.state.city;
-        //companyinfo=shangpinzhonglei.concat(province.concat(city));
-        companyinfo = shangpinzhonglei + ' ; ' + province + ' ; ' + city;
-        this.setState({companyinfo: companyinfo});
+        var shangpinzhonglei = this.state.shangpinzhonglei;
+        var province = this.state.province;
+        var city = this.state.city;
+        var companyinfo = null;
+        if (shangpinzhonglei !== null)
+            companyinfo = shangpinzhonglei + ';';
+        if (province !== null)
+            companyinfo += province + ';';
+        if (city !== null)
+            companyinfo += city;
+        //companyinfo = shangpinzhonglei + ' ; ' + province + ' ; ' + city;
+        if (companyinfo !== null)
+            this.setState({companyinfo: companyinfo});
     }
 
     dismisspopupDialog() {

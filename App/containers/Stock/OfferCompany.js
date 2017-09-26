@@ -17,14 +17,14 @@ import  {
     Modal,
     TouchableOpacity,
     ListView
-} from 'react-native';
+    } from 'react-native';
 var Proxy = require('../../proxy/Proxy');
 import {connect} from 'react-redux';
 import Config from '../../../config';
 import Icon from 'react-native-vector-icons/FontAwesome';
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-
+import Camera from 'react-native-camera';
 import MyOffer from './MyOffer';
 
 class OfferCompany extends Component {
@@ -43,6 +43,14 @@ class OfferCompany extends Component {
             rubroDes: this.props.rubroDes,
             nomroDeTelePhono: this.props.nomroDeTelePhono,
             merchantId: this.props.merchantId,
+            cameraModalVisible: false,
+            camera: {
+                aspect: Camera.constants.Aspect.fill,
+                captureTarget: Camera.constants.CaptureTarget.disk,
+                type: Camera.constants.Type.back,
+                orientation: Camera.constants.Orientation.auto,
+                flashMode: Camera.constants.FlashMode.auto
+            },
             dataSource: new ListView.DataSource({
                 rowHasChanged: (r1, r2) => {
                     if (r1 !== r2) {
@@ -54,8 +62,12 @@ class OfferCompany extends Component {
         }
     }
 
+    closeCamera() {
+        this.setState({cameraModalVisible: false});
+    }
+
     navigateMyConcernOffer() {
-    var MyConcernOffer =require('./MyConcernOffer') ;
+        var MyConcernOffer = require('./MyConcernOffer');
         const {navigator} = this.props;
 
         if (navigator) {
@@ -71,22 +83,22 @@ class OfferCompany extends Component {
         const {navigator} = this.props;
 
         if (navigator) {
-         navigator.pop();
-         if (this.props.reset)
-         this.props.reset();
-         }
+            navigator.pop();
+            if (this.props.reset)
+                this.props.reset();
+        }
 
     }
 
     laruguanzhu() {
-       // var sessionId = this.props.sessionId;
+        // var sessionId = this.props.sessionId;
         var state = 1;
         var merchantId = this.state.merchantId;
         Proxy.post({
             url: Config.server + '/func/merchant/setBuyerSellerStateMobile',
             headers: {
                 'Content-Type': 'application/json',
-               // 'Cookie': sessionId,
+                // 'Cookie': sessionId,
             },
             body: {
                 sellerId: merchantId,
@@ -106,13 +118,13 @@ class OfferCompany extends Component {
 
     buzaiguanzhu() {
         var state = 0;
-       // var sessionId = this.props.sessionId;
+        // var sessionId = this.props.sessionId;
         var merchantId = this.state.merchantId;
         Proxy.post({
             url: Config.server + '/func/merchant/setBuyerSellerStateMobile',
             headers: {
                 'Content-Type': 'application/json',
-               // 'Cookie': sessionId,
+                // 'Cookie': sessionId,
             },
             body: {
                 sellerId: merchantId,
@@ -263,10 +275,10 @@ class OfferCompany extends Component {
                                     alignItems: 'center',
                                     paddingTop: 5
                                 }}>
-                                    <View style={{flex: 1}}>
+                                    <View style={{flex: 2}}>
                                         <Text style={styles.ziti}>公司名称：</Text>
                                     </View>
-                                    <View style={{flex: 1, justifyContent: 'flex-start'}}>
+                                    <View style={{flex: 3, justifyContent: 'flex-start'}}>
                                         <Text style={styles.popoverText}>{this.state.nubre}</Text>
                                     </View>
                                 </View>
@@ -277,10 +289,10 @@ class OfferCompany extends Component {
                                     alignItems: 'center',
                                     paddingTop: 5
                                 }}>
-                                    <View style={{flex: 1}}>
+                                    <View style={{flex: 2}}>
                                         <Text style={styles.ziti}>公司地址：</Text>
                                     </View>
-                                    <View style={{flex: 1}}>
+                                    <View style={{flex: 3}}>
                                         <Text style={styles.popoverText}>{this.state.direccion}</Text>
                                     </View>
                                 </View>
@@ -291,10 +303,10 @@ class OfferCompany extends Component {
                                     alignItems: 'center',
                                     paddingTop: 5
                                 }}>
-                                    <View style={{flex: 1}}>
+                                    <View style={{flex: 2}}>
                                         <Text style={styles.ziti}>公司营业范围：</Text>
                                     </View>
-                                    <View style={{flex: 1}}>
+                                    <View style={{flex: 3}}>
                                         <Text style={styles.popoverText}>{this.state.rubroDes}</Text>
                                     </View>
                                 </View>
@@ -305,10 +317,10 @@ class OfferCompany extends Component {
                                     alignItems: 'center',
                                     paddingTop: 5
                                 }}>
-                                    <View style={{flex: 1}}>
+                                    <View style={{flex: 2}}>
                                         <Text style={styles.ziti}>公司联系电话：</Text>
                                     </View>
-                                    <View style={{flex: 1}}>
+                                    <View style={{flex: 3}}>
                                         <Text style={styles.popoverText}>{this.state.nomroDeTelePhono}</Text>
                                     </View>
                                 </View>
@@ -326,12 +338,14 @@ class OfferCompany extends Component {
                                                   }}>
                                     <Text style={{fontSize: 14, padding: 2}}>拉回我的关注</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.touchOty}>
+                                <TouchableOpacity style={styles.touchOty} onPress={() => {
+                                this.setState({cameraModalVisible: true})
+                            }}>
                                     <Text style={{fontSize: 14}}>扫描</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
-                        <View style={{flex: 2}}>
+                        <View style={{flex: 1}}>
                             <ScrollView>
                                 {listView}
                             </ScrollView>
@@ -372,6 +386,63 @@ class OfferCompany extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
+
+                {/*camera part*/}
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.cameraModalVisible}
+                    onRequestClose={() => {
+                        alert("Modal has been closed.")
+                    }}
+                    >
+                    <Camera
+                        ref={(cam) => {
+                            this.camera = cam;
+                        }}
+                        style={styles.preview}
+                        aspect={this.state.camera.aspect}
+                        captureTarget={this.state.camera.captureTarget}
+                        type={this.state.camera.type}
+                        flashMode={this.state.camera.flashMode}
+                        defaultTouchToFocus
+                        mirrorImage={false}
+                        onBarCodeRead={(barcode) => {
+                            var {type, data, bounds} = barcode;
+                            if (data !== undefined && data !== null) {
+                                console.log('barcode data=' + data + 'barcode type=' + type);
+                                this.state.goods.codeNum = data;
+                                var goods = this.state.goods;
+                                goods.codeNum = data;
+                                this.queryGoodsCode(data);
+                                this.closeCamera();
+                            }
+                        }}
+                        />
+                    <View style={[styles.box]}>
+                    </View>
+                    <View style={{
+                        position: 'absolute',
+                        right: 1 / 2 * width - 100,
+                        top: 1 / 2 * height,
+                        height: 100,
+                        width: 200,
+                        borderTopWidth: 1,
+                        borderColor: '#e42112',
+                        backgroundColor: 'transparent'
+                    }}>
+                    </View>
+                    <View style={[styles.overlay, styles.bottomOverlay]}>
+                        <TouchableOpacity
+                            style={styles.captureButton}
+                            onPress={() => {
+                                this.closeCamera()
+                            }}
+                            >
+                            <Icon name="times-circle" size={50} color="#343434"/>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
             </View>
         );
     }
@@ -389,7 +460,7 @@ var styles = StyleSheet.create({
         shadowRadius: 3,
     },
     ziti: {
-        fontSize: 13,
+        fontSize: 14,
         paddingLeft: 5,
         paddingTop: 6,
     },
@@ -399,10 +470,42 @@ var styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#CAE1FF',
         borderRadius: 4,
-        marginTop: 7,
+        marginTop: 12,
         marginRight: 6,
-        marginBottom: 3
-    }
+        marginBottom: 12
+    },
+    popoverText: {
+        fontSize: 14,
+    },
+    box: {
+        position: 'absolute',
+        right: 1 / 2 * width - 100,
+        top: 1 / 2 * height - 100,
+        height: 200,
+        width: 200,
+        borderWidth: 1,
+        borderColor: '#387ef5',
+        backgroundColor: 'transparent'
+    },
+    preview: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    bottomOverlay: {
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.4)',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    overlay: {
+        position: 'absolute',
+        padding: 16,
+        right: 0,
+        left: 0,
+        alignItems: 'center',
+    },
 });
 
 
