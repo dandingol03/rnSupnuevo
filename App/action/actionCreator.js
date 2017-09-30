@@ -64,7 +64,8 @@ export let loginAction=function(username,password,cb) {
                     })
                 }
             }).catch((err)=>{
-                alert(err.message);
+                resolve(err);
+                //alert(err.message);
             })
         })
     }

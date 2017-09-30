@@ -66,10 +66,11 @@ var Login = React.createClass({
 
                 dispatch(loginAction(username, password))
                     .then((json)=> {
-                        this.setState({showProgress:false});
+
                         setTimeout(()=>{
-                            alert(json);
-                        },900)
+                            this.setState({showProgress:false});
+                            alert("登录超时");
+                        },500)
                     });
 
             } else {
