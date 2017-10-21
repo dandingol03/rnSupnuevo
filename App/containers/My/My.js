@@ -45,7 +45,7 @@ class My extends Component {
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+                //'Cookie': sessionId,
             },
             //body: "codigo=" + codeNum + "&merchantId=" + merchantId
             body: {
@@ -115,7 +115,7 @@ class My extends Component {
             url: Config.server + '/func/merchant/getSupnuevoMerchantInfoMobile',
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+                //'Cookie': sessionId,
             },
             body: {}
         }).then((json) => {

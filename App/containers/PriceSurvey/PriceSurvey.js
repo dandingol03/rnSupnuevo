@@ -80,7 +80,7 @@ class PriceSurvey extends Component {
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+                //'Cookie': sessionId,
             },
             //body:"merchantId=" + merchantId
             body: {
@@ -110,7 +110,7 @@ class PriceSurvey extends Component {
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+                //'Cookie': sessionId,
             },
             // body: "groupId=" + groupId + "&merchantId=" + merchantId
             body: {
@@ -143,7 +143,7 @@ class PriceSurvey extends Component {
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+               // 'Cookie': sessionId,
             },
             //body: "commodityId=" + codigo + "&merchantId=" + merchantId
             body: {
@@ -173,7 +173,7 @@ class PriceSurvey extends Component {
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+                //'Cookie': sessionId,
             },
             //body: "codigo=" + codeNum + "&merchantId=" + merchantId
             body: {

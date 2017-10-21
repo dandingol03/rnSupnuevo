@@ -158,7 +158,7 @@ class GroupManage extends Component{
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie':sessionId
+               // 'Cookie':sessionId
             },
             //body:"merchantId=" + merchantId
             body:{
@@ -232,7 +232,7 @@ class GroupManage extends Component{
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie':sessionId,
+                //'Cookie':sessionId,
             },
             body: body
         },(json)=> {
@@ -285,7 +285,7 @@ class GroupManage extends Component{
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie':sessionId,
+                //'Cookie':sessionId,
             },
             //body: "groupNum=" + groupNum
             body:{
@@ -342,7 +342,7 @@ class GroupManage extends Component{
                         headers: {
                             //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                             'Content-Type': 'application/json',
-                            'Cookie':sessionId,
+                           // 'Cookie':sessionId,
                         },
                         //body: "groupIds=" + groupIds.toString() + "&groupName=" + groupName+'&supnuevoMerchantId='+merchantId
                         body:{
@@ -414,7 +414,7 @@ class GroupManage extends Component{
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie':sessionId,
+                //'Cookie':sessionId,
             },
             //body: "groupId=" +groupId
             body:{
@@ -457,7 +457,7 @@ class GroupManage extends Component{
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                     'Content-Type': 'application/json',
-                    'Cookie':sessionId,
+                    //'Cookie':sessionId,
                 },
                 //body: "groupName=" + groupName + "&groupId=" + ''+'&supnuevoMerchantId='+merchantId
                 body:{

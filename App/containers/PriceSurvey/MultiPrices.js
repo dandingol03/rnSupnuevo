@@ -99,7 +99,7 @@ class MultiPrices extends Component{
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie':sessionId,
+                //'Cookie':sessionId,
             },
             //body: "commodityId=" + commodityId + "&merchantId=" + merchantId+"&price=" +
             //this.state.price+"&internetId=" + this.state.internetId+"&storeId=" + this.state.storeId+"&modifyType=" + this.state.modifyType

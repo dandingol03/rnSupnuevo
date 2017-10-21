@@ -215,7 +215,7 @@ class GroupQueryNotInGroup extends Component{
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie':sessionId,
+                //'Cookie':sessionId,
             },
             body: body
         },(json)=> {
@@ -283,7 +283,7 @@ class GroupQueryNotInGroup extends Component{
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie':sessionId
+                //'Cookie':sessionId
             },
            // body: "codigo=" + code + "&merchantId=" + merchantId
             body:{
@@ -316,7 +316,7 @@ class GroupQueryNotInGroup extends Component{
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                     'Content-Type': 'application/json',
-                    'Cookie':sessionId,
+                    //'Cookie':sessionId,
                 },
                 //body: "commodityIds=" + commodityIds.toString() + "&groupId=" + groupInfo.groupId
                 body:{
@@ -376,7 +376,7 @@ class GroupQueryNotInGroup extends Component{
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                     'Content-Type': 'application/json',
-                    'Cookie':sessionId
+                    //'Cookie':sessionId
                 },
                 //body: "commodityId=" + code.commodityId + "&groupId=" + groupId+'&supnuevoMerchantId='+merchantId
                 body:{
@@ -441,7 +441,7 @@ class GroupQueryNotInGroup extends Component{
                     headers: {
                         //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                         'Content-Type': 'application/json',
-                        'Cookie':sessionId
+                        //'Cookie':sessionId
                     },
                     //body: "codigo=" + codigo + "&groupName=" + groupName+'&supnuevoMerchantId='+merchantId
                     body:{
@@ -509,7 +509,7 @@ class GroupQueryNotInGroup extends Component{
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                     'Content-Type': 'application/json',
-                    'Cookie':sessionId
+                    //'Cookie':sessionId
 
                 },
                 //body: "groupName=" + groupName + "&groupId=" + ''+'&supnuevoMerchantId='+merchantId

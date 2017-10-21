@@ -169,7 +169,7 @@ class GroupInfoManage extends Component {
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+                //'Cookie': sessionId,
             },
             //body: "priceIds=" + selectedRelativePriceIds.toString() +
             //"&merchantId=" + merchantId+
@@ -214,7 +214,7 @@ class GroupInfoManage extends Component {
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+                //'Cookie': sessionId,
             },
             //body: "commodityId=" + code.commodityId + "&groupId=" + groupInfo.groupId
             body: {
@@ -253,7 +253,7 @@ class GroupInfoManage extends Component {
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+                //'Cookie': sessionId,
             },
             //body: "commodityIds=" + commodityIds + "&groupId=" + groupInfo.groupId
             body: {
@@ -297,7 +297,7 @@ class GroupInfoManage extends Component {
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                     'Content-Type': 'application/json',
-                    'Cookie': sessionId,
+                    //'Cookie': sessionId,
                 },
                 //body: "groupName=" + groupName + "&groupId="+groupInfo.groupId+ ''+'&supnuevoMerchantId='+merchantId
                 body: {
@@ -363,7 +363,7 @@ class GroupInfoManage extends Component {
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+                //'Cookie': sessionId,
             },
             //body: "codigo=" + codigo + "&merchantId=" + merchantId
             body: {

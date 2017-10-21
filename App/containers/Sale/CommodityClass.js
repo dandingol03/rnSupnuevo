@@ -31,6 +31,7 @@ import PriceModal from './PriceModal';
 class CommodityClass extends Component{
 
     goBack(){
+        this.props.codeClass(this.state.commodity);
         const { navigator } = this.props;
         if(navigator) {
             navigator.pop();
@@ -49,6 +50,8 @@ class CommodityClass extends Component{
                   onPress={()=>{
                        this.showPriceDialog();
                        this.state.commodity.nombre = rowData;
+
+                       this.goBack();
             }}>
               <Text>
                   {rowData}
@@ -98,7 +101,7 @@ class CommodityClass extends Component{
                     </TouchableOpacity>
 
                     <Text style={{fontSize:20,flex:5,textAlign:'center',color:'#fff'}}>
-                        Supnuevo(3.0)-{this.props.username}
+                        Supnuevo(4.0)-{this.props.username}
                     </Text>
 
                     <View style={{flex:1}}>
@@ -117,28 +120,6 @@ class CommodityClass extends Component{
                     </View>
 
                 </View>
-
-                <Modal
-                    animationType={"slide"}
-                    transparent={true}
-                    visible={this.state.priceModalVisible}
-                    onRequestClose={() => {alert("Modal has been closed.")}}
-                >
-                    <PriceModal
-
-                        commodity={this.state.commodity}
-                        onClose={()=>{
-                               this.setState({priceModalVisible:false});
-                            }}
-
-                        onConfirm={(price)=>{
-                            this.state.commodity.price = price;
-                            this.props.codeClass(this.state.commodity);
-                            this.goBack();
-                            }}
-                    />
-
-                </Modal>
 
             </View>
         );

@@ -98,7 +98,7 @@ class GoodAdd extends Component{
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                     'Content-Type': 'application/json',
-                    'Cookie':sessionId,
+                    //'Cookie':sessionId,
                 },
                // body: "taxId=" + this.state.newGoodInfo.taxId + "&supnuevoMerchantId=" + this.state.merchantId
                // + "&codigo=" + this.state.newGoodInfo.codigo+ "&nombre=" + this.state.newGoodInfo.nombre+
@@ -147,7 +147,7 @@ class GoodAdd extends Component{
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie':sessionId,
+                //'Cookie':sessionId,
             },
            // body: "sizeUnit=" + sizeUnit + "&merchantId=" + this.state.merchantId
             body:{

@@ -127,7 +127,7 @@ class GoodsInGroup extends Component{
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                     'Content-Type': 'application/json',
-                    'Cookie':sessionId,
+                    //'Cookie':sessionId,
                 },
                 //body: "commodityIds=" + commodityIds.toString() + "&groupId=" + groupInfo.groupId
                 body:{

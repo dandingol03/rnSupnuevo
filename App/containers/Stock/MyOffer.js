@@ -139,7 +139,7 @@ class MyOffer extends Component {
             url: Config.server + "/func/merchant/getSupnuevoProvinceListMobile",
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId
+                //'Cookie': sessionId
             },
             body: {}
         }, (json) => {
@@ -163,7 +163,7 @@ class MyOffer extends Component {
             url: Config.server + "/func/merchant/getSupnuevoCityListMobile",
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': sessionId
+                //'Cookie': sessionId
             },
             body: {
                 provinceId: provinceId

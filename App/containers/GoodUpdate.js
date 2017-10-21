@@ -93,7 +93,7 @@ class GoodUpdate extends Component {
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                     'Content-Type': 'application/json',
-                    'Cookie': sessionId,
+                    //'Cookie': sessionId,
                 },
                 // body: "taxId=" + this.state.selectedCodeInfo.taxId + "&supnuevoMerchantId=" + this.state.merchantId
                 // + "&codigo=" + this.state.selectedCodeInfo.codigo+ "&nombre=" + this.state.selectedCodeInfo.nombre+
@@ -156,7 +156,7 @@ class GoodUpdate extends Component {
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-                'Cookie': sessionId,
+                //'Cookie': sessionId,
             },
             // body: "sizeUnit=" + sizeUnit + "&merchantId=" + this.state.merchantId
             body: {

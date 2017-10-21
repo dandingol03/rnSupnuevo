@@ -606,7 +606,7 @@ class Query extends Component {
                     }, styles.card]}>
 
                         <Text style={{fontSize: 20, flex: 4, textAlign: 'center', color: '#fff'}}>
-                            Supnuevo(3.0)-{username}
+                            Supnuevo(4.0)-{username}
                         </Text>
                         <TouchableOpacity ref="menu" style={{
                             flex: 1,

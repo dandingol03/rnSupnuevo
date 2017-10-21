@@ -60,7 +60,7 @@ class QrcodeModal extends Component{
                     </TouchableOpacity>
 
                     <Text style={{fontSize:20,flex:5,textAlign:'center',color:'#fff'}}>
-                        Supnuevo(3.0)-{this.props.username}
+                        Supnuevo(4.0)-{this.props.username}
                     </Text>
 
                     <View style={{flex:1}}>
