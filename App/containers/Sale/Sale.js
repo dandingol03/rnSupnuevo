@@ -25,7 +25,8 @@ var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 import CommodityClass from './CommodityClass';
 import Camera from 'react-native-camera';
-import {SwipeListView} from 'react-native-swipe-list-view';
+import {SwipeListView, SwipeRow} from 'react-native-swipe-list-view';
+import CodesModal from '../../components/modal/CodesModal';
 
 var Proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
@@ -52,11 +53,16 @@ class Sale extends Component {
             var errMessage = json.errMessage;
             if (errMessage !== null && errMessage !== undefined && errMessage !== "") {
                 alert(errMessage);
-            } else {
-                var commodity = {codigo: json.codigo, nombre: json.nombre, price: json.price};
+            } else if (json.price === null) {
+                alert("该商品暂时缺少价格");
+            }
+            else {
+                var commodity = {codigo: json.codigo, nombre: json.nombre, price: json.price + ""};
                 var commodityList = this.state.commodityList;
                 commodity.goodsCount = 1;
                 commodity.sum = json.price;
+                /*var a=typeof (commodity.sum);
+                console.log(a+'2');*/
                 commodityList.push(commodity);
                 /*var sum = 0;
                 commodityList.map((commodity) => {
@@ -67,7 +73,39 @@ class Sale extends Component {
         }).catch((err) => {
             alert(err);
         });
+    }//扫码查询
 
+    queryGoodsCode(codeNum) {//查询按钮
+        Proxy.postes({
+            url: Config.server + '/func/sale/getSupnuevoBuyerPriceCommodityListByLastFourCodigoMobile',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+                codigo: codeNum,
+            }
+        }).then((json) => {
+            var errorMsg = json.errorMsg;
+            if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
+                alert(errorMsg);
+
+            } else {
+                if (json.array.length === 1) {
+                    var code = {codigo: json.array[0].codigo, commodityId: json.array[0].commodityId}
+                    this.onCodigoSelect(code);
+                }
+                else {
+                    var codes = json.array;
+                    this.setState({codes: codes, codesModalVisible: true});
+                }
+            }
+        }).catch((err) => {
+            alert(err);
+        });
+    }
+
+    onCodigoSelect(code) {
+        this.codeQuery(code.codigo);
     }
 
     codeMatch(codeNum) {
@@ -108,19 +146,22 @@ class Sale extends Component {
         else {
             this.state.price = userinput;
             this.state.usertextinput = null;
-            //this.setState({price: usertextinput, usertextinput: null});
             this.navigateCommodityClass();
         }
     }
 
+    closeCodesModal(val) {
+        this.setState({codesModalVisible: val});
+    }
+
     chaxun() {
         var userinput = this.state.usertextinput;
-        if (userinput === null || userinput === 0 || userinput === "") {
-            alert("请您先输入条码");
+        if (userinput === null || userinput === 0 || userinput === "" || userinput.length < 4 || userinput.length > 13) {
+            alert("请您先输入正确条码");
         }
         else {
             this.state.usertextinput = null;
-            this.codeQuery(userinput);
+            this.queryGoodsCode(userinput);
         }
     }
 
@@ -144,7 +185,8 @@ class Sale extends Component {
     }
 
     checkOut() {
-        var sessionId = this.props.sessionId;
+        var a = typeof (this.state.commodityList[0].price);
+        console.log(a + '1');
         Proxy.postes({
             url: Config.server + '/func/sale/saveCommoditySaleMobile',
             headers: {
@@ -185,34 +227,34 @@ class Sale extends Component {
         this.state.total_1 = sum_1;
 
         var row = (
-            <View style={{
-                flex: 1,
-                backgroundColor: '#fff',
-                marginTop: 5,
-                marginBottom: 5,
-                borderBottomWidth: 1,
-                borderColor: '#eee',
-                padding: 5
-            }}>
+                <View style={{
+                    flex: 1,
+                    backgroundColor: '#fff',
+                    marginTop: 5,
+                    marginBottom: 5,
+                    borderBottomWidth: 1,
+                    borderColor: '#eee',
+                    padding: 5
+                }}>
 
-                <View style={{flexDirection: 'row', flex: 1}}>
                     <View style={{flexDirection: 'row', flex: 1}}>
-                        <Text> {rowData.goodsCount} * </Text>
-                        <Text> {rowData.price}</Text>
+                        <View style={{flexDirection: 'row', flex: 1}}>
+                            <Text> {rowData.goodsCount} * </Text>
+                            <Text> {rowData.price}</Text>
+                        </View>
+                        <View style={{flex: 3}}>
+                            <Text>{rowData.codigo}</Text>
+                        </View>
                     </View>
-                    <View style={{flex: 3}}>
-                        <Text>{rowData.codigo}</Text>
+                    <View style={{flexDirection: 'row', flex: 1}}>
+                        <View style={{flex: 3}}>
+                            <Text>{rowData.nombre}</Text>
+                        </View>
+                        <View style={{flex: 1}}>
+                            <Text>{sum}</Text>
+                        </View>
                     </View>
                 </View>
-                <View style={{flexDirection: 'row', flex: 1}}>
-                    <View style={{flex: 3}}>
-                        <Text>{rowData.nombre}</Text>
-                    </View>
-                    <View style={{flex: 1}}>
-                        <Text>{sum}</Text>
-                    </View>
-                </View>
-            </View>
         );
 
         return row;
@@ -227,10 +269,12 @@ class Sale extends Component {
             total_2: 0,
             codeNum: null,
             commodityList: [],
+            codes: [],
             commodity: null,
             cameraModalVisible: false,
             usertextinput: null,
             price: 0,
+            codesModalVisible: false,
             text: null,
             camera: {
                 aspect: Camera.constants.Aspect.fill,
@@ -244,17 +288,19 @@ class Sale extends Component {
 
     goodcountsadd(rowId) {
         var commodityList = this.state.commodityList;
-        var i = 0;var k=0;
+        var i = 0;
+        var k = 0;
+        // alert(rowId.s10.swipeInitialX);
         commodityList[rowId].goodsCount += 1;
         commodityList[rowId].sum = commodityList[rowId].goodsCount * commodityList[rowId].price;
         commodityList[rowId].sum += "";
         i = commodityList[rowId].sum.indexOf(".");
         if (i != -1) {
-           // alert(i);
-            k=commodityList[rowId].sum.substring(i+2,i+3)*1;
-            if(k===9){
-                commodityList[rowId].sum=commodityList[rowId].sum*1;
-                commodityList[rowId].sum+=0.001;
+            // alert(i);
+            k = commodityList[rowId].sum.substring(i + 2, i + 3) * 1;
+            if (k === 9) {
+                commodityList[rowId].sum = commodityList[rowId].sum * 1;
+                commodityList[rowId].sum += 0.001;
                 commodityList[rowId].sum += "";
             }
             commodityList[rowId].sum = commodityList[rowId].sum.substring(0, i + 2);
@@ -265,21 +311,22 @@ class Sale extends Component {
 
     goodcountsjian(rowId) {
         var commodityList = this.state.commodityList;
-        var i = 0;var k=0;
+        var i = 0;
+        var k = 0;
         commodityList[rowId].goodsCount -= 1;
         commodityList[rowId].sum = commodityList[rowId].goodsCount * commodityList[rowId].price;
         if (commodityList[rowId].goodsCount === 0) {
             commodityList.splice(rowId, 1);
         }
-        else{
+        else {
             commodityList[rowId].sum += "";
             i = commodityList[rowId].sum.indexOf(".");
             if (i != -1) {
                 // alert(i);
-                k=commodityList[rowId].sum.substring(i+2,i+3)*1;
-                if(k===9){
-                    commodityList[rowId].sum=commodityList[rowId].sum*1;
-                    commodityList[rowId].sum+=0.001;
+                k = commodityList[rowId].sum.substring(i + 2, i + 3) * 1;
+                if (k === 9) {
+                    commodityList[rowId].sum = commodityList[rowId].sum * 1;
+                    commodityList[rowId].sum += 0.001;
                     commodityList[rowId].sum += "";
                 }
                 commodityList[rowId].sum = commodityList[rowId].sum.substring(0, i + 2);
@@ -291,11 +338,38 @@ class Sale extends Component {
 
     total() {
         var total = 0;
+        var i=0;
         var commdiList = this.state.commodityList;
         for (var value of commdiList) {
             total += value.sum;
         }
+        total+="";
+        i = total.indexOf(".");
+        if (i != -1) {
+            // alert(i);
+            k = total.substring(i + 2, i + 3) * 1;
+            if (k === 9) {
+                total = total * 1;
+                total += 0.001;
+                total += "";
+            }
+            total = total.substring(0, i + 2);
+        }
+        total=total*1;
         return total;
+    }
+
+    onRowDidClose(secId, rowId,rows,translateX) {
+        var obj=Object.entries(rows);
+        var obj_1=obj[rowId];
+        var Swiperow=obj_1[1];
+        //alert(Swiperow._translateX._value);
+        if(Swiperow._translateX._value>0){
+            this.goodcountsadd(rowId);
+        }
+        else if(Swiperow._translateX._value<0){
+            this.goodcountsjian(rowId);
+        }
     }
 
     render() {
@@ -311,6 +385,8 @@ class Sale extends Component {
                     automaticallyAdjustContentInsets={false}
                     dataSource={ds.cloneWithRows(commodityList)}
                     renderRow={this.renderRow.bind(this)}
+                    swipeToOpenPercent={100}
+                    //onRowDidClose={this.onRowDidClose.bind(this)}
                     renderHiddenRow={(data, secId, rowId, rowMap) => (
                         <View style={styles.rowBack}>
                             <TouchableOpacity onPress={() => {
@@ -321,8 +397,9 @@ class Sale extends Component {
                             }}><Text>数量-1</Text></TouchableOpacity>
                         </View>
                     )}
-                    leftOpenValue={75}
-                    rightOpenValue={-75}
+                    onRowOpen={this.onRowDidClose.bind(this)}
+                    leftOpenValue={0.5}
+                    rightOpenValue={-0.5}
                 />
             );
         }
@@ -467,6 +544,26 @@ class Sale extends Component {
                         </View>
                     </View>
                 </View>
+
+                <Modal
+                    animationType={"slide"}
+                    transparent={false}
+                    visible={this.state.codesModalVisible}
+                    onRequestClose={() => {
+                        alert("Modal has been closed.")
+                    }}>
+
+                    <CodesModal
+                        onClose={() => {
+                            this.closeCodesModal(!this.state.codesModalVisible)
+                        }}
+                        onCodigoSelect={
+                            (code) => {
+                                this.onCodigoSelect(code);
+                            }}
+                        codes={this.state.codes}
+                    />
+                </Modal>
 
                 {/*camera part*/}
                 <Modal
