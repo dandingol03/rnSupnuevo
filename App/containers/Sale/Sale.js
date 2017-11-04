@@ -386,7 +386,6 @@ class Sale extends Component {
                     dataSource={ds.cloneWithRows(commodityList)}
                     renderRow={this.renderRow.bind(this)}
                     swipeToOpenPercent={100}
-                    //onRowDidClose={this.onRowDidClose.bind(this)}
                     renderHiddenRow={(data, secId, rowId, rowMap) => (
                         <View style={styles.rowBack}>
                             <TouchableOpacity onPress={() => {

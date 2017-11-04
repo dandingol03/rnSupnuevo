@@ -1349,8 +1349,6 @@ class Query extends Component {
                                     goods.codeNum = data;
                                     this.queryGoodsCode(data);
                                     this.closeCamera();
-
-
                                 }
 
                             }}
