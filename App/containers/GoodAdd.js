@@ -51,6 +51,7 @@ class GoodAdd extends Component{
     }
 
     confirm(){
+
         //修改信息
         if(this.state.newGoodInfo!=undefined&&this.state.newGoodInfo!=null){
             if(this.state.newGoodInfo.codigo === null || this.state.newGoodInfo.codigo === undefined || this.state.newGoodInfo.codigo === ''){
@@ -91,7 +92,7 @@ class GoodAdd extends Component{
                 return false;
             }
 
-
+            this.setState({wait:true,bgColor:''});
             var sessionId=this.props.sessionId;
             Proxy.post({
                 url:Config.server+'/func/commodity/saveOrUpdateSupnuevoCommonCommodityMobile',
@@ -116,6 +117,7 @@ class GoodAdd extends Component{
             },(json)=> {
                 var errorMsg=json.errorMsg;
                 var message = json.message;
+
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                     alert(errorMsg);
                 }
@@ -123,8 +125,9 @@ class GoodAdd extends Component{
                     alert(message);
                     this.goBack();
                 }
-
+                this.setState({wait:false,bgColor:'#11c1f3'});
             }, (err) =>{
+                this.setState({wait:false,bgColor:'#11c1f3'});
                 alert(err);
             });
 
@@ -211,12 +214,13 @@ class GoodAdd extends Component{
         this.state = {
             onCodigoSelect:props.onCodigoSelect,
             merchantId:props.merchantId,
-
+            wait:false,
             newGoodInfo:{codigo:'',nombre:'',setSizeValue:'',sizeUnit:'',scaleUnit:'',selectTax:'',taxId:null},
             taxArr:props.taxArr,
             sizeArr:props.sizeArr,
             scaleArr:[],
             cameraModalVisible:false,
+            bgColor:'#11c1f3',
             camera: {
                 aspect: Camera.constants.Aspect.fill,
                 captureTarget: Camera.constants.CaptureTarget.disk,
@@ -478,8 +482,9 @@ class GoodAdd extends Component{
                     </View>
 
                     <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:40}}>
-                        <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:'#11c1f3',
+                        <TouchableOpacity style={{flex:1,flexDirection:'row',justifyContent:'center',backgroundColor:this.state.bgColor,
                                     borderTopRightRadius:4,borderBottomRightRadius:4,alignItems:'center',padding:8,borderRadius:4}}
+                                          disabled={this.state.wait}
                                           onPress={
                                             ()=>{
                                                 this.confirm();

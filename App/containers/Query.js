@@ -205,6 +205,7 @@ class Query extends Component {
                 json.taxArr.map(function (index, i) {
                     taxArr.push(index);
                 })
+                if(json.sizeArr===undefined){json.sizeArr=[];}
                 json.sizeArr.map(function (index, i) {
                     sizeArr.push(index);
                 })
