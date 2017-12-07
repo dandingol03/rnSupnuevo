@@ -485,6 +485,17 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		4A32DBF11F7A8EB400BA029A /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				7D1275CF4A264BA7A3CC9E04 /* libRNSVG.a */,
+				4470B34C770447CEA1D4A851 /* libRNVectorIcons.a */,
+				3383119D36DA484DAA2E6F90 /* libRCTCamera.a */,
+				1DA04399EBF043809DA1A960 /* libRNSensitiveInfo.a */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		5E91572E1DD0AC6500FF2AA8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -542,6 +553,7 @@
 				00E356EF1AD99517003FC87E /* rnSupnuevoTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				11447939A0094298B571DFAA /* Resources */,
+				4A32DBF11F7A8EB400BA029A /* Recovered References */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -1054,7 +1066,7 @@
 				DEVELOPMENT_TEAM = BY3A7B54BR;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = rnSupnuevo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -1079,7 +1091,7 @@
 				DEVELOPMENT_TEAM = BY3A7B54BR;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = rnSupnuevo/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_LDFLAGS = (
 					"$(inherited)",

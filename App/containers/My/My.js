@@ -165,7 +165,7 @@ class My extends Component {
         this.props.navigator.push({
             name:'MySuggestion',
             component:MySuggestion,
-            pramas:{}
+            params:{}
         })
     }
 
@@ -182,8 +182,8 @@ class My extends Component {
                     alignItems: 'center',
                     flexDirection: 'row'
                 }, styles.card]}>
-                    <Text style={{fontSize: 22, flex: 3, textAlign: 'center', color: '#fff'}}>
-                        {this.props.username}
+                    <Text style={{fontSize: 20, flex: 3, textAlign: 'center', color: '#fff'}}>
+                        Supnuevo(4.0)-{this.props.username}
                     </Text>
                 </View>
 
