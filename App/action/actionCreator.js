@@ -44,20 +44,27 @@ export let loginAction=function(username,password,cb) {
                                 cb(errorMsg);
                         }
                         else {
-                            dispatch(setAnnouncement(json.data.helpContent));
-                            dispatch(setCommodityClassList(json.data.commodityClassList));
-                            dispatch(setWeightService(json.data.weightService));
-                            dispatch(getSession({
-                                username: username,
-                                merchantStates: json.data.merchantStates,
-                                supnuevoMerchantId: json.data.merchantId,
-                                merchantType: json.data.merchantType,
-                                //sessionId: sessionId
-                            }));
-                            PreferenceStore.put('username', username);
-                            PreferenceStore.put('password', password);
 
-                            dispatch(clearTimerAction());
+                            if(json.data.priceModifyState==0){
+                                resolve({priceModifyState:0});
+                                alert("改价未开启，不能使用");
+                            }else{
+                                dispatch(setAnnouncement(json.data.helpContent));
+                                dispatch(setCommodityClassList(json.data.commodityClassList));
+                                dispatch(setWeightService(json.data.weightService));
+                                dispatch(getSession({
+                                    username: username,
+                                    merchantStates: json.data.merchantStates,
+                                    supnuevoMerchantId: json.data.merchantId,
+                                    merchantType: json.data.merchantType,
+                                    //sessionId: sessionId
+                                }));
+                                PreferenceStore.put('username', username);
+                                PreferenceStore.put('password', password);
+
+                                dispatch(clearTimerAction());
+                            }
+
                         }
                     }).catch((err)=>{
                         alert(err.message);

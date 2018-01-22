@@ -40,8 +40,8 @@ class App extends React.Component {
         super(props);
         const {dispatch} = this.props;
         this.state={
-            tab:'公告',
-            selectedTab:'公告',
+            tab:'改价',
+            selectedTab:'改价',
             isConnected: null,
         }
     }
@@ -59,15 +59,15 @@ class App extends React.Component {
             case '收银':
                 component=Sale;
                 break;
-            case '进货':
-                component=Stock;
-                break;
-            case '我的':
-                component=My;
-                break;
-            case '广告':
-                component=Advertisement;
-                break;
+            // case '进货':
+            //     component=Stock;
+            //     break;
+            // case '我的':
+            //     component=My;
+            //     break;
+            // case '广告':
+            //     component=Advertisement;
+            //     break;
             default:
                 break;
         }
@@ -132,11 +132,11 @@ class App extends React.Component {
             return(
 
             <TabNavigator  tabBarStyle={defaultStyle} sceneStyle={defaultSceneStyle}>
-                {this._createNavigatorItem('广告','home')}
+                {/*{this._createNavigatorItem('广告','home')}*/}
                 {this._createNavigatorItem('改价','edit')}
                 {this._createNavigatorItem('收银','search')}
-                {this._createNavigatorItem('进货','tag')}
-                {this._createNavigatorItem('我的','user-o')}
+                {/*{this._createNavigatorItem('进货','tag')}*/}
+                {/*{this._createNavigatorItem('我的','user-o')}*/}
                 {this._createNavigatorItem('公告','home')}
             </TabNavigator>
 
