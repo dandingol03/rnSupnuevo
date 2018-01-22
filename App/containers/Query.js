@@ -615,6 +615,7 @@ class Query extends Component {
                             flexDirection: 'row',
                             justifyContent: 'center'
                         }}
+
                                           onPress={this.showPopover.bind(this, 'menu')}>
                             <Icon name="chevron-circle-left" color="#fff" size={30}></Icon>
                         </TouchableOpacity>

@@ -85,7 +85,7 @@ class GoodUpdate extends Component {
                 alert("比价单位不能为空");
                 return false;
             }
-
+            this.setState({wait:true,bgColor:'#D4D4D4'});
 
             var sessionId = this.props.sessionId;
             Proxy.post({
@@ -111,6 +111,7 @@ class GoodUpdate extends Component {
             }, (json) => {
                 var errorMsg = json.errorMsg;
                 var message = json.message;
+                this.setState({wait:false,bgColor:'#11c1f3'});
                 if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                     alert(errorMsg);
                 }
@@ -120,6 +121,7 @@ class GoodUpdate extends Component {
                 }
 
             }, (err) => {
+                this.setState({wait:false,bgColor:'#11c1f3'});
                 alert(err);
             });
 
@@ -137,6 +139,8 @@ class GoodUpdate extends Component {
             taxArr: props.taxArr,
             sizeArr: props.sizeArr,
             scaleArr: [],
+            wait:false,
+            bgColor:'#11c1f3',
         };
 
     }
@@ -533,13 +537,14 @@ class GoodUpdate extends Component {
                             flex: 1,
                             flexDirection: 'row',
                             justifyContent: 'center',
-                            backgroundColor: '#11c1f3',
+                            backgroundColor: this.state.bgColor,
                             borderTopRightRadius: 4,
                             borderBottomRightRadius: 4,
                             alignItems: 'center',
                             padding: 8,
                             borderRadius: 4
                         }}
+                                          disabled={this.state.wait}
                                           onPress={
                                               () => {
                                                   this.confirm();

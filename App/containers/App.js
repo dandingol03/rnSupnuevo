@@ -97,7 +97,6 @@ class App extends React.Component {
                             //this.props.dispatch(updateNavigator({route:route.name,navigator:navigator}))
                             return (<Component {...route.params} navigator={navigator} />);
                           }}
-
                     />
 
 
