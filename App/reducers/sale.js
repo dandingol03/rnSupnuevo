@@ -7,6 +7,10 @@ import * as types from '../action/types';
 const initialState = {
     commodityClassList:null,
     weightService:null,
+    codigo:null,
+    nombre:null,
+    oldPrice:null,
+    suggestPrice:null,
 };
 
 let sale = (state = initialState, action) => {
@@ -22,6 +26,14 @@ let sale = (state = initialState, action) => {
         case types.SET_WEIGHT_SERVICE:
             return Object.assign({}, state, {
                 weightService:action.weightService,
+            });
+            break;
+        case types.SET_GOODSINFO:
+            return Object.assign({}, state, {
+                codigo:action.codigo,
+                nombre:action.nombre,
+                oldPrice:action.oldPrice,
+                suggestPrice:action.suggestPrice,
             });
             break;
 

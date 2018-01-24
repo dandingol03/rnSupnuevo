@@ -3,7 +3,7 @@
  */
 import React, {Component} from 'react';
 
-import  {
+import {
     NetInfo,
     AppRegistry,
     StyleSheet,
@@ -23,6 +23,7 @@ import {connect} from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import DatePicker from 'react-native-datepicker';
+
 var Popover = require('react-native-popover');
 
 var Dimensions = require('Dimensions');
@@ -32,11 +33,11 @@ import Config from '../../config';
 import CodesModal from '../components/modal/CodesModal';
 import Group from './Group';
 import GroupQuery from './AddCommodityToGroup/GroupQuery';
-
+import priceDeviation from './PriceSurvey/PriceDeviation';
 import GoodUpdate from './GoodUpdate';
 import GoodAdd from './GoodAdd';
 import GroupManage from './GroupManage/index';
-
+import {setGoodsInfo} from "../action/actionCreator";
 import PriceSurvey from './PriceSurvey/PriceSurvey';
 import Camera from 'react-native-camera';
 
@@ -73,13 +74,13 @@ class Query extends Component {
     onCodigoSelect(code) {
         const merchantId = this.props.merchantId;
         var codigo = code.codigo;
-       // var sessionId = this.props.sessionId;
+        // var sessionId = this.props.sessionId;
         Proxy.post({
             url: Config.server + "/func/commodity/getSupnuevoBuyerPriceFormByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-               // 'Cookie': sessionId,
+                // 'Cookie': sessionId,
             },
             //body: "codigo=" + codigo + "&supnuevoMerchantId=" + merchantId
             body: {
@@ -112,6 +113,7 @@ class Query extends Component {
                 selectedCodeInfo: goodInfo, codigo: codigo, priceShow: goodInfo.priceShow,
                 inputPrice: goodInfo.priceShow, printType: newPrintType, goods: goods, hasCodigo: true
             });
+            this.goodsfromPriceD();
         }, (err) => {
             this.setState({codesModalVisible: false});
 
@@ -178,17 +180,28 @@ class Query extends Component {
         }
     }
 
+    navigatePriceDeviation() {
+        const {navigator} = this.props;
+        if (navigator) {
+            navigator.push({
+                name: 'priceDeviation',
+                component: priceDeviation,
+                params: {}
+            })
+        }
+    }
+
     navigateGoodAdd() {
         const {navigator} = this.props;
         const {merchantId} = this.props;
-       // var sessionId = this.props.sessionId;
+        // var sessionId = this.props.sessionId;
         Proxy.post({
             url: Config.server + '/func/commodity/getSupnuevoCommodityTaxInfoListMobile',
             //url:Config.server+'supnuevo/supnuevoGetSupnuevoCommodityTaxInfoListMobile.do',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-              //  'Cookie': sessionId,
+                //  'Cookie': sessionId,
             },
             //body:"merchantId=" + merchantId
             body: {
@@ -205,7 +218,9 @@ class Query extends Component {
                 json.taxArr.map(function (index, i) {
                     taxArr.push(index);
                 })
-                if(json.sizeArr===undefined){json.sizeArr=[];}
+                if (json.sizeArr === undefined) {
+                    json.sizeArr = [];
+                }
                 json.sizeArr.map(function (index, i) {
                     sizeArr.push(index);
                 })
@@ -256,13 +271,13 @@ class Query extends Component {
     navigateGoodUpdate() {
         const {navigator} = this.props;
         const {merchantId} = this.props;
-       // var sessionId = this.props.sessionId;
+        // var sessionId = this.props.sessionId;
         Proxy.post({
             url: Config.server + '/func/commodity/getSupnuevoCommodityTaxInfoListMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
-              //  'Cookie': sessionId,
+                //  'Cookie': sessionId,
             },
             // body:"merchantId=" + merchantId
             body: {
@@ -470,7 +485,7 @@ class Query extends Component {
         var codigo = this.state.selectedCodeInfo.codigo;
         var printType = this.state.selectedCodeInfo.printType;
         var code = {codigo: codigo};
-       // var sessionId = this.props.sessionId;
+        // var sessionId = this.props.sessionId;
 
         const {merchantId} = this.props;
 
@@ -481,7 +496,7 @@ class Query extends Component {
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                     'Content-Type': 'application/json',
-                  //  'Cookie': sessionId,
+                    //  'Cookie': sessionId,
                 },
                 //body:"merchantId=" + merchantId + "&price=" + priceShow+ "&commodityId=" + commodityId+ "&printType=" + printType+ "&codigo=" + codigo
                 body: {
@@ -552,6 +567,7 @@ class Query extends Component {
 
         super(props);
         this.state = {
+
             uploadModalVisible: false,
             goods: {},
             codesModalVisible: false,
@@ -580,13 +596,39 @@ class Query extends Component {
         };
     }
 
-    render() {
+    goodsfromPriceD() {
+        const {dispatch} = this.props;
+         dispatch(setGoodsInfo({
+                 codigo: null,
+                 nombre: null,
+                 oldPrice: null,
+                 suggestPrice: null,
+                 differ: null
+             }));
+    }
 
-        var username = this.props.username;
+    render() {
+        var goodsfromPD_codigo = this.props.codigo;
+        var goodsfromPD_nobre = this.props.nombre;
+        var goodsfromPD_oldprice = this.props.oldPrice;
+        var goodsfromPD_suggestprice = this.props.suggestPrice;
+
         var codigo = this.state.selectedCodeInfo.codigo;
         var goodName = this.state.selectedCodeInfo.goodName;
         var oldPrice = this.state.selectedCodeInfo.oldPrice;
         var suggestPrice = this.state.selectedCodeInfo.suggestPrice == undefined || this.state.selectedCodeInfo.suggestPrice == null ? null : this.state.selectedCodeInfo.suggestPrice;
+        if (goodsfromPD_codigo !== null && goodsfromPD_nobre !== null) {
+            codigo = goodsfromPD_codigo;
+            goodName = goodsfromPD_nobre;
+            oldPrice = goodsfromPD_oldprice;
+            suggestPrice = goodsfromPD_suggestprice;
+
+        }
+        var username = this.props.username;
+        // var codigo = this.state.selectedCodeInfo.codigo;
+        //var goodName = this.state.selectedCodeInfo.goodName;
+        // var oldPrice = this.state.selectedCodeInfo.oldPrice;
+        //var suggestPrice = this.state.selectedCodeInfo.suggestPrice == undefined || this.state.selectedCodeInfo.suggestPrice == null ? null : this.state.selectedCodeInfo.suggestPrice;
         var fixedPrice = null;
         var prientType = this.state.printType;
 
@@ -903,7 +945,7 @@ class Query extends Component {
 
                             <View
                                 style={{flex: 3, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                                <Text >更新改价:</Text>
+                                <Text>更新改价:</Text>
                             </View>
                             <View style={{flex: 7}}>
                                 <TextInput
@@ -1218,7 +1260,7 @@ class Query extends Component {
                                 marginRight: .5, borderTopLeftRadius: 4, borderBottomLeftRadius: 4, alignItems: 'center'
                             }}
                                               onPress={
-                                                      () => {
+                                                  () => {
                                                       this.savePrice();
                                                   }}>
                                 <Text style={{color: '#fff', fontSize: 18}}>改价</Text>
@@ -1274,6 +1316,14 @@ class Query extends Component {
                             style={[styles.popoverContent, {borderBottomWidth: 1, borderBottomColor: '#ddd'}]}
                             onPress={() => {
                                 this.closePopover();
+                                this.navigatePriceDeviation();
+                            }}>
+                            <Text style={[styles.popoverText, {color: '#444'}]}>价格偏差表</Text>
+                        </TouchableOpacity>
+                        {/*<TouchableOpacity
+                            style={[styles.popoverContent, {borderBottomWidth: 1, borderBottomColor: '#ddd'}]}
+                            onPress={() => {
+                                this.closePopover();
                                 this.navigateGroupQuery();
                             }}>
                             <Text style={[styles.popoverText, {color: '#444'}]}>组商品管理</Text>
@@ -1295,7 +1345,7 @@ class Query extends Component {
                                 this.navigatePriceSurvey();
                             }}>
                             <Text style={[styles.popoverText, {color: '#444'}]}>商品价格调查</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity>*/}
 
 
                     </Popover>
@@ -1491,6 +1541,10 @@ var styles = StyleSheet.create({
 module.exports = connect(state => ({
         merchantId: state.user.supnuevoMerchantId,
         username: state.user.username,
-        sessionId: state.user.sessionId
+        sessionId: state.user.sessionId,
+        codigo: state.sale.codigo,
+        nombre: state.sale.nombre,
+        oldPrice: state.sale.oldPrice,
+        suggestPrice: state.sale.suggestPrice,
     })
 )(Query);

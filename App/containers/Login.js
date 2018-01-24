@@ -66,6 +66,9 @@ var Login = React.createClass({
 
                 dispatch(loginAction(username, password))
                     .then((json)=> {
+                        // if(json.priceModifyState==0){
+                        //     alert("改价未开启，不能使用");
+                        // }
 
                         setTimeout(()=>{
                             this.setState({showProgress:false});
