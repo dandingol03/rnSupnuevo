@@ -1,9 +1,10 @@
 import * as types from './types';
 import Config from '../../config';
+
 var Proxy = require('../proxy/Proxy');
 import PreferenceStore from '../utils/PreferenceStore';
 
-export let loginAction=function(username,password,cb) {
+export let loginAction = function (username, password, cb) {
 
     return dispatch => {
         return new Promise((resolve, reject) => {
@@ -45,20 +46,20 @@ export let loginAction=function(username,password,cb) {
                         }
                         else {
 
-                            if(json.data.priceModifyState==0){
-                                resolve({priceModifyState:0});
+                            if (json.data.priceModifyState == 0) {
+                                resolve({priceModifyState: 0});
                                 alert("改价未开启，不能使用");
-                            }else{
+                            } else {
                                 dispatch(setAnnouncement(json.data.helpContent));
                                 dispatch(setCommodityClassList(json.data.commodityClassList));
                                 dispatch(setWeightService(json.data.weightService));
                                 dispatch(getSession({
-                                    username: username,
-                                    merchantStates: json.data.merchantStates,
-                                    supnuevoMerchantId: json.data.merchantId,
-                                    merchantType: json.data.merchantType,
-                                    //sessionId: sessionId
-                                }));
+                                        username: json.data.username,
+                                        merchantStates: json.data.merchantStates,
+                                        supnuevoMerchantId: json.data.merchantId,
+                                        merchantType: json.data.merchantType,
+                                    }
+                                ));
                                 PreferenceStore.put('username', username);
                                 PreferenceStore.put('password', password);
 
@@ -66,114 +67,148 @@ export let loginAction=function(username,password,cb) {
                             }
 
                         }
-                    }).catch((err)=>{
+                    }).catch((err) => {
                         alert(err.message);
                     })
                 }
-            }).catch((err)=>{
+            }).catch((err) => {
                 resolve(err);
                 //alert(err.message);
             })
         })
     }
 
-}
+};
 
-export let setTimerAction=function (timer) {
-    return dispatch=>{
+export let getPriceDiffer = function () {
+    return dispatch => {
+        return new Promise((resolve, reject) => {
+            var versionName = "3.0";
+            Proxy.postes({
+                url: Config.server + '/func/commodity/getSupnuevoBuyerPriceDifferListMobile',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: {}
+            }).then((json) => {
+                if (json.errorMessageList !== null && json.errorMessageList !== undefined && json.errorMessageList.length > 0) {
+                    resolve(json.errorMessageList[1]);
+                }
+                else {
+
+                }
+            }).catch((err) => {
+                resolve(err);
+            })
+        })
+    }
+};
+
+export let setGoodsInfo = function (goodsinfo) {
+    return dispatch => {
         dispatch({
-            type: types.TIMER_SET,
-            timer:timer
+            type: types.SET_GOODSINFO,
+            codigo:goodsinfo.codigo,
+            nombre:goodsinfo.nombre,
+            oldPrice:goodsinfo.oldPrice,
+            suggestPrice:goodsinfo.suggestPrice,
         });
     };
 }
 
-export let clearTimerAction=function () {
-    return dispatch=>{
+export let setTimerAction = function (timer) {
+    return dispatch => {
+        dispatch({
+            type: types.TIMER_SET,
+            timer: timer
+        });
+    };
+}
+
+export let clearTimerAction = function () {
+    return dispatch => {
         dispatch({
             type: types.TIMER_CLEAR
         });
     };
 }
 
-export let setNetInfo=function (connectionInfoHistory) {
-    return dispatch=>{
+export let setNetInfo = function (connectionInfoHistory) {
+    return dispatch => {
         dispatch({
             type: types.SET_NETINFO,
-            connectionInfoHistory:connectionInfoHistory
+            connectionInfoHistory: connectionInfoHistory
         })
     };
 }
 
-export let setAnnouncement=function (string) {
-    return dispatch=>{
+export let setAnnouncement = function (string) {
+    return dispatch => {
         dispatch({
             type: types.SET_ANNOUNCEMENT,
-            announcement:string
+            announcement: string
         });
     };
 }
 
-export let setCommodityClassList=function (commodityClassList) {
-    return dispatch=>{
+export let setCommodityClassList = function (commodityClassList) {
+    return dispatch => {
         dispatch({
             type: types.SET_COMMODITY_CLASS_LIST,
-            commodityClassList:commodityClassList
+            commodityClassList: commodityClassList
         });
     };
 }
 
-export let setWeightService=function (weightService) {
-    return dispatch=>{
+export let setWeightService = function (weightService) {
+    return dispatch => {
         dispatch({
             type: types.SET_WEIGHT_SERVICE,
-            weightService:weightService
+            weightService: weightService
         });
     };
 }
 
-let getSession= (ob)=>{
-    if(ob!==null)
+let getSession = (ob) => {
+    if (ob !== null)
         return {
             type: types.AUTH_ACCESS__ACK,
-            supnuevoMerchantId:ob.supnuevoMerchantId,
-            merchantStates:ob.merchantStates,
-            auth:true,
-            validate:true,
-            username:ob.username,
+            supnuevoMerchantId: ob.supnuevoMerchantId,
+            merchantStates: ob.merchantStates,
+            auth: true,
+            validate: true,
+            username: ob.username,
         };
     else
         return {
-            type:types.AUTH_ACCESS__ACK,
-            auth:false
+            type: types.AUTH_ACCESS__ACK,
+            auth: false
         }
 }
 
-export let changeRoute=(navigator)=>{
-    if(navigator!==undefined&&navigator!==null)
-    {
+export let changeRoute = (navigator) => {
+    if (navigator !== undefined && navigator !== null) {
 
         return {
             type: types.ROUTE_CHANGE,
-            navigator:navigator
+            navigator: navigator
         };
     }
 }
 
-export let setTimer=(timer)=>{
-    if(timer!==undefined&&timer!==null)
-    {
+export let setTimer = (timer) => {
+    if (timer !== undefined && timer !== null) {
 
         return {
             type: types.TIMER_SET,
-            timer:timer
+            timer: timer
         };
     }
 }
 
-export let selectCarAction=function(car){
+export let selectCarAction = function (car) {
     return {
-        type:types.SELECT_CUSTOMER_CAR,
-        car:car
+        type: types.SELECT_CUSTOMER_CAR,
+        car: car
     }
 }

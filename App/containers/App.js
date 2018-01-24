@@ -21,6 +21,7 @@ import TabNavigator from 'react-native-tab-navigator';
 
 import Login from '../containers/Login';
 import Query from '../containers/Query';
+
 import Announcement from '../containers/Announcement';
 import Advertisement from '../containers/Advertisement';
 
@@ -97,7 +98,6 @@ class App extends React.Component {
                             //this.props.dispatch(updateNavigator({route:route.name,navigator:navigator}))
                             return (<Component {...route.params} navigator={navigator} />);
                           }}
-
                     />
 
 
