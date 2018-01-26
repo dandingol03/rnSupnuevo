@@ -130,6 +130,13 @@ class Stock extends Component {
     renderRow(rowData) {
         const {dispatch} = this.props;
         this.state.merchantId = rowData.merchantId;
+        var price=null;
+        if(rowData.price!==null){
+            price=rowData.price;
+        }
+        else{
+            price=rowData.oldPrice;
+        }
         var row =
             <View>
                 <TouchableOpacity onPress={() => {
@@ -137,6 +144,7 @@ class Stock extends Component {
                         codigo: rowData.codigo,
                         nombre: rowData.nombre,
                         oldPrice: rowData.oldPrice,
+                        price: rowData.price,
                         suggestPrice: rowData.suggestPrice,
                         differ: rowData.differ
                     }));
@@ -151,7 +159,7 @@ class Stock extends Component {
                             <Text style={{flex: 2}}>{rowData.nombre}</Text>
                         </View>
                         <View style={{paddingTop: 5, flexDirection: 'row'}}>
-                            <Text style={{flex: 1}}>原价：{rowData.oldPrice}</Text>
+                            <Text style={{flex: 1}}>原价：{price}</Text>
                             <Text style={{flex: 1}}>建议价格：{rowData.suggestPrice}</Text>
                             <Text style={{flex: 1}}>偏差：{rowData.differ}%</Text>
                         </View>

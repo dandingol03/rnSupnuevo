@@ -10,6 +10,7 @@ const initialState = {
     codigo:null,
     nombre:null,
     oldPrice:null,
+    price: null,
     suggestPrice:null,
 };
 
@@ -32,6 +33,7 @@ let sale = (state = initialState, action) => {
             return Object.assign({}, state, {
                 codigo:action.codigo,
                 nombre:action.nombre,
+                price: action.price,
                 oldPrice:action.oldPrice,
                 suggestPrice:action.suggestPrice,
             });
