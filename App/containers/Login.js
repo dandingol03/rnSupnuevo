@@ -72,7 +72,7 @@ var Login = React.createClass({
 
                         setTimeout(()=>{
                             this.setState({showProgress:false});
-                            alert("登录超时");
+                            //alert("登录超时");
                         },100)
                     });
 

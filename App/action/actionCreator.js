@@ -24,6 +24,8 @@ export let loginAction = function (username, password, cb) {
             }).then((json) => {
 
                 if (json.errorMessageList !== null && json.errorMessageList !== undefined && json.errorMessageList.length > 0) {
+                    alert(json.errorMessageList[1]);
+                    dispatch(clearTimerAction());
                     resolve(json.errorMessageList[1]);
                 }
                 else {
@@ -111,6 +113,7 @@ export let setGoodsInfo = function (goodsinfo) {
             codigo:goodsinfo.codigo,
             nombre:goodsinfo.nombre,
             oldPrice:goodsinfo.oldPrice,
+            price: goodsinfo.price,
             suggestPrice:goodsinfo.suggestPrice,
         });
     };
@@ -169,7 +172,7 @@ export let setWeightService = function (weightService) {
     };
 }
 
-let getSession = (ob) => {
+export let getSession = (ob) => {
     if (ob !== null)
         return {
             type: types.AUTH_ACCESS__ACK,

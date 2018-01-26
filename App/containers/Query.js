@@ -598,13 +598,15 @@ class Query extends Component {
 
     goodsfromPriceD() {
         const {dispatch} = this.props;
-         dispatch(setGoodsInfo({
-                 codigo: null,
-                 nombre: null,
-                 oldPrice: null,
-                 suggestPrice: null,
-                 differ: null
-             }));
+        dispatch(setGoodsInfo({
+            codigo: null,
+            nombre: null,
+            oldPrice: null,
+            price: null,
+            suggestPrice: null,
+            differ: null,
+
+        }));
     }
 
     render() {
