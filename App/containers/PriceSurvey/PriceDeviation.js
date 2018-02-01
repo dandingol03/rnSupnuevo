@@ -39,6 +39,7 @@ class Stock extends Component {
             infoList: null,
             sortList: null,
             orderType: 0,
+            wait:false,
         };
     }
 
@@ -103,7 +104,8 @@ class Stock extends Component {
 
     getPriceD() {
         var infoList = null;
-        var orderType = this.state.orderType;
+        var orderType = this.state.orderType.toString();
+        this.setState({wait:true});
         Proxy.post({
             url: Config.server + "/func/commodity/getSupnuevoBuyerPriceDifferListMobile",
             headers: {
@@ -118,7 +120,7 @@ class Stock extends Component {
                 alert(errorMsg);
             } else {
                 infoList = json.priceList;
-                this.setState({infoList: infoList});
+                this.setState({infoList: infoList,wait:false});
                 /*for(var i=0;i<40;i++){
                     sortList[i]=infoList[i];
                 }
@@ -146,7 +148,8 @@ class Stock extends Component {
                         oldPrice: rowData.oldPrice,
                         price: rowData.price,
                         suggestPrice: rowData.suggestPrice,
-                        differ: rowData.differ
+                        differ: rowData.differ,
+                        suggestLevel:1,
                     }));
                     this.navigatorQuary();
                 }}>
@@ -232,6 +235,7 @@ class Stock extends Component {
                                 marginRight: 10,
                                 borderRadius: 4
                             }}
+                            disabled={this.state.wait}
                             onPress={() => {
                                 this.sortchangeorder()
                             }}

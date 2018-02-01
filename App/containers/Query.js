@@ -111,7 +111,8 @@ class Query extends Component {
             var goods = this.state.goods;
             this.setState({
                 selectedCodeInfo: goodInfo, codigo: codigo, priceShow: goodInfo.priceShow,
-                inputPrice: goodInfo.priceShow, printType: newPrintType, goods: goods, hasCodigo: true
+                inputPrice: goodInfo.priceShow, printType: newPrintType, goods: goods, hasCodigo: true,
+                Gsuggestlevel: goodInfo.suggestLevel
             });
             this.goodsfromPriceD();
         }, (err) => {
@@ -567,7 +568,7 @@ class Query extends Component {
 
         super(props);
         this.state = {
-
+            Gsuggestlevel: null,
             uploadModalVisible: false,
             goods: {},
             codesModalVisible: false,
@@ -614,7 +615,7 @@ class Query extends Component {
         var goodsfromPD_nobre = this.props.nombre;
         var goodsfromPD_oldprice = this.props.oldPrice;
         var goodsfromPD_suggestprice = this.props.suggestPrice;
-
+        var suggestlevel = this.state.Gsuggestlevel;
         var codigo = this.state.selectedCodeInfo.codigo;
         var goodName = this.state.selectedCodeInfo.goodName;
         var oldPrice = this.state.selectedCodeInfo.oldPrice;
@@ -624,7 +625,7 @@ class Query extends Component {
             goodName = goodsfromPD_nobre;
             oldPrice = goodsfromPD_oldprice;
             suggestPrice = goodsfromPD_suggestprice;
-
+            suggestlevel=1;
         }
         var username = this.props.username;
         // var codigo = this.state.selectedCodeInfo.codigo;
@@ -634,6 +635,7 @@ class Query extends Component {
         var fixedPrice = null;
         var prientType = this.state.printType;
 
+        //var suggestlevel = 1;
         var displayArea = {x: 5, y: 20, width: width, height: height - 25};
 
         return (
@@ -834,7 +836,6 @@ class Query extends Component {
                                 flex: 1, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#387ef5',
                                 marginRight: .5, borderTopLeftRadius: 4, borderBottomLeftRadius: 4
                             }}>
-
                                 <TouchableOpacity style={{justifyContent: 'center'}}
                                                   onPress={
                                                       () => {
@@ -846,23 +847,68 @@ class Query extends Component {
                             </View>
 
                             <View style={{
-                                flex: 1, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#387ef5',
+                                flex: 1,
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                                backgroundColor: '#387ef5',
                                 marginRight: .5
                             }}>
                                 {
                                     suggestPrice == undefined || suggestPrice == null ?
                                         <Text style={{'fontSize': 14, color: '#fff'}}></Text> :
-                                        <TouchableOpacity style={{justifyContent: 'center'}}
-                                                          onPress={
-                                                              () => {
-                                                                  this.updatePrice(suggestPrice);
-                                                              }}>
-                                            <Text style={{'fontSize': 14, color: '#fff'}}>{suggestPrice}</Text>
-                                        </TouchableOpacity>
-
-
-                                }
-                            </View>
+                                        <View style={{ flexDirection: 'row',
+                                            justifyContent: 'center',}}>
+                                            {
+                                                suggestlevel == 1 ?
+                                                    <TouchableOpacity style={{justifyContent: 'center'}}
+                                                                      onPress={
+                                                                          () => {
+                                                                              this.updatePrice(suggestPrice);
+                                                                          }}>
+                                                        <Text style={{
+                                                            'fontSize': 14,
+                                                            color: '#0B0B0B'
+                                                        }}>{suggestPrice}</Text>
+                                                    </TouchableOpacity> :
+                                                    <View style={{ flexDirection: 'row',
+                                                        justifyContent: 'center',}}>
+                                                        {
+                                                            suggestlevel == 2 ?
+                                                                <TouchableOpacity style={{justifyContent: 'center'}}
+                                                                                  onPress={
+                                                                                      () => {
+                                                                                          this.updatePrice(suggestPrice);
+                                                                                      }}>
+                                                                    <Text style={{
+                                                                        'fontSize': 14,
+                                                                        color: '#aaa'
+                                                                    }}>{suggestPrice}</Text>
+                                                                </TouchableOpacity> :
+                                                                <View style={{ flexDirection: 'row',
+                                                                    justifyContent: 'center',}}>
+                                                                    {
+                                                                        suggestlevel != null || suggestlevel != undefined ?
+                                                                            <TouchableOpacity
+                                                                                style={{justifyContent: 'center'}}
+                                                                                onPress={
+                                                                                    () => {
+                                                                                        this.updatePrice(suggestPrice);
+                                                                                    }}>
+                                                                                <Text style={{
+                                                                                    'fontSize': 14,
+                                                                                    color: '#fff'
+                                                                                }}>{suggestPrice}</Text>
+                                                                            </TouchableOpacity> :
+                                                                            <Text style={{
+                                                                                    'fontSize': 14,
+                                                                                    color: '#fff'
+                                                                                }}></Text>
+                                                                    }
+                                                                </View>
+                                                        }
+                                                    </View>
+                                            }</View>
+                                }</View>
                             <View style={{
                                 flex: 1, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#387ef5',
                                 borderTopRightRadius: 4, borderBottomRightRadius: 4
@@ -939,8 +985,7 @@ class Query extends Component {
                             borderLeftWidth: 1,
                             borderRightWidth: 1,
                             borderColor: '#aaa',
-                            borderBottomColor: '#aaa'
-                            ,
+                            borderBottomColor: '#aaa',
                             paddingLeft: 8,
                             paddingRight: 12
                         }]}>
@@ -1548,5 +1593,6 @@ module.exports = connect(state => ({
         nombre: state.sale.nombre,
         oldPrice: state.sale.oldPrice,
         suggestPrice: state.sale.suggestPrice,
+        suggestLevel:1,
     })
 )(Query);
