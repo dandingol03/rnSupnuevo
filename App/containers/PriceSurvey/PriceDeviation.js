@@ -148,7 +148,8 @@ class Stock extends Component {
                         oldPrice: rowData.oldPrice,
                         price: rowData.price,
                         suggestPrice: rowData.suggestPrice,
-                        differ: rowData.differ
+                        differ: rowData.differ,
+                        suggestLevel:1,
                     }));
                     this.navigatorQuary();
                 }}>

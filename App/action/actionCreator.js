@@ -115,6 +115,7 @@ export let setGoodsInfo = function (goodsinfo) {
             oldPrice:goodsinfo.oldPrice,
             price: goodsinfo.price,
             suggestPrice:goodsinfo.suggestPrice,
+            suggestLevel:goodsinfo.suggestLevel,
         });
     };
 }

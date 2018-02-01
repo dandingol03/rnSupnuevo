@@ -615,7 +615,7 @@ class Query extends Component {
         var goodsfromPD_nobre = this.props.nombre;
         var goodsfromPD_oldprice = this.props.oldPrice;
         var goodsfromPD_suggestprice = this.props.suggestPrice;
-
+        var suggestlevel = this.state.Gsuggestlevel;
         var codigo = this.state.selectedCodeInfo.codigo;
         var goodName = this.state.selectedCodeInfo.goodName;
         var oldPrice = this.state.selectedCodeInfo.oldPrice;
@@ -625,7 +625,7 @@ class Query extends Component {
             goodName = goodsfromPD_nobre;
             oldPrice = goodsfromPD_oldprice;
             suggestPrice = goodsfromPD_suggestprice;
-
+            suggestlevel=1;
         }
         var username = this.props.username;
         // var codigo = this.state.selectedCodeInfo.codigo;
@@ -634,7 +634,7 @@ class Query extends Component {
         //var suggestPrice = this.state.selectedCodeInfo.suggestPrice == undefined || this.state.selectedCodeInfo.suggestPrice == null ? null : this.state.selectedCodeInfo.suggestPrice;
         var fixedPrice = null;
         var prientType = this.state.printType;
-        var suggestlevel = this.state.Gsuggestlevel;
+
         //var suggestlevel = 1;
         var displayArea = {x: 5, y: 20, width: width, height: height - 25};
 
@@ -1593,5 +1593,6 @@ module.exports = connect(state => ({
         nombre: state.sale.nombre,
         oldPrice: state.sale.oldPrice,
         suggestPrice: state.sale.suggestPrice,
+        suggestLevel:1,
     })
 )(Query);
