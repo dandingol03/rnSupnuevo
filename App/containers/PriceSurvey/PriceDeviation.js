@@ -9,6 +9,7 @@ import {
     Text,
     TextInput,
     ListView,
+    ActivityIndicator,
     View,
     Alert,
     Modal,
@@ -36,10 +37,14 @@ class Stock extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            showProgress:false,
             infoList: null,
             sortList: null,
             orderType: 0,
-            wait:false,
+            wait: false,
+            start: 0,
+            limit: -1,
+            arrlong: 0,
         };
     }
 
@@ -103,24 +108,29 @@ class Stock extends Component {
     }
 
     getPriceD() {
-        var infoList = null;
+        var infoList = this.state.infoList;
         var orderType = this.state.orderType.toString();
-        this.setState({wait:true});
+        var start = this.state.start;
+        var max = this.state.limit;
+        this.setState({wait: true,showProgress:true});
         Proxy.post({
             url: Config.server + "/func/commodity/getSupnuevoBuyerPriceDifferListMobile",
             headers: {
                 'Content-Type': 'application/json',
             },
             body: {
-                orderType: orderType
+                orderType: orderType,
+                start: start,
+                max: max
+
             }
         }, (json) => {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
             } else {
-                infoList = json.priceList;
-                this.setState({infoList: infoList,wait:false});
+                infoList = infoList.concat(json.priceList);
+                this.setState({infoList: infoList, wait: false, arrlong: json.priceList.length,showProgress:false});
                 /*for(var i=0;i<40;i++){
                     sortList[i]=infoList[i];
                 }
@@ -132,12 +142,12 @@ class Stock extends Component {
     renderRow(rowData) {
         const {dispatch} = this.props;
         this.state.merchantId = rowData.merchantId;
-        var price=null;
-        if(rowData.price!==null){
-            price=rowData.price;
+        var price = null;
+        if (rowData.price !== null) {
+            price = rowData.price;
         }
-        else{
-            price=rowData.oldPrice;
+        else {
+            price = rowData.oldPrice;
         }
         var row =
             <View>
@@ -148,8 +158,8 @@ class Stock extends Component {
                         oldPrice: rowData.oldPrice,
                         price: rowData.price,
                         suggestPrice: rowData.suggestPrice,
-                        differ: rowData.differ,
-                        suggestLevel:1,
+                        differ: rowData.priceDiff,
+                        suggestLevel: 1,
                     }));
                     this.navigatorQuary();
                 }}>
@@ -158,13 +168,13 @@ class Stock extends Component {
                         justifyContent: 'flex-start', backgroundColor: '#fff'
                     }}>
                         <View style={{paddingTop: 5, flexDirection: 'row'}}>
-                            <Text style={{flex: 1}}>{rowData.codigo}</Text>
+                            <Text style={{flex: 1.4}}>{rowData.codigo}</Text>
                             <Text style={{flex: 2}}>{rowData.nombre}</Text>
                         </View>
                         <View style={{paddingTop: 5, flexDirection: 'row'}}>
                             <Text style={{flex: 1}}>原价：{price}</Text>
-                            <Text style={{flex: 1}}>建议价格：{rowData.suggestPrice}</Text>
-                            <Text style={{flex: 1}}>偏差：{rowData.differ}%</Text>
+                            <Text style={{flex: 1.8}}>建议价格：{rowData.suggestPrice}</Text>
+                            <Text style={{flex: 1}}>偏差：{rowData.priceDiff}%</Text>
                         </View>
 
                     </View>
@@ -181,7 +191,15 @@ class Stock extends Component {
         else {
             this.state.orderType = 0;
         }
+        this.state.infoList = null;
+        this.state.start = 0;
         this.getPriceD();
+    }
+
+    _endReached() {
+        this.state.start += this.state.arrlong;
+        if (this.state.arrlong === this.state.limit)
+            this.getPriceD();
     }
 
     render() {
@@ -196,6 +214,9 @@ class Stock extends Component {
                     automaticallyAdjustContentInsets={false}
                     dataSource={ds.cloneWithRows(data)}
                     renderRow={this.renderRow.bind(this)}
+
+                    onEndReached={this._endReached.bind(this)}
+                    onEndReachedThreshold={20}
                 />
         } else {
             this.state.infoList = [];
@@ -240,7 +261,7 @@ class Stock extends Component {
                                 this.sortchangeorder()
                             }}
                         >
-                            <View style={{padding: 10, alignItems: 'center'}}>
+                            <View style={{padding: 8, alignItems: 'center'}}>
                                 <Text style={{fontSize: 16}}>颠倒排序方式</Text>
                             </View>
                         </TouchableOpacity>
@@ -257,7 +278,7 @@ class Stock extends Component {
                                 this.goBack()
                             }}
                         >
-                            <View style={{padding: 10, alignItems: 'center'}}>
+                            <View style={{padding: 8, alignItems: 'center'}}>
                                 <Text style={{fontSize: 16}}>返回</Text>
                             </View>
                         </TouchableOpacity>
@@ -267,7 +288,26 @@ class Stock extends Component {
                             {listView}
                         </ScrollView>
                     </View>
-
+                    <Modal
+                        animationType={"fade"}
+                        transparent={true}
+                        visible={this.state.showProgress}
+                        onRequestClose={() => {this.setState({showProgress:false})}}
+                    >
+                        <View style={[styles.modalContainer,styles.modalBackgroundStyle]}>
+                            <ActivityIndicator
+                                animating={true}
+                                style={[styles.loader, {height: 80}]}
+                                size="large"
+                                color="#fff"
+                            />
+                            <View style={{flexDirection:'row',justifyContent:'center'}}>
+                                <Text style={{color:'#fff',fontSize:18,alignItems:'center'}}>
+                                    正在获取数据
+                                </Text>
+                            </View>
+                        </View>
+                    </Modal>
                 </View>
             </View>
         );
@@ -296,6 +336,14 @@ var styles = StyleSheet.create({
         backgroundColor: 'white',
         flexDirection: 'row'
     },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        padding: 20
+    },
+    modalBackgroundStyle: {
+        backgroundColor: 'rgba(0,0,0,0.3)'
+    },
     box: {
         position: 'absolute',
         right: 1 / 2 * width - 100,
@@ -305,6 +353,9 @@ var styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#387ef5',
         backgroundColor: 'transparent'
+    },
+    loader: {
+        marginTop: 10
     },
     preview: {
         flex: 1,
