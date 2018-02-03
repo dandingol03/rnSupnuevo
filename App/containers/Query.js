@@ -1313,7 +1313,7 @@ class Query extends Component {
                                 <Text style={{color: '#fff', fontSize: 18}}>改价</Text>
                             </TouchableOpacity>
 
-                            <TouchableOpacity style={{
+                           {/* <TouchableOpacity style={{
                                 flex: 1, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#387ef5',
                                 marginRight: .5, alignItems: 'center'
                             }}
@@ -1322,7 +1322,7 @@ class Query extends Component {
                                                       this.navigate_priceGroupChange();
                                                   }}>
                                 <Text style={{color: '#fff', fontSize: 18}}>组改价</Text>
-                            </TouchableOpacity>
+                            </TouchableOpacity>*/}
 
                         </View>
 
