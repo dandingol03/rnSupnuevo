@@ -37,14 +37,15 @@ class Stock extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showProgress:false,
+            showProgress: false,
             infoList: null,
             sortList: null,
             orderType: 0,
             wait: false,
             start: 0,
-            limit: -1,
+            limit: 20,
             arrlong: 0,
+            first: 1,
         };
     }
 
@@ -112,7 +113,11 @@ class Stock extends Component {
         var orderType = this.state.orderType.toString();
         var start = this.state.start;
         var max = this.state.limit;
-        this.setState({wait: true,showProgress:true});
+        if (this.state.first === 1) {
+            this.setState({wait: true, showProgress: true, first: 2});
+        }
+
+
         Proxy.post({
             url: Config.server + "/func/commodity/getSupnuevoBuyerPriceDifferListMobile",
             headers: {
@@ -130,7 +135,7 @@ class Stock extends Component {
                 alert(errorMsg);
             } else {
                 infoList = infoList.concat(json.priceList);
-                this.setState({infoList: infoList, wait: false, arrlong: json.priceList.length,showProgress:false});
+                this.setState({infoList: infoList, wait: false, arrlong: json.priceList.length, showProgress: false});
                 /*for(var i=0;i<40;i++){
                     sortList[i]=infoList[i];
                 }
@@ -193,6 +198,7 @@ class Stock extends Component {
         }
         this.state.infoList = null;
         this.state.start = 0;
+        this.state.first = 1;
         this.getPriceD();
     }
 
@@ -292,17 +298,19 @@ class Stock extends Component {
                         animationType={"fade"}
                         transparent={true}
                         visible={this.state.showProgress}
-                        onRequestClose={() => {this.setState({showProgress:false})}}
+                        onRequestClose={() => {
+                            this.setState({showProgress: false})
+                        }}
                     >
-                        <View style={[styles.modalContainer,styles.modalBackgroundStyle]}>
+                        <View style={[styles.modalContainer, styles.modalBackgroundStyle]}>
                             <ActivityIndicator
                                 animating={true}
                                 style={[styles.loader, {height: 80}]}
                                 size="large"
                                 color="#fff"
                             />
-                            <View style={{flexDirection:'row',justifyContent:'center'}}>
-                                <Text style={{color:'#fff',fontSize:18,alignItems:'center'}}>
+                            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                <Text style={{color: '#fff', fontSize: 18, alignItems: 'center'}}>
                                     正在获取数据
                                 </Text>
                             </View>
