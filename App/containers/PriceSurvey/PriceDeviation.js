@@ -43,7 +43,7 @@ class Stock extends Component {
             orderType: 0,
             wait: false,
             start: 0,
-            limit: -1,
+            limit: 20,
             arrlong: 0,
         };
     }
