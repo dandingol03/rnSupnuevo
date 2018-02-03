@@ -134,8 +134,21 @@ class Stock extends Component {
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
             } else {
-                infoList = infoList.concat(json.priceList);
-                this.setState({infoList: infoList, wait: false, arrlong: json.priceList.length, showProgress: false});
+                var orderType=this.state.orderType.toString();
+                if (json.orderType === orderType) {
+                    infoList = infoList.concat(json.priceList);
+                    this.setState({
+                        infoList: infoList,
+                        wait: false,
+                        arrlong: json.priceList.length,
+                        showProgress: false
+                    });
+                }
+                else {
+                    this.state.infoList = [];
+                }
+
+
                 /*for(var i=0;i<40;i++){
                     sortList[i]=infoList[i];
                 }
@@ -222,7 +235,7 @@ class Stock extends Component {
                     renderRow={this.renderRow.bind(this)}
 
                     onEndReached={this._endReached.bind(this)}
-                    onEndReachedThreshold={20}
+                    onEndReachedThreshold={5}
                 />
         } else {
             this.state.infoList = [];
