@@ -59,11 +59,25 @@ class Sale extends Component {
             else {
                 var commodity = {codigo: json.codigo, nombre: json.nombre, price: json.price + ""};
                 var commodityList = this.state.commodityList;
-                commodity.goodsCount = 1;
-                commodity.sum = json.price;
+                var i=0;
+                var f=0;
+                for(i=0;i<commodityList.length;i++){
+                    if(commodity.codigo===commodityList[i].codigo){
+                        f=1;
+                        commodityList[i].goodsCount++;
+                        commodityList[i].sum=commodityList[i].goodsCount*commodityList[i].price;
+                    }
+                }
+                if(i===commodityList.length&&f===0){
+                    commodity.goodsCount = 1;
+                    commodity.sum = json.price;
+                    commodityList.push(commodity);
+                }
+                //commodity.goodsCount = 1;
+                //commodity.sum = json.price;
                 /*var a=typeof (commodity.sum);
                 console.log(a+'2');*/
-                commodityList.push(commodity);
+               // commodityList.push(commodity);
                 /*var sum = 0;
                 commodityList.map((commodity) => {
                     sum = sum + commodity.price * commodity.goodsCount;
@@ -247,7 +261,7 @@ class Sale extends Component {
                         </View>
                     </View>
                     <View style={{flexDirection: 'row', flex: 1}}>
-                        <View style={{flex: 3}}>
+                        <View style={{flex: 4}}>
                             <Text>{rowData.nombre}</Text>
                         </View>
                         <View style={{flex: 1}}>

@@ -43,7 +43,7 @@ class Stock extends Component {
             orderType: 0,
             wait: false,
             start: 0,
-            limit: 20,
+            limit: 10,
             arrlong: 0,
             first: 1,
         };
@@ -113,9 +113,9 @@ class Stock extends Component {
         var orderType = this.state.orderType.toString();
         var start = this.state.start;
         var max = this.state.limit;
-        if (this.state.first === 1) {
-            this.setState({wait: true, showProgress: true, first: 2});
-        }
+        //if (this.state.first === 1) {
+        //    this.setState({wait: true, showProgress: true, first: 2});
+        //}
 
 
         Proxy.post({
@@ -158,8 +158,9 @@ class Stock extends Component {
     }
 
     renderRow(rowData) {
-        const {dispatch} = this.props;
         this.state.merchantId = rowData.merchantId;
+        const {dispatch} = this.props;
+
         var price = null;
         if (rowData.price !== null) {
             price = rowData.price;
@@ -178,6 +179,7 @@ class Stock extends Component {
                         suggestPrice: rowData.suggestPrice,
                         differ: rowData.priceDiff,
                         suggestLevel: 1,
+                        flag:1,
                     }));
                     this.navigatorQuary();
                 }}>

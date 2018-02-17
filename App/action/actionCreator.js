@@ -8,7 +8,7 @@ export let loginAction = function (username, password, cb) {
 
     return dispatch => {
         return new Promise((resolve, reject) => {
-            var versionName = "3.0";
+            var versionName = "4.0";
 
             Proxy.postes({
                 url: Config.server + '/func/auth/webLogin',
@@ -47,11 +47,14 @@ export let loginAction = function (username, password, cb) {
                                 cb(errorMsg);
                         }
                         else {
-
-                            if (json.data.priceModifyState == 0) {
+                            var priceModifyState=json.data.priceModifyState;
+                            if (priceModifyState === 0 || priceModifyState===2) {
                                 resolve({priceModifyState: 0});
                                 alert("改价未开启，不能使用");
-                            } else {
+                            } else if(priceModifyState===1){
+                                resolve({priceModifyState:1});
+                                alert("客户端版本不符，请更新客户端程序到第四版本");
+                            }else {
                                 dispatch(setAnnouncement(json.data.helpContent));
                                 dispatch(setCommodityClassList(json.data.commodityClassList));
                                 dispatch(setWeightService(json.data.weightService));
@@ -114,6 +117,7 @@ export let setGoodsInfo = function (goodsinfo) {
             nombre:goodsinfo.nombre,
             oldPrice:goodsinfo.oldPrice,
             price: goodsinfo.price,
+            flag:goodsinfo.flag,
             suggestPrice:goodsinfo.suggestPrice,
             suggestLevel:goodsinfo.suggestLevel,
         });

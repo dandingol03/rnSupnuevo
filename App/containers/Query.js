@@ -114,7 +114,7 @@ class Query extends Component {
                 inputPrice: goodInfo.priceShow, printType: newPrintType, goods: goods, hasCodigo: true,
                 Gsuggestlevel: goodInfo.suggestLevel
             });
-            this.goodsfromPriceD();
+           // this.goodsfromPriceD();
         }, (err) => {
             this.setState({codesModalVisible: false});
 
@@ -480,15 +480,16 @@ class Query extends Component {
     }
 
     savePrice() {
-        var priceShow = this.state.selectedCodeInfo.priceShow;
+        var priceShow = this.state.selectedCodeInfo.priceShow.toString();
         var priceId = this.state.selectedCodeInfo.priceId;
         var commodityId = this.state.selectedCodeInfo.commodityId;
-        var codigo = this.state.selectedCodeInfo.codigo;
-        var printType = this.state.selectedCodeInfo.printType;
+        var codigo = this.state.selectedCodeInfo.codigo.toString();
+        var printType = this.state.selectedCodeInfo.printType.toString();
         var code = {codigo: codigo};
         // var sessionId = this.props.sessionId;
 
         const {merchantId} = this.props;
+      //  alert(merchantId,codigo,printType);
 
         if (priceShow !== null && priceShow !== undefined && priceShow !== '') {
 
@@ -508,9 +509,9 @@ class Query extends Component {
                     codigo: codigo
                 }
             }, (json) => {
-
-                var errorMsg = json.errorMsg;
-                if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
+                //alert(1);
+                var errorMsg = json;
+                if (errorMsg === null && errorMsg === undefined) {
                     alert(errorMsg);
                 } else {
                     var message = json.message;
@@ -570,6 +571,7 @@ class Query extends Component {
         this.state = {
             Gsuggestlevel: null,
             uploadModalVisible: false,
+            flag: 1,
             goods: {},
             codesModalVisible: false,
             codigo: null,
@@ -612,20 +614,36 @@ class Query extends Component {
 
     render() {
         var goodsfromPD_codigo = this.props.codigo;
-        var goodsfromPD_nobre = this.props.nombre;
+        var flag=this.props.flag;
+       // var flag=this.state.flag;
+        var goodsfromPD={};
+      /*  var goodsfromPD_nobre = this.props.nombre;
         var goodsfromPD_oldprice = this.props.oldPrice;
-        var goodsfromPD_suggestprice = this.props.suggestPrice;
+        var goodsfromPD_suggestprice = this.props.suggestPrice;*/
         var suggestlevel = this.state.Gsuggestlevel;
         var codigo = this.state.selectedCodeInfo.codigo;
         var goodName = this.state.selectedCodeInfo.goodName;
         var oldPrice = this.state.selectedCodeInfo.oldPrice;
         var suggestPrice = this.state.selectedCodeInfo.suggestPrice == undefined || this.state.selectedCodeInfo.suggestPrice == null ? null : this.state.selectedCodeInfo.suggestPrice;
-        if (goodsfromPD_codigo !== null && goodsfromPD_nobre !== null) {
+        if (goodsfromPD_codigo !== null&&flag===1) {
+            const {dispatch} = this.props;
             codigo = goodsfromPD_codigo;
-            goodName = goodsfromPD_nobre;
+            suggestlevel=1;
+            dispatch(setGoodsInfo({
+                codigo: null,
+                nombre: null,
+                oldPrice: null,
+                price: null,
+                suggestPrice: null,
+                differ: null,
+                flag:0,
+            }));
+            goodsfromPD.codigo=codigo;
+            this.onCodigoSelect(goodsfromPD);
+           /* goodName = goodsfromPD_nobre;
             oldPrice = goodsfromPD_oldprice;
             suggestPrice = goodsfromPD_suggestprice;
-            suggestlevel=1;
+            suggestlevel=1;*/
         }
         var username = this.props.username;
         // var codigo = this.state.selectedCodeInfo.codigo;
@@ -1310,7 +1328,7 @@ class Query extends Component {
                                                   () => {
                                                       this.savePrice();
                                                   }}>
-                                <Text style={{color: '#fff', fontSize: 18}}>改价</Text>
+                                <Text style={{color: '#fff', fontSize: 18}}>确认</Text>
                             </TouchableOpacity>
 
                            {/* <TouchableOpacity style={{
@@ -1363,7 +1381,9 @@ class Query extends Component {
                             style={[styles.popoverContent, {borderBottomWidth: 1, borderBottomColor: '#ddd'}]}
                             onPress={() => {
                                 this.closePopover();
+
                                 this.navigatePriceDeviation();
+
                             }}>
                             <Text style={[styles.popoverText, {color: '#444'}]}>价格偏差表</Text>
                         </TouchableOpacity>
@@ -1593,6 +1613,7 @@ module.exports = connect(state => ({
         nombre: state.sale.nombre,
         oldPrice: state.sale.oldPrice,
         suggestPrice: state.sale.suggestPrice,
+        flag:state.sale.flag,
         suggestLevel:1,
     })
 )(Query);
