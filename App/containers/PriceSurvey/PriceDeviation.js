@@ -43,7 +43,7 @@ class Stock extends Component {
             orderType: 0,
             wait: false,
             start: 0,
-            limit: 10,
+            limit: 20,
             arrlong: 0,
             first: 1,
         };
@@ -157,6 +157,88 @@ class Stock extends Component {
         })
     }
 
+    getPriceDText_1() {
+        var infoList = this.state.infoList;
+        var orderType = this.state.orderType.toString();
+        var start = this.state.start;
+        var max = this.state.limit;
+        if (this.state.first === 1) {
+            this.setState({wait: true, showProgress: true, first: 2});
+        }
+        Proxy.post({
+            url: Config.server + "/func/commodity/getSupnuevoBuyerPriceDifferListMobileTest",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+                orderType: orderType,
+                start: start,
+                max: max
+
+            }
+        }, (json) => {
+            var errorMsg = json.message;
+            if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
+                alert(errorMsg);
+            } else {
+                var orderType=this.state.orderType.toString();
+                if (json.orderType === orderType) {
+                    infoList = infoList.concat(json.priceList);
+                    this.setState({
+                        infoList: infoList,
+                        wait: false,
+                        arrlong: json.priceList.length,
+                        showProgress: false
+                    });
+                }
+                else {
+                    this.state.infoList = [];
+                }
+            }
+        })
+    }
+
+    getPriceDText_2() {
+        var infoList = this.state.infoList;
+        var orderType = this.state.orderType.toString();
+        var start = this.state.start;
+        var max = this.state.limit;
+        if (this.state.first === 1) {
+            this.setState({wait: true, showProgress: true, first: 2});
+        }
+        Proxy.post({
+            url: Config.server + "/func/commodity/getSupnuevoBuyerPriceDifferListMobileTest0",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: {
+                orderType: orderType,
+                start: start,
+                max: max
+
+            }
+        }, (json) => {
+            var errorMsg = json.message;
+            if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
+                alert(errorMsg);
+            } else {
+                var orderType=this.state.orderType.toString();
+                if (json.orderType === orderType) {
+                    infoList = infoList.concat(json.priceList);
+                    this.setState({
+                        infoList: infoList,
+                        wait: false,
+                        arrlong: json.priceList.length,
+                        showProgress: false
+                    });
+                }
+                else {
+                    this.state.infoList = [];
+                }
+            }
+        })
+    }
+
     renderRow(rowData) {
         this.state.merchantId = rowData.merchantId;
         const {dispatch} = this.props;
@@ -214,13 +296,13 @@ class Stock extends Component {
         this.state.infoList = null;
         this.state.start = 0;
         this.state.first = 1;
-        this.getPriceD();
+        this.getPriceDText_2();
     }
 
     _endReached() {
         this.state.start += this.state.arrlong;
         if (this.state.arrlong === this.state.limit)
-            this.getPriceD();
+            this.getPriceDText_2();
     }
 
     render() {
@@ -242,7 +324,7 @@ class Stock extends Component {
                 />
         } else{
             this.state.infoList = [];
-            this.getPriceD();
+            this.getPriceDText_2();
         }
         return (
             <View style={{flex: 1}}>
