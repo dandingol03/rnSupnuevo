@@ -47,6 +47,7 @@ export let loginAction = function (username, password, cb) {
                                 cb(errorMsg);
                         }
                         else {
+                            //var priceModifyState=2;
                             var priceModifyState=json.data.priceModifyState;
                             if (priceModifyState === 0 || priceModifyState===2) {
                                 resolve({priceModifyState: 0});
@@ -55,6 +56,7 @@ export let loginAction = function (username, password, cb) {
                                 resolve({priceModifyState:1});
                                 alert("客户端版本不符，请更新客户端程序到第四版本");
                             }else {
+                                resolve({priceModifyState:2});
                                 dispatch(setAnnouncement(json.data.helpContent));
                                 dispatch(setCommodityClassList(json.data.commodityClassList));
                                 dispatch(setWeightService(json.data.weightService));
@@ -140,6 +142,9 @@ export let clearTimerAction = function () {
         });
     };
 }
+
+
+
 
 export let setNetInfo = function (connectionInfoHistory) {
     return dispatch => {

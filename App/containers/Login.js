@@ -31,11 +31,13 @@ import { connect } from 'react-redux';
 var {height, width} = Dimensions.get('window');
 import {BoxShadow} from 'react-native-shadow'
 
-
+var Platform = require('Platform');
 import {loginAction,setTimerAction} from '../action/actionCreator';
 
 var Proxy = require('../proxy/Proxy');
 import PreferenceStore from '../utils/PreferenceStore';
+var thiz=null;
+
 
 var Login = React.createClass({
 
@@ -47,36 +49,40 @@ var Login = React.createClass({
             if (password !== undefined && password !== null && password != '') {
                 this.setState({showProgress: true});
                 const {dispatch} = this.props;
-                this.timer = setInterval(
-                    function () {
+                if(Platform.OS==='android'){
+                    this.timer = setInterval(
+                        function () {
 
-                        var loginDot = this.state.loginDot;
-                        if (loginDot == '......')
-                            loginDot = '.';
-                        else
-                            loginDot += '.';
+                            var loginDot = this.state.loginDot;
+                            if (loginDot == '......')
+                                loginDot = '.';
+                            else
+                                loginDot += '.';
 
-                        this.setState({loginDot: loginDot});
+                            this.setState({loginDot: loginDot});
 
-                    }.bind(this)
-                    ,
-                    600
-                );
-                dispatch(setTimerAction(this.timer));
+                        }.bind(this)
+                        ,
+                        600
+                    );
+                    dispatch(setTimerAction(this.timer));
+                    dispatch(loginAction(username, password))
+                        .then((json)=> {
+                            setTimeout(()=>{
+                                this.setState({showProgress:false});
+                            },100)
 
-                dispatch(loginAction(username, password))
-                    .then((json)=> {
-                        // if(json.priceModifyState==0){
-                        //     alert("改价未开启，不能使用");
-                        // }
+                        });
+                }
 
-                        setTimeout(()=>{
-                            this.setState({showProgress:false});
-                            //alert("登录超时");
-                        },100)
-                    });
-
-            } else {
+                else{
+                    this.setState({animating:true,querenstate:true});
+                    dispatch(loginAction(username, password))
+                        .then((json)=> {
+                                this.showProgress();
+                        });
+                }
+            }else {
                 Alert.alert(
                     '错误',
                     '请填写密码后再点击登录',
@@ -102,12 +108,18 @@ var Login = React.createClass({
         }
     },
 
+    showProgress(){
+        this.setState({animating:false,querenstate:false});
+    },
+
     getInitialState: function () {
         return ({
             user: {},
+            querenstate:false,
             modalVisible: false,
             showProgress: false,
-            loginDot: '.'
+            loginDot: '.',
+            animating:false,
         });
     },
 
@@ -124,130 +136,320 @@ var Login = React.createClass({
             x: 0,
             y: 1.5,
             style: {marginVertical: 5}
-        }
+        };
+        if(Platform.OS==='android') {
+            return (
+                <View style={[styles.container]}>
 
-        return (
-            <View style={[styles.container]}>
+                    <View style={[{
+                        backgroundColor: '#387ef5',
+                        padding: 10,
+                        justifyContent: 'center',
+                        flexDirection: 'row'
+                    }]}>
+                        <Text style={{color: '#fff', fontSize: 22}}>supnuevo(4.0)</Text>
+                    </View>
 
-                <View style={[{backgroundColor:'#387ef5',padding:10,justifyContent:'center',flexDirection:'row'}]}>
-                    <Text style={{color:'#fff',fontSize:22}}>supnuevo</Text>
-                </View>
-
-                <View style={{justifyContent:'center',flexDirection:'row',padding:10,marginTop:10}}>
-                    <BoxShadow setting={shadowOpt}>
-                        <View style={{
-                        position:"relative",
-                        width: width-20,
-                        height: 200,
-                        backgroundColor: "#fff",
-                        borderRadius:3,
-                        justifyContent:'center',
-                        flexDirection:'row',
-                        padding:15,
-                        overflow:"hidden"}}>
-                            <Image style={styles.logo} source={require('../img/cart.png')}/>
-                        </View>
-                    </BoxShadow>
-                </View>
-
-                <View style={{padding:10,paddingTop:2}}>
-                    {/*输入用户名*/}
-                    <View style={[styles.row,{borderBottomWidth:0}]}>
-
-                        <View style={{flex:1,borderWidth:1,borderColor:'#ddd',flexDirection:'row'}}>
-
-                            <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-start',padding:16,
-                                paddingLeft:20,paddingRight:15,marginLeft:10}}>
-                                <Text style={{fontSize:16,color:'#444'}}>用户名</Text>
+                    <View style={{justifyContent: 'center', flexDirection: 'row', padding: 10, marginTop: 10}}>
+                        <BoxShadow setting={shadowOpt}>
+                            <View style={{
+                                position: "relative",
+                                width: width - 20,
+                                height: 200,
+                                backgroundColor: "#fff",
+                                borderRadius: 3,
+                                justifyContent: 'center',
+                                flexDirection: 'row',
+                                padding: 15,
+                                overflow: "hidden"
+                            }}>
+                                <Image style={styles.logo} source={require('../img/cart.png')}/>
                             </View>
+                        </BoxShadow>
+                    </View>
+
+                    <View style={{padding: 10, paddingTop: 2}}>
+                        {/*输入用户名*/}
+                        <View style={[styles.row, {borderBottomWidth: 0}]}>
+
+                            <View style={{flex: 1, borderWidth: 1, borderColor: '#ddd', flexDirection: 'row'}}>
+
+                                <View style={{
+                                    flex: 2,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'flex-start',
+                                    padding: 16,
+                                    paddingLeft: 20,
+                                    paddingRight: 15,
+                                    marginLeft: 10
+                                }}>
+                                    <Text style={{fontSize: 16, color: '#444'}}>用户名</Text>
+                                </View>
 
 
-                            <View style={{flex:6,flexDirection:'row',alignItems:'center'}}>
-                                <TextInput
-                                    style={{height: 46,flex:1,paddingLeft:20,paddingRight:10,paddingTop:2,paddingBottom:2,fontSize:16}}
-                                    onChangeText={(username) => {
+                                <View style={{flex: 6, flexDirection: 'row', alignItems: 'center'}}>
+                                    <TextInput
+                                        style={{
+                                            height: 46,
+                                            flex: 1,
+                                            paddingLeft: 20,
+                                            paddingRight: 10,
+                                            paddingTop: 2,
+                                            paddingBottom: 2,
+                                            fontSize: 16
+                                        }}
+                                        onChangeText={(username) => {
 
-                                    this.state.user.username=username;
-                                    this.setState({user:this.state.user});
-                                }}
-                                    value={this.state.user.username}
-                                    placeholder='在此输入用户名'
-                                    placeholderTextColor="#aaa"
-                                    underlineColorAndroid="transparent"
+                                            this.state.user.username = username;
+                                            this.setState({user: this.state.user});
+                                        }}
+                                        value={this.state.user.username}
+                                        placeholder='在此输入用户名'
+                                        placeholderTextColor="#aaa"
+                                        underlineColorAndroid="transparent"
                                     />
+                                </View>
                             </View>
                         </View>
-                    </View>
 
 
-                    {/*输入密码*/}
-                    <View style={[styles.row,{borderBottomWidth:0,borderTopWidth:0}]}>
+                        {/*输入密码*/}
+                        <View style={[styles.row, {borderBottomWidth: 0, borderTopWidth: 0}]}>
 
-                        <View style={{flex:1,borderWidth:1,borderColor:'#ddd',flexDirection:'row'}}>
+                            <View style={{flex: 1, borderWidth: 1, borderColor: '#ddd', flexDirection: 'row'}}>
 
-                            <View style={{flex:2,flexDirection:'row',alignItems:'center',justifyContent:'flex-start',padding:16,
-                                    paddingLeft:20,paddingRight:15,marginLeft:10}}>
-                                <Text style={{fontSize:16,color:'#444'}}>密码</Text>
-                            </View>
+                                <View style={{
+                                    flex: 2,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'flex-start',
+                                    padding: 16,
+                                    paddingLeft: 20,
+                                    paddingRight: 15,
+                                    marginLeft: 10
+                                }}>
+                                    <Text style={{fontSize: 16, color: '#444'}}>密码</Text>
+                                </View>
 
 
-                            <View style={{flex:6,flexDirection:'row',alignItems:'center'}}>
-                                <TextInput
-                                    style={{height: 46,flex:1,paddingLeft:20,paddingRight:10,paddingTop:2,paddingBottom:2,fontSize:16}}
-                                    onChangeText={(password) => {
-                                    this.state.user.password=password;
-                                    this.setState({user:this.state.user});
-                                }}
-                                    secureTextEntry={true}
-                                    value={this.state.user.password}
-                                    placeholder='在此输入密码'
-                                    placeholderTextColor="#aaa"
-                                    underlineColorAndroid="transparent"
+                                <View style={{flex: 6, flexDirection: 'row', alignItems: 'center'}}>
+                                    <TextInput
+                                        style={{
+                                            height: 46,
+                                            flex: 1,
+                                            paddingLeft: 20,
+                                            paddingRight: 10,
+                                            paddingTop: 2,
+                                            paddingBottom: 2,
+                                            fontSize: 16
+                                        }}
+                                        onChangeText={(password) => {
+                                            this.state.user.password = password;
+                                            this.setState({user: this.state.user});
+                                        }}
+                                        secureTextEntry={true}
+                                        value={this.state.user.password}
+                                        placeholder='在此输入密码'
+                                        placeholderTextColor="#aaa"
+                                        underlineColorAndroid="transparent"
                                     />
+                                </View>
                             </View>
                         </View>
-                    </View>
 
-                    {/*登录*/}
-                    <View style={[styles.row,{borderBottomWidth:0,marginTop:20}]}>
+                        {/*登录*/}
+                        <View style={[styles.row, {borderBottomWidth: 0, marginTop: 20}]}>
 
-                        <TouchableOpacity style={{flex:1,backgroundColor:'#387ef5',padding:12,borderRadius:6,flexDirection:'row',
-                                justifyContent:'center'}} onPress={()=>{
-                                             this.onLoginPressed()
-                                          }}>
-                            <Text style={{color:'#fff',fontSize:18}}>登录</Text>
-                        </TouchableOpacity>
-                    </View>
+                            <TouchableOpacity style={{
+                                flex: 1, backgroundColor: '#387ef5', padding: 12, borderRadius: 6, flexDirection: 'row',
+                                justifyContent: 'center'
+                            }} onPress={() => {
+                                this.onLoginPressed()
+                            }}>
+                                <Text style={{color: '#fff', fontSize: 18}}>登录</Text>
+                            </TouchableOpacity>
+                        </View>
 
 
-                    <Modal
-                        animationType={"fade"}
-                        transparent={true}
-                        visible={this.state.showProgress}
-                        onRequestClose={() => {this.setState({showProgress:false})}}
+                        <Modal
+                            animationType={"fade"}
+                            transparent={true}
+                            visible={this.state.showProgress}
+                            onRequestClose={() => {
+                                this.setState({showProgress: false})
+                            }}
                         >
-                        <View style={[styles.modalContainer,styles.modalBackgroundStyle]}>
-                            <ActivityIndicator
-                                animating={true}
-                                style={[styles.loader, {height: 80}]}
-                                size="large"
-                                color="#fff"
+                            <View style={[styles.modalContainer, styles.modalBackgroundStyle]}>
+                                <ActivityIndicator
+                                    animating={true}
+                                    style={[styles.loader, {height: 80}]}
+                                    size="large"
+                                    color="#fff"
                                 />
-                            <View style={{flexDirection:'row',justifyContent:'center'}}>
-                                <Text style={{color:'#fff',fontSize:18,alignItems:'center'}}>
-                                    登录中
-                                </Text>
-                                <Text style={{color:'#fff',fontSize:24,alignItems:'center'}}>
-                                    {this.state.loginDot}
-                                </Text>
+                                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                    <Text style={{color: '#fff', fontSize: 18, alignItems: 'center'}}>
+                                        登录中
+                                    </Text>
+                                    <Text style={{color: '#fff', fontSize: 24, alignItems: 'center'}}>
+                                        {this.state.loginDot}
+                                    </Text>
+                                </View>
                             </View>
-                        </View>
-                    </Modal>
+                        </Modal>
+
+                    </View>
 
                 </View>
+            );
+        }else{
+            return (
+                <View style={[styles.container]}>
 
-            </View>
-        );
+                    <View style={[{
+                        backgroundColor: '#387ef5',
+                        padding: 10,
+                        justifyContent: 'center',
+                        flexDirection: 'row'
+                    }]}>
+                        <Text style={{color: '#fff', fontSize: 22}}>supnuevo(4.0)</Text>
+                    </View>
+
+                    <View style={{justifyContent: 'center', flexDirection: 'row', padding: 10, marginTop: 10}}>
+                        <BoxShadow setting={shadowOpt}>
+                            <View style={{
+                                position: "relative",
+                                width: width - 20,
+                                height: 200,
+                                backgroundColor: "#fff",
+                                borderRadius: 3,
+                                justifyContent: 'center',
+                                flexDirection: 'row',
+                                padding: 15,
+                                overflow: "hidden"
+                            }}>
+                                <Image style={styles.logo} source={require('../img/cart.png')}/>
+                            </View>
+                        </BoxShadow>
+                    </View>
+
+                    <View style={{padding: 10, paddingTop: 2}}>
+                        {/*输入用户名*/}
+                        <View style={[styles.row, {borderBottomWidth: 0}]}>
+
+                            <View style={{flex: 1, borderWidth: 1, borderColor: '#ddd', flexDirection: 'row'}}>
+
+                                <View style={{
+                                    flex: 2,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'flex-start',
+                                    padding: 16,
+                                    paddingLeft: 20,
+                                    paddingRight: 15,
+                                    marginLeft: 10
+                                }}>
+                                    <Text style={{fontSize: 16, color: '#444'}}>用户名</Text>
+                                </View>
+
+
+                                <View style={{flex: 6, flexDirection: 'row', alignItems: 'center'}}>
+                                    <TextInput
+                                        style={{
+                                            height: 46,
+                                            flex: 1,
+                                            paddingLeft: 20,
+                                            paddingRight: 10,
+                                            paddingTop: 2,
+                                            paddingBottom: 2,
+                                            fontSize: 16
+                                        }}
+                                        onChangeText={(username) => {
+
+                                            this.state.user.username = username;
+                                            this.setState({user: this.state.user});
+                                        }}
+                                        value={this.state.user.username}
+                                        placeholder='在此输入用户名'
+                                        placeholderTextColor="#aaa"
+                                        underlineColorAndroid="transparent"
+                                    />
+                                </View>
+                            </View>
+                        </View>
+
+
+                        {/*输入密码*/}
+                        <View style={[styles.row, {borderBottomWidth: 0, borderTopWidth: 0}]}>
+
+                            <View style={{flex: 1, borderWidth: 1, borderColor: '#ddd', flexDirection: 'row'}}>
+
+                                <View style={{
+                                    flex: 2,
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'flex-start',
+                                    padding: 16,
+                                    paddingLeft: 20,
+                                    paddingRight: 15,
+                                    marginLeft: 10
+                                }}>
+                                    <Text style={{fontSize: 16, color: '#444'}}>密码</Text>
+                                </View>
+
+
+                                <View style={{flex: 6, flexDirection: 'row', alignItems: 'center'}}>
+                                    <TextInput
+                                        style={{
+                                            height: 46,
+                                            flex: 1,
+                                            paddingLeft: 20,
+                                            paddingRight: 10,
+                                            paddingTop: 2,
+                                            paddingBottom: 2,
+                                            fontSize: 16
+                                        }}
+                                        onChangeText={(password) => {
+                                            this.state.user.password = password;
+                                            this.setState({user: this.state.user});
+                                        }}
+                                        secureTextEntry={true}
+                                        value={this.state.user.password}
+                                        placeholder='在此输入密码'
+                                        placeholderTextColor="#aaa"
+                                        underlineColorAndroid="transparent"
+                                    />
+                                </View>
+                            </View>
+                        </View>
+
+                        {/*登录*/}
+                        <View style={[styles.row, {borderBottomWidth: 0, marginTop: 20}]}>
+
+                            <TouchableOpacity style={{
+                                flex: 1, backgroundColor: '#387ef5', padding: 12, borderRadius: 6, flexDirection: 'row',
+                                justifyContent: 'center'
+                            }}
+                                              disabled={this.state.querenstate}
+                                              onPress={() => {
+                                this.onLoginPressed()
+                            }}>
+                                <Text style={{color: '#fff', fontSize: 18}}>登录</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={[styles.modalContainerIOS]}>
+                                <ActivityIndicator
+                                    animating={this.state.animating}
+                                    color={'#000000'}
+                                    size="large"
+                                >
+                                </ActivityIndicator>
+                            </View>
+                    </View>
+                    {/*IOS端的<Modal>标签无法关闭*/}
+                </View>
+            );
+        }
 
     },
 
@@ -281,7 +483,8 @@ var Login = React.createClass({
 
 export default connect(
     (state) => ({
-        auth: state.user.auth
+        auth: state.user.auth,
+
     })
 )(Login);
 
@@ -293,7 +496,15 @@ var styles = StyleSheet.create({
     modalContainer: {
         flex: 1,
         justifyContent: 'center',
-        padding: 20
+        padding: 8,
+    },
+    modalContainerIOS: {
+        justifyContent: 'center',
+        padding: 8,
+    },
+    loader: {
+        marginTop: 10,
+
     },
     modalBackgroundStyle: {
         backgroundColor: 'rgba(0,0,0,0.3)'
@@ -320,7 +531,7 @@ var styles = StyleSheet.create({
     },
     title: {
         fontSize: 38,
-        backgroundColor: 'transparent'
+
     },
     button: {
         marginRight: 10
@@ -330,9 +541,7 @@ var styles = StyleSheet.create({
         color: 'white',
         alignSelf: 'center'
     },
-    loader: {
-        marginTop: 10
-    },
+
     error: {
         color: 'red',
         paddingTop: 10,

@@ -113,9 +113,9 @@ class Stock extends Component {
         var orderType = this.state.orderType.toString();
         var start = this.state.start;
         var max = this.state.limit;
-        //if (this.state.first === 1) {
-        //    this.setState({wait: true, showProgress: true, first: 2});
-        //}
+        if (this.state.first === 1) {
+            this.setState({wait: true, showProgress: true, first: 2});
+        }
 
 
         Proxy.post({
@@ -226,6 +226,7 @@ class Stock extends Component {
     render() {
 
         var listView = null;
+        var wait=this.state.wait;
         const infoList = this.state.infoList;
         if (infoList !== undefined && infoList !== null) {
             var data = infoList;
@@ -239,7 +240,7 @@ class Stock extends Component {
                     onEndReached={this._endReached.bind(this)}
                     onEndReachedThreshold={5}
                 />
-        } else {
+        } else{
             this.state.infoList = [];
             this.getPriceD();
         }

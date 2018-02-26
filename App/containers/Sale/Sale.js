@@ -8,6 +8,7 @@ import {
     TouchableHighlight,
     ScrollView,
     Image,
+    ActivityIndicator,
     Text,
     TextInput,
     View,
@@ -35,7 +36,8 @@ import index from "../../reducers/index";
 class Sale extends Component {
 
 
-    codeQuery(codeNum) {
+    codeQuery(codeNum,flag) {
+        if(flag===0){
         var sessionId = this.props.sessionId;
         Proxy.postes({
             url: Config.server + '/func/sale/gerCommodityInfoByCodigoMobile',
@@ -86,40 +88,66 @@ class Sale extends Component {
             }
         }).catch((err) => {
             alert(err);
-        });
+        });}
+        else{
+            var priceA=codeNum.substring(8,10).toString();
+            var priceB=codeNum.substring(10,12).toString();
+            var commodity = {codigo: codeNum, nombre: flag, price:priceA+"."+priceB };
+            var commodityList = this.state.commodityList;
+            commodity.goodsCount = 1;
+            commodity.sum = commodity.price*1;
+            commodityList.push(commodity);
+            this.setState({commodityList: commodityList});
+        }
     }//扫码查询
 
-    queryGoodsCode(codeNum) {//查询按钮
-        Proxy.postes({
-            url: Config.server + '/func/sale/getSupnuevoBuyerPriceCommodityListByLastFourCodigoMobile',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: {
-                codigo: codeNum,
+    queryGoodsCode(codeNum,n) {//查询按钮
+        var weightService=this.props.weightService;
+        if(n===200||n===210||n===220||n===230){
+            if(n===200){
+                var a=weightService[200];
+            }else if(n===210){
+                var a=weightService[210];
+            }else if(n===220){
+                var a=weightService[220];
+            }else if(n===230){
+                var a=weightService[230];
             }
-        }).then((json) => {
-            var errorMsg = json.errorMsg;
-            if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
-                alert(errorMsg);
+            this.codeQuery(this.state.usertextinput,a);
+            this.state.usertextinput=null;
 
-            } else {
-                if (json.array.length === 1) {
-                    var code = {codigo: json.array[0].codigo, commodityId: json.array[0].commodityId}
-                    this.onCodigoSelect(code);
+        }else {
+            Proxy.postes({
+                url: Config.server + '/func/sale/getSupnuevoBuyerPriceCommodityListByLastFourCodigoMobile',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: {
+                    codigo: codeNum,
                 }
-                else {
-                    var codes = json.array;
-                    this.setState({codes: codes, codesModalVisible: true});
+            }).then((json) => {
+                var errorMsg = json.errorMsg;
+                if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
+                    alert(errorMsg);
+
+                } else {
+                    if (json.array.length === 1) {
+                        var code = {codigo: json.array[0].codigo, commodityId: json.array[0].commodityId}
+                        this.onCodigoSelect(code);
+                    }
+                    else {
+                        var codes = json.array;
+                        this.setState({codes: codes, codesModalVisible: true});
+                    }
                 }
-            }
-        }).catch((err) => {
-            alert(err);
-        });
+            }).catch((err) => {
+                alert(err);
+            });
+        }
     }
 
     onCodigoSelect(code) {
-        this.codeQuery(code.codigo);
+        this.codeQuery(code.codigo,0);
     }
 
     codeMatch(codeNum) {
@@ -174,8 +202,21 @@ class Sale extends Component {
             alert("请您先输入正确条码");
         }
         else {
-            this.state.usertextinput = null;
-            this.queryGoodsCode(userinput);
+            var a = userinput.substring(0, 3);
+            a = parseInt(a);
+            if (a === 200) {
+                this.queryGoodsCode(userinput, 200);
+            } else if (a === 210) {
+                this.queryGoodsCode(userinput, 210);
+            } else if (a === 220) {
+                this.queryGoodsCode(userinput, 220);
+            } else if (a === 230) {
+                this.queryGoodsCode(userinput, 230);
+            }
+            else {
+                this.state.usertextinput = null;
+                this.queryGoodsCode(userinput, null);
+            }
         }
     }
 
@@ -277,7 +318,7 @@ class Sale extends Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            showProgress:false,
             total: [],//每一行的sum数组
             total_1: 0,//最后显示的total总数
             total_2: 0,
@@ -556,6 +597,28 @@ class Sale extends Component {
 
                         </View>
                     </View>
+                    <Modal
+                        animationType={"fade"}
+                        transparent={true}
+                        visible={this.state.showProgress}
+                        onRequestClose={() => {
+                            this.setState({showProgress: false})
+                        }}
+                    >
+                        <View style={[styles.modalContainer, styles.modalBackgroundStyle]}>
+                            <ActivityIndicator
+                                animating={true}
+                                style={[styles.loader, {height: 80}]}
+                                size="large"
+                                color="#fff"
+                            />
+                            <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                <Text style={{color: '#fff', fontSize: 18, alignItems: 'center'}}>
+                                    正在获取数据
+                                </Text>
+                            </View>
+                        </View>
+                    </Modal>
                 </View>
 
                 <Modal
@@ -608,7 +671,7 @@ class Sale extends Component {
 
                                 var str = this.state.codeNum.substring(0, 3);
                                 if (str !== 200 && str !== 210 && str !== 220 && str !== 230) {
-                                    this.codeQuery(this.state.codeNum);
+                                    this.codeQuery(this.state.codeNum,0);
                                 }
                                 else {
                                     this.codeMatch(this.state.codeNum);
@@ -652,6 +715,7 @@ class Sale extends Component {
 
 
                 </Modal>
+
 
             </View>
         );
