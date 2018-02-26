@@ -305,6 +305,7 @@ class GoodAdd extends Component {
                 </View>
 
                 {/* body */}
+                <ScrollView>
                 <View style={{padding: 10, marginTop: 20}}>
 
 
@@ -587,6 +588,7 @@ class GoodAdd extends Component {
 
                 </View>
 
+                </ScrollView>
 
                 {/*camera part*/}
                 <Modal

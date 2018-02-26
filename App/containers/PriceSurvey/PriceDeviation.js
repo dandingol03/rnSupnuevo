@@ -43,7 +43,7 @@ class PriceDeviation extends Component {
             orderType: 0,
             wait: false,
             start: 0,
-            limit: 20,
+            limit: 10,
             arrlong: 0,
             first: 1,
         };
@@ -158,8 +158,9 @@ class PriceDeviation extends Component {
     }
 
     renderRow(rowData) {
-        const {dispatch} = this.props;
         this.state.merchantId = rowData.merchantId;
+        const {dispatch} = this.props;
+
         var price = null;
         if (rowData.price !== null) {
             price = rowData.price;
@@ -178,6 +179,7 @@ class PriceDeviation extends Component {
                         suggestPrice: rowData.suggestPrice,
                         differ: rowData.priceDiff,
                         suggestLevel: 1,
+                        flag:1,
                     }));
                     this.navigatorQuary();
                 }}>
@@ -224,6 +226,7 @@ class PriceDeviation extends Component {
     render() {
 
         var listView = null;
+        var wait=this.state.wait;
         const infoList = this.state.infoList;
         if (infoList !== undefined && infoList !== null) {
             var data = infoList;
@@ -237,7 +240,7 @@ class PriceDeviation extends Component {
                     onEndReached={this._endReached.bind(this)}
                     onEndReachedThreshold={5}
                 />
-        } else {
+        } else{
             this.state.infoList = [];
             this.getPriceD();
         }

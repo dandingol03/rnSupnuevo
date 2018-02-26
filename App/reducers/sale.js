@@ -11,6 +11,7 @@ const initialState = {
     nombre:null,
     oldPrice:null,
     price: null,
+    flag:1,
     suggestPrice:null,
     suggestLevel:null,
 };
@@ -38,6 +39,7 @@ let sale = (state = initialState, action) => {
                 oldPrice:action.oldPrice,
                 suggestPrice:action.suggestPrice,
                 suggestLevel:action.suggestLevel,
+                flag:action.flag,
             });
             break;
 

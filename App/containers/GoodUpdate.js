@@ -274,6 +274,7 @@ class GoodUpdate extends Component {
                 </View>
 
                 {/* body */}
+                <ScrollView>
                 <View style={{padding: 10, marginTop: 20}}>
 
 
@@ -554,7 +555,7 @@ class GoodUpdate extends Component {
                     </View>
 
                 </View>
-
+                </ScrollView>
             </View>);
     }
 }
