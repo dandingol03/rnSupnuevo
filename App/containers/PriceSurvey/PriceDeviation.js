@@ -32,7 +32,7 @@ var Popover = require('react-native-popover');
 import Quary from '../Query';
 import {setGoodsInfo} from "../../action/actionCreator";
 
-class Stock extends Component {
+class PriceDeviation extends Component {
 
     constructor(props) {
         super(props);
@@ -429,4 +429,4 @@ module.exports = connect(state => ({
         weightService: state.sale.weightService,
         sessionId: state.user.sessionId,
     })
-)(Stock);
+)(PriceDeviation);

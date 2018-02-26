@@ -9,6 +9,7 @@ module.exports={
     //server:'http://192.168.1.180/supnuevo',
     //server:'http://202.194.14.71',
     //server:'http://158.69.137.173:8080'
+    //server:'http://211.87.225.205:8080/supnuevo',
 
 }
 
