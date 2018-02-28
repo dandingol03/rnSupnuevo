@@ -378,9 +378,8 @@ class Stock extends Component {
                     automaticallyAdjustContentInsets={false}
                     dataSource={ds.cloneWithRows(data)}
                     renderRow={this.renderRow.bind(this)}
-
                     onEndReached={this._endReached.bind(this)}
-                    onEndReachedThreshold={20}
+                    onEndReachedThreshold={400}
                     />
         } else {
             this.state.infoList = [];
@@ -494,7 +493,6 @@ class Stock extends Component {
                                     refreshing={this.state.isRefreshing}
                                     //onRefresh={this._onRefresh()}
                                     onRefresh={this._onRefresh.bind(this)}
-
                                     tintColor="black"
                                     title="Loading"
                                     titleColor="black"

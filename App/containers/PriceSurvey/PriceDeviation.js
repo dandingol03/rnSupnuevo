@@ -43,9 +43,11 @@ class PriceDeviation extends Component {
             orderType: 0,
             wait: false,
             start: 0,
-            limit: 10,
+            limit: 20,
             arrlong: 0,
             first: 1,
+            lastend: 0,
+
         };
     }
 
@@ -134,7 +136,7 @@ class PriceDeviation extends Component {
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
             } else {
-                var orderType=this.state.orderType.toString();
+                var orderType = this.state.orderType.toString();
                 if (json.orderType === orderType) {
                     infoList = infoList.concat(json.priceList);
                     this.setState({
@@ -181,7 +183,7 @@ class PriceDeviation extends Component {
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
             } else {
-                var orderType=this.state.orderType.toString();
+                var orderType = this.state.orderType.toString();
                 if (json.orderType === orderType) {
                     infoList = infoList.concat(json.priceList);
                     this.setState({
@@ -204,10 +206,11 @@ class PriceDeviation extends Component {
         var start = this.state.start;
         var max = this.state.limit;
         if (this.state.first === 1) {
-            this.setState({wait: true, showProgress: true, first: 2});
+            this.setState({wait: true, showProgress: true, first: 2, lastend: 0});
         }
+        //console.log("发送数据"+start);
         Proxy.post({
-            url: Config.server + "/func/commodity/getSupnuevoBuyerPriceDifferListMobileTest0",
+            url: Config.server + "/func/commodity/getSupnuevoBuyerPriceDifferListMobile",
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -222,7 +225,30 @@ class PriceDeviation extends Component {
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
             } else {
-                var orderType=this.state.orderType.toString();
+                /*var lastend = this.state.lastend;
+                if (lastend === json.start) {
+                    this.state.lastend = lastend + max;
+                    var orderType = this.state.orderType.toString();
+                    if (json.orderType === orderType) {
+                        infoList = infoList.concat(json.priceList);
+                        this.setState({
+                            infoList: infoList,
+                            wait: false,
+                            arrlong: json.priceList.length,
+                            showProgress: false
+                        });
+                    }
+                    else {
+                        this.state.infoList = [];
+                    }
+                }
+                else {
+
+                    this.state.start = lastend;
+                    this.getPriceDText_2();
+                }*/
+                var orderType = this.state.orderType.toString();
+               // console.log("返回数据"+json.start);
                 if (json.orderType === orderType) {
                     infoList = infoList.concat(json.priceList);
                     this.setState({
@@ -261,7 +287,7 @@ class PriceDeviation extends Component {
                         suggestPrice: rowData.suggestPrice,
                         differ: rowData.priceDiff,
                         suggestLevel: 1,
-                        flag:1,
+                        flag: 1,
                     }));
                     this.navigatorQuary();
                 }}>
@@ -308,7 +334,7 @@ class PriceDeviation extends Component {
     render() {
 
         var listView = null;
-        var wait=this.state.wait;
+        var wait = this.state.wait;
         const infoList = this.state.infoList;
         if (infoList !== undefined && infoList !== null) {
             var data = infoList;
@@ -318,11 +344,11 @@ class PriceDeviation extends Component {
                     automaticallyAdjustContentInsets={false}
                     dataSource={ds.cloneWithRows(data)}
                     renderRow={this.renderRow.bind(this)}
+                    onEndReachedThreshold={800}
+                    onEndReached={() => this._endReached()}
 
-                    onEndReached={this._endReached.bind(this)}
-                    onEndReachedThreshold={5}
                 />
-        } else{
+        } else {
             this.state.infoList = [];
             this.getPriceDText_2();
         }
@@ -388,9 +414,7 @@ class PriceDeviation extends Component {
                         </TouchableOpacity>
                     </View>
                     <View style={{flex: 7, borderBottomWidth: 1, borderColor: '#ddd'}}>
-                        <ScrollView>
-                            {listView}
-                        </ScrollView>
+                        {listView}
                     </View>
                     <Modal
                         animationType={"fade"}

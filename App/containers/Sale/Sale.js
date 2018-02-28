@@ -36,87 +36,88 @@ import index from "../../reducers/index";
 class Sale extends Component {
 
 
-    codeQuery(codeNum,flag) {
-        if(flag===0){
-        var sessionId = this.props.sessionId;
-        Proxy.postes({
-            url: Config.server + '/func/sale/gerCommodityInfoByCodigoMobile',
-            headers: {
-                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json',
-                //'Cookie':sessionId,
-            },
-            //body: "codigo=" + codeNum + "&merchantId=" + merchantId
-            body: {
-                codigo: codeNum,
-            }
-        }).then((json) => {
-            console.log('扫码返回成功');
-            var errMessage = json.errMessage;
-            if (errMessage !== null && errMessage !== undefined && errMessage !== "") {
-                alert(errMessage);
-            } else if (json.price === null) {
-                alert("该商品暂时缺少价格");
-            }
-            else {
-                var commodity = {codigo: json.codigo, nombre: json.nombre, price: json.price + ""};
-                var commodityList = this.state.commodityList;
-                var i=0;
-                var f=0;
-                for(i=0;i<commodityList.length;i++){
-                    if(commodity.codigo===commodityList[i].codigo){
-                        f=1;
-                        commodityList[i].goodsCount++;
-                        commodityList[i].sum=commodityList[i].goodsCount*commodityList[i].price;
+    codeQuery(codeNum, flag) {
+        if (flag === 0) {
+            var sessionId = this.props.sessionId;
+            Proxy.postes({
+                url: Config.server + '/func/sale/gerCommodityInfoByCodigoMobile',
+                headers: {
+                    //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                    'Content-Type': 'application/json',
+                    //'Cookie':sessionId,
+                },
+                //body: "codigo=" + codeNum + "&merchantId=" + merchantId
+                body: {
+                    codigo: codeNum,
+                }
+            }).then((json) => {
+                console.log('扫码返回成功');
+                var errMessage = json.errMessage;
+                if (errMessage !== null && errMessage !== undefined && errMessage !== "") {
+                    alert(errMessage);
+                } else if (json.price === null) {
+                    alert("该商品暂时缺少价格");
+                }
+                else {
+                    var commodity = {codigo: json.codigo, nombre: json.nombre, price: json.price + ""};
+                    var commodityList = this.state.commodityList;
+                    var i = 0;
+                    var f = 0;
+                    for (i = 0; i < commodityList.length; i++) {
+                        if (commodity.codigo === commodityList[i].codigo) {
+                            f = 1;
+                            commodityList[i].goodsCount++;
+                            commodityList[i].sum = commodityList[i].goodsCount * commodityList[i].price;
+                        }
                     }
+                    if (i === commodityList.length && f === 0) {
+                        commodity.goodsCount = 1;
+                        commodity.sum = json.price;
+                        commodityList.push(commodity);
+                    }
+                    //commodity.goodsCount = 1;
+                    //commodity.sum = json.price;
+                    /*var a=typeof (commodity.sum);
+                    console.log(a+'2');*/
+                    // commodityList.push(commodity);
+                    /*var sum = 0;
+                    commodityList.map((commodity) => {
+                        sum = sum + commodity.price * commodity.goodsCount;
+                    });*/
+                    this.setState({commodityList: commodityList});
                 }
-                if(i===commodityList.length&&f===0){
-                    commodity.goodsCount = 1;
-                    commodity.sum = json.price;
-                    commodityList.push(commodity);
-                }
-                //commodity.goodsCount = 1;
-                //commodity.sum = json.price;
-                /*var a=typeof (commodity.sum);
-                console.log(a+'2');*/
-               // commodityList.push(commodity);
-                /*var sum = 0;
-                commodityList.map((commodity) => {
-                    sum = sum + commodity.price * commodity.goodsCount;
-                });*/
-                this.setState({commodityList: commodityList});
-            }
-        }).catch((err) => {
-            alert(err);
-        });}
-        else{
-            var priceA=codeNum.substring(8,10).toString();
-            var priceB=codeNum.substring(10,12).toString();
-            var commodity = {codigo: codeNum, nombre: flag, price:priceA+"."+priceB };
+            }).catch((err) => {
+                alert(err);
+            });
+        }
+        else {
+            var priceA = [codeNum.substring(8, 10) * 1].toString();
+            var priceB = codeNum.substring(10, 12).toString();
+            var commodity = {codigo: codeNum, nombre: flag, price: priceA + "." + priceB};
             var commodityList = this.state.commodityList;
             commodity.goodsCount = 1;
-            commodity.sum = commodity.price*1;
+            commodity.sum = commodity.price * 1;
             commodityList.push(commodity);
             this.setState({commodityList: commodityList});
         }
     }//扫码查询
 
-    queryGoodsCode(codeNum,n) {//查询按钮
-        var weightService=this.props.weightService;
-        if(n===200||n===210||n===220||n===230){
-            if(n===200){
-                var a=weightService[200];
-            }else if(n===210){
-                var a=weightService[210];
-            }else if(n===220){
-                var a=weightService[220];
-            }else if(n===230){
-                var a=weightService[230];
+    queryGoodsCode(codeNum, n) {//查询按钮
+        var weightService = this.props.weightService;
+        if (n === 200 || n === 210 || n === 220 || n === 230) {
+            if (n === 200) {
+                var a = weightService[200];
+            } else if (n === 210) {
+                var a = weightService[210];
+            } else if (n === 220) {
+                var a = weightService[220];
+            } else if (n === 230) {
+                var a = weightService[230];
             }
-            this.codeQuery(this.state.usertextinput,a);
-            this.state.usertextinput=null;
+            this.codeQuery(this.state.usertextinput, a);
+            this.state.usertextinput = null;
 
-        }else {
+        } else {
             Proxy.postes({
                 url: Config.server + '/func/sale/getSupnuevoBuyerPriceCommodityListByLastFourCodigoMobile',
                 headers: {
@@ -147,7 +148,7 @@ class Sale extends Component {
     }
 
     onCodigoSelect(code) {
-        this.codeQuery(code.codigo,0);
+        this.codeQuery(code.codigo, 0);
     }
 
     codeMatch(codeNum) {
@@ -198,7 +199,7 @@ class Sale extends Component {
 
     chaxun() {
         var userinput = this.state.usertextinput;
-        if (userinput === null || userinput === 0 || userinput === "" || userinput.length < 4 || userinput.length > 13) {
+        if (userinput === null || userinput === 0 || userinput === "" || userinput.length < 4 || userinput.length > 13 ) {
             alert("请您先输入正确条码");
         }
         else {
@@ -282,34 +283,34 @@ class Sale extends Component {
         this.state.total_1 = sum_1;
 
         var row = (
-                <View style={{
-                    flex: 1,
-                    backgroundColor: '#fff',
-                    marginTop: 5,
-                    marginBottom: 5,
-                    borderBottomWidth: 1,
-                    borderColor: '#eee',
-                    padding: 5
-                }}>
+            <View style={{
+                flex: 1,
+                backgroundColor: '#fff',
+                marginTop: 5,
+                marginBottom: 5,
+                borderBottomWidth: 1,
+                borderColor: '#eee',
+                padding: 5
+            }}>
 
+                <View style={{flexDirection: 'row', flex: 1}}>
                     <View style={{flexDirection: 'row', flex: 1}}>
-                        <View style={{flexDirection: 'row', flex: 1}}>
-                            <Text> {rowData.goodsCount} * </Text>
-                            <Text> {rowData.price}</Text>
-                        </View>
-                        <View style={{flex: 3}}>
-                            <Text>{rowData.codigo}</Text>
-                        </View>
+                        <Text> {rowData.goodsCount} * </Text>
+                        <Text> {rowData.price}</Text>
                     </View>
-                    <View style={{flexDirection: 'row', flex: 1}}>
-                        <View style={{flex: 4}}>
-                            <Text>{rowData.nombre}</Text>
-                        </View>
-                        <View style={{flex: 1}}>
-                            <Text>{sum}</Text>
-                        </View>
+                    <View style={{flex: 3}}>
+                        <Text>{rowData.codigo}</Text>
                     </View>
                 </View>
+                <View style={{flexDirection: 'row', flex: 1}}>
+                    <View style={{flex: 4}}>
+                        <Text>{rowData.nombre}</Text>
+                    </View>
+                    <View style={{flex: 1}}>
+                        <Text>{sum}</Text>
+                    </View>
+                </View>
+            </View>
         );
 
         return row;
@@ -318,7 +319,7 @@ class Sale extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showProgress:false,
+            showProgress: false,
             total: [],//每一行的sum数组
             total_1: 0,//最后显示的total总数
             total_2: 0,
@@ -393,12 +394,12 @@ class Sale extends Component {
 
     total() {
         var total = 0;
-        var i=0;
+        var i = 0;
         var commdiList = this.state.commodityList;
         for (var value of commdiList) {
             total += value.sum;
         }
-        total+="";
+        total += "";
         i = total.indexOf(".");
         if (i != -1) {
             // alert(i);
@@ -410,19 +411,19 @@ class Sale extends Component {
             }
             total = total.substring(0, i + 2);
         }
-        total=total*1;
+        total = total * 1;
         return total;
     }
 
-    onRowDidClose(secId, rowId,rows,translateX) {
-        var obj=Object.entries(rows);
-        var obj_1=obj[rowId];
-        var Swiperow=obj_1[1];
+    onRowDidClose(secId, rowId, rows, translateX) {
+        var obj = Object.entries(rows);
+        var obj_1 = obj[rowId];
+        var Swiperow = obj_1[1];
         //alert(Swiperow._translateX._value);
-        if(Swiperow._translateX._value>0){
+        if (Swiperow._translateX._value > 0) {
             this.goodcountsadd(rowId);
         }
-        else if(Swiperow._translateX._value<0){
+        else if (Swiperow._translateX._value < 0) {
             this.goodcountsjian(rowId);
         }
     }
@@ -671,7 +672,7 @@ class Sale extends Component {
 
                                 var str = this.state.codeNum.substring(0, 3);
                                 if (str !== 200 && str !== 210 && str !== 220 && str !== 230) {
-                                    this.codeQuery(this.state.codeNum,0);
+                                    this.codeQuery(this.state.codeNum, 0);
                                 }
                                 else {
                                     this.codeMatch(this.state.codeNum);
