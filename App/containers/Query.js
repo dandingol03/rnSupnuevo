@@ -28,7 +28,7 @@ var Popover = require('react-native-popover');
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../proxy/Proxy');
+var proxy = require('../proxy/Proxy');
 import Config from '../../config';
 import CodesModal from '../components/modal/CodesModal';
 import Group from './Group';
@@ -75,7 +75,7 @@ class Query extends Component {
         const merchantId = this.props.merchantId;
         var codigo = code.codigo;
         // var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/commodity/getSupnuevoBuyerPriceFormByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -87,7 +87,7 @@ class Query extends Component {
                 codigo: codigo,
                 supnuevoMerchantId: merchantId
             }
-        }, (json) => {
+        }).then((json)=> {
             var goodInfo = json.object;
 
             if (goodInfo.setSizeValue != undefined && goodInfo.setSizeValue != null
@@ -114,8 +114,8 @@ class Query extends Component {
                 inputPrice: goodInfo.priceShow, printType: newPrintType, goods: goods, hasCodigo: true,
                 Gsuggestlevel: goodInfo.suggestLevel
             });
-           // this.goodsfromPriceD();
-        }, (err) => {
+            // this.goodsfromPriceD();
+        }).catch((err) => {
             this.setState({codesModalVisible: false});
 
             setTimeout(() => {
@@ -139,7 +139,7 @@ class Query extends Component {
         const {merchantId} = this.props;
         //var sessionId = this.props.sessionId;
 
-        Proxy.postes({
+        proxy.postes({
             url: Config.server + '/func/commodity/getQueryDataListByInputStringMobile',
             headers: {
                 'Content-Type': 'application/json',
@@ -196,7 +196,7 @@ class Query extends Component {
         const {navigator} = this.props;
         const {merchantId} = this.props;
         // var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + '/func/commodity/getSupnuevoCommodityTaxInfoListMobile',
             //url:Config.server+'supnuevo/supnuevoGetSupnuevoCommodityTaxInfoListMobile.do',
             headers: {
@@ -208,7 +208,7 @@ class Query extends Component {
             body: {
                 merchantId: merchantId
             }
-        }, (json) => {
+        }).then((json)=> {
 
             var errorMsg = json.errorMsg;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
@@ -252,7 +252,7 @@ class Query extends Component {
                 }
 
             }
-        }, (err) => {
+        }).catch((err) => {
             setTimeout(() => {
                 Alert.alert(
                     '错误',
@@ -273,7 +273,7 @@ class Query extends Component {
         const {navigator} = this.props;
         const {merchantId} = this.props;
         // var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + '/func/commodity/getSupnuevoCommodityTaxInfoListMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -284,7 +284,7 @@ class Query extends Component {
             body: {
                 merchantId: merchantId
             }
-        }, (json) => {
+        }).then((json)=> {
 
             var errorMsg = json.errorMsg;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
@@ -331,7 +331,7 @@ class Query extends Component {
                     alert('请先选择要修改的商品！');
                 }
             }
-        }, (err) => {
+        }).catch((err) => {
             setTimeout(() => {
                 Alert.alert(
                     '错误',
@@ -480,48 +480,54 @@ class Query extends Component {
     }
 
     savePrice() {
-        var priceShow = this.state.selectedCodeInfo.priceShow.toString();
-        var priceId = this.state.selectedCodeInfo.priceId;
-        var commodityId = this.state.selectedCodeInfo.commodityId;
-        var codigo = this.state.selectedCodeInfo.codigo.toString();
-        var printType = this.state.selectedCodeInfo.printType.toString();
-        var code = {codigo: codigo};
-        // var sessionId = this.props.sessionId;
+        if (this.state.selectedCodeInfo.priceShow !== null && this.state.selectedCodeInfo.priceShow !== undefined) {
+            var priceShow = this.state.selectedCodeInfo.priceShow.toString();
+            var priceId = this.state.selectedCodeInfo.priceId;
+            var commodityId = this.state.selectedCodeInfo.commodityId;
+            var codigo = this.state.selectedCodeInfo.codigo.toString();
+            var printType = this.state.selectedCodeInfo.printType.toString();
+            var code = {codigo: codigo};
+            // var sessionId = this.props.sessionId;
 
-        const {merchantId} = this.props;
-      //  alert(merchantId,codigo,printType);
+            const {merchantId} = this.props;
+            //  alert(merchantId,codigo,printType);
 
-        if (priceShow !== null && priceShow !== undefined && priceShow !== '') {
+            if (priceShow !== null && priceShow !== undefined && priceShow !== '') {
 
-            Proxy.post({
-                url: Config.server + '/func/commodity/saveOrUpdateSupnuevoBuyerCommodityPriceMobile',
-                headers: {
-                    //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                    'Content-Type': 'application/json',
-                    //  'Cookie': sessionId,
-                },
-                //body:"merchantId=" + merchantId + "&price=" + priceShow+ "&commodityId=" + commodityId+ "&printType=" + printType+ "&codigo=" + codigo
-                body: {
-                    merchantId: merchantId,
-                    price: priceShow,
-                    commodityId: commodityId,
-                    printType: printType,
-                    codigo: codigo
-                }
-            }, (json) => {
-                //alert(1);
-                var errorMsg = json;
-                if (errorMsg === null && errorMsg === undefined) {
-                    alert(errorMsg);
-                } else {
-                    var message = json.message;
-                    alert(message);
-                    // this.onCodigoSelect(code);
-                    this.reset();
-                }
-            });
+                proxy.postes({
+                    url: Config.server + '/func/commodity/saveOrUpdateSupnuevoBuyerCommodityPriceMobile',
+                    headers: {
+                        //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                        'Content-Type': 'application/json',
+                        //  'Cookie': sessionId,
+                    },
+                    //body:"merchantId=" + merchantId + "&price=" + priceShow+ "&commodityId=" + commodityId+ "&printType=" + printType+ "&codigo=" + codigo
+                    body: {
+                        merchantId: merchantId,
+                        price: priceShow,
+                        commodityId: commodityId,
+                        printType: printType,
+                        codigo: codigo
+                    }
+                }).then((json)=> {
+                    //alert(1);
+                    var errorMsg = json;
+                    if (errorMsg === null && errorMsg === undefined) {
+                        alert(errorMsg);
+                    } else {
+                        var message = json.message;
+                        alert(message);
+                        // this.onCodigoSelect(code);
+                        this.reset();
+                    }
+                });
 
-        } else {
+            } else {
+                alert('请输入查询商品后再进行改价!');
+            }
+
+        }
+        else {
             alert('请输入查询商品后再进行改价!');
         }
 
@@ -614,21 +620,21 @@ class Query extends Component {
 
     render() {
         var goodsfromPD_codigo = this.props.codigo;
-        var flag=this.props.flag;
-       // var flag=this.state.flag;
-        var goodsfromPD={};
-      /*  var goodsfromPD_nobre = this.props.nombre;
-        var goodsfromPD_oldprice = this.props.oldPrice;
-        var goodsfromPD_suggestprice = this.props.suggestPrice;*/
+        var flag = this.props.flag;
+        // var flag=this.state.flag;
+        var goodsfromPD = {};
+        /*  var goodsfromPD_nobre = this.props.nombre;
+          var goodsfromPD_oldprice = this.props.oldPrice;
+          var goodsfromPD_suggestprice = this.props.suggestPrice;*/
         var suggestlevel = this.state.Gsuggestlevel;
         var codigo = this.state.selectedCodeInfo.codigo;
         var goodName = this.state.selectedCodeInfo.goodName;
         var oldPrice = this.state.selectedCodeInfo.oldPrice;
         var suggestPrice = this.state.selectedCodeInfo.suggestPrice == undefined || this.state.selectedCodeInfo.suggestPrice == null ? null : this.state.selectedCodeInfo.suggestPrice;
-        if (goodsfromPD_codigo !== null&&flag===1) {
+        if (goodsfromPD_codigo !== null && flag === 1) {
             const {dispatch} = this.props;
             codigo = goodsfromPD_codigo;
-            suggestlevel=1;
+            suggestlevel = 1;
             dispatch(setGoodsInfo({
                 codigo: null,
                 nombre: null,
@@ -636,14 +642,14 @@ class Query extends Component {
                 price: null,
                 suggestPrice: null,
                 differ: null,
-                flag:0,
+                flag: 0,
             }));
-            goodsfromPD.codigo=codigo;
+            goodsfromPD.codigo = codigo;
             this.onCodigoSelect(goodsfromPD);
-           /* goodName = goodsfromPD_nobre;
-            oldPrice = goodsfromPD_oldprice;
-            suggestPrice = goodsfromPD_suggestprice;
-            suggestlevel=1;*/
+            /* goodName = goodsfromPD_nobre;
+             oldPrice = goodsfromPD_oldprice;
+             suggestPrice = goodsfromPD_suggestprice;
+             suggestlevel=1;*/
         }
         var username = this.props.username;
         // var codigo = this.state.selectedCodeInfo.codigo;
@@ -874,8 +880,10 @@ class Query extends Component {
                                 {
                                     suggestPrice == undefined || suggestPrice == null ?
                                         <Text style={{'fontSize': 14, color: '#fff'}}></Text> :
-                                        <View style={{ flexDirection: 'row',
-                                            justifyContent: 'center',}}>
+                                        <View style={{
+                                            flexDirection: 'row',
+                                            justifyContent: 'center',
+                                        }}>
                                             {
                                                 suggestlevel == 1 ?
                                                     <TouchableOpacity style={{justifyContent: 'center'}}
@@ -888,8 +896,10 @@ class Query extends Component {
                                                             color: '#0B0B0B'
                                                         }}>{suggestPrice}</Text>
                                                     </TouchableOpacity> :
-                                                    <View style={{ flexDirection: 'row',
-                                                        justifyContent: 'center',}}>
+                                                    <View style={{
+                                                        flexDirection: 'row',
+                                                        justifyContent: 'center',
+                                                    }}>
                                                         {
                                                             suggestlevel == 2 ?
                                                                 <TouchableOpacity style={{justifyContent: 'center'}}
@@ -902,8 +912,10 @@ class Query extends Component {
                                                                         color: '#aaa'
                                                                     }}>{suggestPrice}</Text>
                                                                 </TouchableOpacity> :
-                                                                <View style={{ flexDirection: 'row',
-                                                                    justifyContent: 'center',}}>
+                                                                <View style={{
+                                                                    flexDirection: 'row',
+                                                                    justifyContent: 'center',
+                                                                }}>
                                                                     {
                                                                         suggestlevel != null || suggestlevel != undefined ?
                                                                             <TouchableOpacity
@@ -918,9 +930,9 @@ class Query extends Component {
                                                                                 }}>{suggestPrice}</Text>
                                                                             </TouchableOpacity> :
                                                                             <Text style={{
-                                                                                    'fontSize': 14,
-                                                                                    color: '#fff'
-                                                                                }}></Text>
+                                                                                'fontSize': 14,
+                                                                                color: '#fff'
+                                                                            }}></Text>
                                                                     }
                                                                 </View>
                                                         }
@@ -1331,7 +1343,7 @@ class Query extends Component {
                                 <Text style={{color: '#fff', fontSize: 18}}>确认</Text>
                             </TouchableOpacity>
 
-                           {/* <TouchableOpacity style={{
+                             <TouchableOpacity style={{
                                 flex: 1, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#387ef5',
                                 marginRight: .5, alignItems: 'center'
                             }}
@@ -1340,7 +1352,7 @@ class Query extends Component {
                                                       this.navigate_priceGroupChange();
                                                   }}>
                                 <Text style={{color: '#fff', fontSize: 18}}>组改价</Text>
-                            </TouchableOpacity>*/}
+                            </TouchableOpacity>
 
                         </View>
 
@@ -1387,7 +1399,7 @@ class Query extends Component {
                             }}>
                             <Text style={[styles.popoverText, {color: '#444'}]}>价格偏差表</Text>
                         </TouchableOpacity>
-                        {/*<TouchableOpacity
+                        <TouchableOpacity
                             style={[styles.popoverContent, {borderBottomWidth: 1, borderBottomColor: '#ddd'}]}
                             onPress={() => {
                                 this.closePopover();
@@ -1405,7 +1417,7 @@ class Query extends Component {
                             <Text style={[styles.popoverText, {color: '#444'}]}>商品组维护</Text>
                         </TouchableOpacity>
 
-                        <TouchableOpacity
+                        {/*<TouchableOpacity
                             style={[styles.popoverContent, {borderBottomWidth: 1, borderBottomColor: '#ddd'}]}
                             onPress={() => {
                                 this.closePopover();
@@ -1613,7 +1625,7 @@ module.exports = connect(state => ({
         nombre: state.sale.nombre,
         oldPrice: state.sale.oldPrice,
         suggestPrice: state.sale.suggestPrice,
-        flag:state.sale.flag,
-        suggestLevel:1,
+        flag: state.sale.flag,
+        suggestLevel: 1,
     })
 )(Query);

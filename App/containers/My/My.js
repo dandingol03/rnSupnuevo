@@ -22,7 +22,7 @@ import {connect} from 'react-redux';
 import Myinfo from './Myinfo';
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ScrollableTabView, {DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import DatePicker from 'react-native-datepicker';
@@ -40,7 +40,7 @@ class My extends Component {
     setMerchantVisible(scan) {
         var scanId = parseInt(scan);
         var sessionId = this.props.sessionId;
-        Proxy.postes({
+        proxy.postes({
             url: Config.server + '/func/merchant/setMerchantVisibleEachOtherMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -84,7 +84,7 @@ class My extends Component {
 
             }
 
-        })
+        }).catch((err)=>{alert(err);});
 
 
     }
@@ -111,7 +111,7 @@ class My extends Component {
     navigatemyinfo() {
         const {navigator} = this.props;
         var sessionId = this.props.sessionId;
-        Proxy.postes({
+        proxy.postes({
             url: Config.server + '/func/merchant/getSupnuevoMerchantInfoMobile',
             headers: {
                 'Content-Type': 'application/json',

@@ -25,7 +25,7 @@ import {connect} from 'react-redux';
 import Config from '../../../config';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');

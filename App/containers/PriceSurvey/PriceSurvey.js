@@ -27,7 +27,7 @@ import DatePicker from 'react-native-datepicker';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import MultiPrices from './MultiPrices';
 import PriceCodes from './PriceCodes';
@@ -75,8 +75,8 @@ class PriceSurvey extends Component {
     fetchData() {
         const merchantId = this.props.merchantId;
         var sessionId = this.props.sessionId;
-        Proxy.post({
-            url: Config.server + "/func/commodity/getGroupInfoListOfMerchantMobile",
+        proxy.postes({
+            url: Config.server + "/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ class PriceSurvey extends Component {
             body: {
                 merchantId: merchantId
             }
-        }, (json) => {
+        }).then((json)=> {
             var o = json;
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
@@ -97,7 +97,7 @@ class PriceSurvey extends Component {
                 this.setState({groupCodes: groupCodes});
             }
 
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }
@@ -105,7 +105,7 @@ class PriceSurvey extends Component {
     fetchDataDetail(groupId, count) {
         const merchantId = this.props.merchantId;
         var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/commodity/getGroupCommodityListOfGroupMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -117,7 +117,7 @@ class PriceSurvey extends Component {
                 groupId: groupId,
                 merchantId: merchantId
             }
-        }, (json) => {
+        }).then((json)=> {
             var o = json;
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
@@ -129,7 +129,7 @@ class PriceSurvey extends Component {
                 this.navigatePriceCodes(this.state.codes, count);
             }
 
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }
@@ -138,7 +138,7 @@ class PriceSurvey extends Component {
         const merchantId = this.props.merchantId;
         var codigo = code;
         var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/commodity/getAreaGroupPriceByCommodityIdMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -150,7 +150,7 @@ class PriceSurvey extends Component {
                 commodityId: codigo,
                 merchantId: merchantId
             }
-        }, (json) => {
+        }).then((json)=> {
             var o = json;
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
@@ -159,7 +159,7 @@ class PriceSurvey extends Component {
                 this.navigateMultiPrices(o, count);
             }
 
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }
@@ -168,7 +168,7 @@ class PriceSurvey extends Component {
         //var code = parseInt(codeNum);
         const {merchantId} = this.props;
         var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + '/func/commodity/getGroupCommodityCodigoListByLastCodigoMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -180,7 +180,7 @@ class PriceSurvey extends Component {
                 codigo: codeNum,
                 merchantId: merchantId
             }
-        }, (json) => {
+        }).then((json)=> {
             var o = json;
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
@@ -195,7 +195,7 @@ class PriceSurvey extends Component {
                     this.navigateMultiPrices(o);
                 }
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }

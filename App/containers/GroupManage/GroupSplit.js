@@ -28,7 +28,7 @@ import CheckBox from 'react-native-check-box';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import _ from 'lodash';
 import CodesModal from '../../components/modal/CodesModal';
@@ -194,7 +194,7 @@ class GroupSplit extends Component{
 
         const groupInfo=this.state.groupInfo;
 
-        Proxy.post({
+        proxy.postes({
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityListOfGroupMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -204,7 +204,7 @@ class GroupSplit extends Component{
             body:{
                 groupId:groupId
             }
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -231,7 +231,7 @@ class GroupSplit extends Component{
                     this.navigateToGroupInfoManage(info,code,false);
                 }else{}
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
         });
     }
@@ -258,14 +258,14 @@ class GroupSplit extends Component{
                 codigo:codigo,
                 supnuevoMerchantId:merchantId
             }
-        Proxy.post({
+        proxy.postes({
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json'
             },
             body: body
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -296,7 +296,7 @@ class GroupSplit extends Component{
                     this.setState({groupArr: data,query:query,code:code});
                 }
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
             this.setState({query:query});
         });
@@ -310,7 +310,7 @@ class GroupSplit extends Component{
     {
 
         const { merchantId } = this.props;
-        Proxy.post({
+        proxy.postes({
             url:Config.server+'/func/commodity/getSupnuevoCommonCommodityGroupListByGroupNumMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -320,7 +320,7 @@ class GroupSplit extends Component{
             body:{
                 groupNum:groupNum
             }
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -331,7 +331,7 @@ class GroupSplit extends Component{
                 })
                 this.setState({groups: groups});
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
         });
     }
@@ -343,7 +343,7 @@ class GroupSplit extends Component{
         const {groupInfo}=this.state;
         if(groupInfo&&groupInfo.groupId!==undefined&&groupInfo.groupId!==null)
         {
-            Proxy.post({
+            proxy.postes({
                 url:Config.server+"/func/commodity/removeSupnuevoCommodityFromGroupMobile",
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -354,7 +354,7 @@ class GroupSplit extends Component{
                     commodityIds:commodityIds.toString(),
                     groupId:groupInfo.groupId
                 }
-            },(json)=> {
+            }).then((json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                     alert(errorMsg);
@@ -373,7 +373,7 @@ class GroupSplit extends Component{
                         );
                     }
                 }
-            }, (err) =>{
+            }).catch((err) =>{
                 alert(err);
 
             });
@@ -400,7 +400,7 @@ class GroupSplit extends Component{
         if(code&&code.codigo)
         {
 
-            Proxy.post({
+            proxy.postes({
                 url:Config.server+"/func/commodity/addSupnuevoCommodityIntoGroupMobile",
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -412,7 +412,7 @@ class GroupSplit extends Component{
                     groupId:groupId,
                     supnuevoMerchantId:merchantId
                 }
-            },(json)=> {
+            }).then((json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                     alert(errorMsg);
@@ -431,7 +431,7 @@ class GroupSplit extends Component{
                         );
                     }
                 }
-            }, (err) =>{
+            }).catch((err) =>{
                 alert(err);
 
             });
@@ -474,7 +474,7 @@ class GroupSplit extends Component{
                 if(commodityIds.length>=1)
                 {
 
-                    Proxy.post({
+                    proxy.postes({
                         url:Config.server+"/func/commodity/breakSupnuevoCommodityGroupMobile",
                         headers: {
                             //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -487,7 +487,7 @@ class GroupSplit extends Component{
                             groupId:groupId,
                             supnuevoMerchantId:merchantId
                         }
-                    },(json)=> {
+                    }).then((json)=> {
                         var errorMsg=json.errorMsg;
                         if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                             alert(errorMsg);
@@ -504,7 +504,7 @@ class GroupSplit extends Component{
                                 ]
                             );
                         }
-                    }, (err) =>{
+                    }).catch((err) =>{
                         alert(err);
 
                     });
@@ -545,7 +545,7 @@ class GroupSplit extends Component{
         var groupId=groupInfo.groupId;
         const {merchantId}=this.props;
 
-        Proxy.post({
+        proxy.postes({
             url:Config.server+'/func/commodity/getSupnuevoCommonCommodityListOfGroupMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -556,7 +556,7 @@ class GroupSplit extends Component{
                 groupId:groupId,
                 supnuevoMerchantId:merchantId
             }
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -590,7 +590,7 @@ class GroupSplit extends Component{
                     );
                 }
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
         });
 

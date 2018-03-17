@@ -27,7 +27,7 @@ import CheckBox from 'react-native-check-box';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../proxy/Proxy');
+var proxy = require('../proxy/Proxy');
  import Config from '../../config';
 import _ from 'lodash';
 
@@ -69,7 +69,7 @@ class Group extends Component{
 
         var merchantId=this.props.merchantId;
         var sessionId=this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url:Config.server+'/func/commodity/getSupnuevoBuyerCommodityPriceFormListOfGroupMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -81,8 +81,8 @@ class Group extends Component{
                 commodityId:commodityId,
                 merchantId:merchantId
             }
-        },(json)=> {
-            var errorMsg=json.errorMsg;
+        }).then((json)=> {
+            var errorMsg=json.errorMessage;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
 
@@ -127,7 +127,7 @@ class Group extends Component{
                     dataSource1:this.state.dataSource1.cloneWithRows(relatedGoods1),
                 });
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
         });
 
@@ -345,7 +345,7 @@ class Group extends Component{
         var sessionId=this.props.sessionId;
         //TODO:make a fetch
 
-        Proxy.post({
+        proxy.postes({
             url:Config.server+'/func/commodity/updateSupnuevoBuyerCommodityPriceGroupMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -360,11 +360,11 @@ class Group extends Component{
             body:{
                 commodityIds:selectedRelativePriceIds.toString(),
                 merchantId:merchantId,
-                priceShow:goodInfo.priceShow,
+                priceShow:goodInfo.priceShow.toString(),
                 printType:goodInfo.printType,
                 price:goodInfo.price
             }
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -378,7 +378,7 @@ class Group extends Component{
                     ]
                 );
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
         });
 

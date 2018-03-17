@@ -29,7 +29,7 @@ import Camera from 'react-native-camera';
 import {SwipeListView, SwipeRow} from 'react-native-swipe-list-view';
 import CodesModal from '../../components/modal/CodesModal';
 
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import index from "../../reducers/index";
 
@@ -39,7 +39,7 @@ class Sale extends Component {
     codeQuery(codeNum, flag) {
         if (flag === 0) {
             var sessionId = this.props.sessionId;
-            Proxy.postes({
+            proxy.postes({
                 url: Config.server + '/func/sale/gerCommodityInfoByCodigoMobile',
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -118,7 +118,8 @@ class Sale extends Component {
             this.state.usertextinput = null;
 
         } else {
-            Proxy.postes({
+            proxy.postes({
+                // url: Config.server + '/func/commodity/getQueryDataListByInputStringMobile',
                 url: Config.server + '/func/sale/getSupnuevoBuyerPriceCommodityListByLastFourCodigoMobile',
                 headers: {
                     'Content-Type': 'application/json',
@@ -199,7 +200,7 @@ class Sale extends Component {
 
     chaxun() {
         var userinput = this.state.usertextinput;
-        if (userinput === null || userinput === 0 || userinput === "" || userinput.length < 4 || userinput.length > 13 ) {
+        if (userinput === null || userinput === 0 || userinput === "" || userinput.length < 4 || userinput.length > 13) {
             alert("请您先输入正确条码");
         }
         else {
@@ -241,31 +242,36 @@ class Sale extends Component {
     }
 
     checkOut() {
-        var a = typeof (this.state.commodityList[0].price);
-        console.log(a + '1');
-        Proxy.postes({
-            url: Config.server + '/func/sale/saveCommoditySaleMobile',
-            headers: {
-                //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/json',
-                //'Cookie':sessionId,
-            },
-            //body: "codigo=" + codeNum + "&merchantId=" + merchantId
-            body: {
-                commodityList: this.state.commodityList,
-            }
-        }).then((json) => {
-            var errMessage = json.errMessage;
-            if (errMessage !== null && errMessage !== undefined && errMessage !== "") {
-                alert(errMessage);
+        var commodityList = this.state.commodityList;
+        if (commodityList !== [] && commodityList.length !== 0) {
+            proxy.postes({
+                url: Config.server + '/func/sale/saveCommoditySaleMobile',
+                headers: {
+                    //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                    'Content-Type': 'application/json',
+                    //'Cookie':sessionId,
+                },
+                //body: "codigo=" + codeNum + "&merchantId=" + merchantId
+                body: {
+                    commodityList: commodityList,
+                }
+            }).then((json) => {
+                var errMessage = json.errMessage;
+                if (errMessage !== null && errMessage !== undefined && errMessage !== "") {
+                    alert(errMessage);
 
-            } else {
-                var commodityList = [];
-                this.setState({commodityList: commodityList});
-            }
-        }).catch((err) => {
-            alert(err);
-        });
+                } else {
+                    var commodityList = [];
+                    this.setState({commodityList: commodityList});
+                }
+            }).catch((err) => {
+                alert(err);
+            });
+        }
+        else {
+            alert("没有结账内容");
+        }
+
     }
 
     renderRow(rowData, sectionId, rowId) {

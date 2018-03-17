@@ -34,7 +34,7 @@ import {BoxShadow} from 'react-native-shadow'
 var Platform = require('Platform');
 import {loginAction,setTimerAction} from '../action/actionCreator';
 
-var Proxy = require('../proxy/Proxy');
+var proxy = require('../proxy/Proxy');
 import PreferenceStore from '../utils/PreferenceStore';
 var thiz=null;
 

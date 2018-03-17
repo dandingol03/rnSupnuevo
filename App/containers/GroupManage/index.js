@@ -29,7 +29,7 @@ import CheckBox from 'react-native-check-box';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import _ from 'lodash';
 import CodesModal from '../../components/modal/CodesModal';
@@ -153,8 +153,8 @@ class GroupManage extends Component{
     fetchData(){
         const merchantId=this.props.merchantId;
         var sessionId=this.props.sessionId;
-        Proxy.post({
-            url:Config.server+"/func/commodity/getGroupInfoListOfMerchantMobile",
+        proxy.postes({
+            url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
                 'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ class GroupManage extends Component{
             body:{
                 merchantId:merchantId
             }
-        },(json)=> {
+        }).then((json)=> {
             var o = json;
             var errorMsg=json.message;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -175,7 +175,7 @@ class GroupManage extends Component{
                 this.setState({groupCodes:groupCodes});
             }
 
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
         });
     }
@@ -227,7 +227,7 @@ class GroupManage extends Component{
                 supnuevoMerchantId:merchantId
             }
 
-        Proxy.post({
+        proxy.postes({
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -235,7 +235,7 @@ class GroupManage extends Component{
                 //'Cookie':sessionId,
             },
             body: body
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -266,7 +266,7 @@ class GroupManage extends Component{
                     this.setState({groupArr: data,query:query,code:code});
                 }
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
             this.setState({query:query});
         });
@@ -280,7 +280,7 @@ class GroupManage extends Component{
 
         const { merchantId } = this.props;
         var sessionId=this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url:Config.server+'/func/commodity/getSupnuevoCommonCommodityGroupListByGroupNumMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -291,7 +291,7 @@ class GroupManage extends Component{
             body:{
                 groupNum:groupNum
             }
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 this.setState({query:{}});
@@ -305,7 +305,7 @@ class GroupManage extends Component{
                 this.navigateToGroupMaintain(groups,groupNum);
                 //this.setState({groups: groups});
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
         });
     }
@@ -337,7 +337,7 @@ class GroupManage extends Component{
                 if(groupIds.length>1)
                 {
 
-                    Proxy.post({
+                    proxy.postes({
                         url:Config.server+"/func/commodity/mergeSupnuevoCommodityGroupMobile",
                         headers: {
                             //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -350,7 +350,7 @@ class GroupManage extends Component{
                             groupName:groupName,
                             supnuevoMerchantId:merchantId
                         }
-                    },(json)=> {
+                    }).then((json)=> {
                         var errorMsg=json.errorMsg;
                         if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                             alert(errorMsg);
@@ -369,7 +369,7 @@ class GroupManage extends Component{
                             );
 
                         }
-                    }, (err) =>{
+                    }).catch((err) =>{
                         alert(err);
 
                     });
@@ -409,7 +409,7 @@ class GroupManage extends Component{
 
         var groupNum=this.state.query.groupNum;
         var sessionId=this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url:Config.server+"/func/commodity/deleteSupnuevoBuyerCommodityGroupMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -421,7 +421,7 @@ class GroupManage extends Component{
                 groupId:groupId
             }
 
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -438,7 +438,7 @@ class GroupManage extends Component{
                 );
 
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
 
         });
@@ -452,7 +452,7 @@ class GroupManage extends Component{
         var sessionId=this.props.sessionId;
         if(groupName!==undefined&&groupName!==null&&groupName!='')
         {
-            Proxy.post({
+            proxy.postes({
                 url:Config.server+'/func/commodity/saveOrUpdateSupnuevoBuyerCommodityGroupMobile',
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -466,7 +466,7 @@ class GroupManage extends Component{
                     supnuevoMerchantId:merchantId
                 }
 
-            },(json)=> {
+            }).then((json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                     alert(errorMsg);
@@ -479,7 +479,7 @@ class GroupManage extends Component{
                         ]
                     );
                 }
-            }, (err) =>{
+            }).catch((err) =>{
                 alert(err);
             });
         }else {

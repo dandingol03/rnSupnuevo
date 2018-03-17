@@ -1,7 +1,7 @@
 import * as types from './types';
 import Config from '../../config';
 
-var Proxy = require('../proxy/Proxy');
+var proxy = require('../proxy/Proxy');
 import PreferenceStore from '../utils/PreferenceStore';
 
 export let loginAction = function (username, password, cb) {
@@ -10,7 +10,7 @@ export let loginAction = function (username, password, cb) {
         return new Promise((resolve, reject) => {
             var versionName = "4.0";
 
-            Proxy.postes({
+            proxy.postes({
                 url: Config.server + '/func/auth/webLogin',
                 headers: {
                     'Content-Type': 'application/json'
@@ -29,7 +29,7 @@ export let loginAction = function (username, password, cb) {
                     resolve(json.errorMessageList[1]);
                 }
                 else {
-                    Proxy.postes({
+                    proxy.postes({
 
                         url: Config.server + '/func/merchant/getMerchantInitInfoMobile',
 
@@ -85,30 +85,6 @@ export let loginAction = function (username, password, cb) {
         })
     }
 
-};
-
-export let getPriceDiffer = function () {
-    return dispatch => {
-        return new Promise((resolve, reject) => {
-            var versionName = "3.0";
-            Proxy.postes({
-                url: Config.server + '/func/commodity/getSupnuevoBuyerPriceDifferListMobile',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: {}
-            }).then((json) => {
-                if (json.errorMessageList !== null && json.errorMessageList !== undefined && json.errorMessageList.length > 0) {
-                    resolve(json.errorMessageList[1]);
-                }
-                else {
-
-                }
-            }).catch((err) => {
-                resolve(err);
-            })
-        })
-    }
 };
 
 export let setGoodsInfo = function (goodsinfo) {

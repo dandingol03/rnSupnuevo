@@ -29,7 +29,7 @@ import CheckBox from 'react-native-check-box';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import _ from 'lodash';
 import CodesModal from '../../components/modal/CodesModal';
@@ -248,7 +248,7 @@ class GroupMaintain extends Component{
                 supnuevoMerchantId:merchantId
             }
 
-        Proxy.post({
+        proxy.postes({
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -256,7 +256,7 @@ class GroupMaintain extends Component{
                 //'Cookie':sessionId,
             },
             body: body
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -287,7 +287,7 @@ class GroupMaintain extends Component{
                     this.setState({groupArr: data,query:query,code:code});
                 }
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
             this.setState({query:query});
         });
@@ -302,7 +302,7 @@ class GroupMaintain extends Component{
 
         const { merchantId } = this.props;
         var sessionId=this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url:Config.server+'/func/commodity/getSupnuevoCommonCommodityGroupListByGroupNumMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -313,7 +313,7 @@ class GroupMaintain extends Component{
             body:{
                 groupNum:groupNum
             }
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -324,7 +324,7 @@ class GroupMaintain extends Component{
                 })
                 this.setState({groups: groups});
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
         });
     }
@@ -356,7 +356,7 @@ class GroupMaintain extends Component{
                 if(groupIds.length>1)
                 {
 
-                    Proxy.post({
+                    proxy.postes({
                         url:Config.server+"/func/commodity/mergeSupnuevoCommodityGroupMobile",
                         headers: {
                             //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -369,7 +369,7 @@ class GroupMaintain extends Component{
                             groupName:groupName,
                             supnuevoMerchantId:merchantId
                         }
-                    },(json)=> {
+                    }).then((json)=> {
                         var errorMsg=json.errorMsg;
                         if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                             alert(errorMsg);
@@ -388,7 +388,7 @@ class GroupMaintain extends Component{
                             );
 
                         }
-                    }, (err) =>{
+                    }).catch((err) =>{
                         alert(err);
 
                     });
@@ -428,7 +428,7 @@ class GroupMaintain extends Component{
 
         var groupNum=this.state.query.groupNum;
         var sessionId=this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url:Config.server+"/func/commodity/deleteSupnuevoBuyerCommodityGroupMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -439,7 +439,7 @@ class GroupMaintain extends Component{
             body:{
                 groupId:groupId
             }
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -456,7 +456,7 @@ class GroupMaintain extends Component{
                 );
 
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
 
         });
@@ -470,7 +470,7 @@ class GroupMaintain extends Component{
         const {merchantId}=this.props;
         if(groupName!==undefined&&groupName!==null&&groupName!='')
         {
-            Proxy.post({
+            proxy.postes({
                 url:Config.server+'/func/commodity/saveOrUpdateSupnuevoBuyerCommodityGroupMobile',
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -483,7 +483,7 @@ class GroupMaintain extends Component{
                     groupId:'',
                     supnuevoMerchantId:merchantId
                 }
-            },(json)=> {
+            }).then((json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                     alert(errorMsg);
@@ -496,7 +496,7 @@ class GroupMaintain extends Component{
                         ]
                     );
                 }
-            }, (err) =>{
+            }).catch((err) =>{
                 alert(err);
             });
         }else {

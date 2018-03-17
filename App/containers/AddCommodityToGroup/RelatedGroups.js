@@ -26,7 +26,7 @@ import CheckBox from 'react-native-check-box';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import _ from 'lodash';
 import GoodsInGroup from './GoodsInGroup';
@@ -64,7 +64,7 @@ class RelatedGroups extends Component{
     queryCommodityListByGroupId(groupId,groupNum,groupName,code)
     {
         var sessionId=this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityListOfGroupMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -75,7 +75,7 @@ class RelatedGroups extends Component{
             body:{
                 groupId:groupId
             }
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -103,7 +103,7 @@ class RelatedGroups extends Component{
                     this.redirect2goodsInGroup(info,false);
                 }else{}
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
         });
     }

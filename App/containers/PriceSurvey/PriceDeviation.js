@@ -27,7 +27,7 @@ import Camera from 'react-native-camera';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 var Popover = require('react-native-popover');
 import Quary from '../Query';
 import {setGoodsInfo} from "../../action/actionCreator";
@@ -120,7 +120,7 @@ class PriceDeviation extends Component {
         }
 
 
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/commodity/getSupnuevoBuyerPriceDifferListMobile",
             headers: {
                 'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ class PriceDeviation extends Component {
                 max: max
 
             }
-        }, (json) => {
+        }).then((json) => {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -156,7 +156,9 @@ class PriceDeviation extends Component {
                 }
                 this.quickSort(sortList,0,sortList.length);*/
             }
-        })
+        }).catch((err) => {
+            alert(err);
+        });
     }
 
     getPriceDText_1() {
@@ -167,7 +169,7 @@ class PriceDeviation extends Component {
         if (this.state.first === 1) {
             this.setState({wait: true, showProgress: true, first: 2});
         }
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/commodity/getSupnuevoBuyerPriceDifferListMobileTest",
             headers: {
                 'Content-Type': 'application/json',
@@ -178,7 +180,7 @@ class PriceDeviation extends Component {
                 max: max
 
             }
-        }, (json) => {
+        }).then((json) => {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -197,11 +199,17 @@ class PriceDeviation extends Component {
                     this.state.infoList = [];
                 }
             }
-        })
+        }).catch((err) => {
+            alert(err);
+        });
     }
 
     getPriceDText_2() {
         var infoList = this.state.infoList;
+        if (infoList === null) {
+            this.state.infoList = [];
+            infoList = [];
+        }
         var orderType = this.state.orderType.toString();
         var start = this.state.start;
         var max = this.state.limit;
@@ -209,7 +217,7 @@ class PriceDeviation extends Component {
             this.setState({wait: true, showProgress: true, first: 2, lastend: 0});
         }
         //console.log("发送数据"+start);
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/commodity/getSupnuevoBuyerPriceDifferListMobile",
             headers: {
                 'Content-Type': 'application/json',
@@ -220,35 +228,13 @@ class PriceDeviation extends Component {
                 max: max
 
             }
-        }, (json) => {
+        }).then((json) => {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
             } else {
-                /*var lastend = this.state.lastend;
-                if (lastend === json.start) {
-                    this.state.lastend = lastend + max;
-                    var orderType = this.state.orderType.toString();
-                    if (json.orderType === orderType) {
-                        infoList = infoList.concat(json.priceList);
-                        this.setState({
-                            infoList: infoList,
-                            wait: false,
-                            arrlong: json.priceList.length,
-                            showProgress: false
-                        });
-                    }
-                    else {
-                        this.state.infoList = [];
-                    }
-                }
-                else {
-
-                    this.state.start = lastend;
-                    this.getPriceDText_2();
-                }*/
                 var orderType = this.state.orderType.toString();
-               // console.log("返回数据"+json.start);
+                // console.log("返回数据"+json.start);
                 if (json.orderType === orderType) {
                     infoList = infoList.concat(json.priceList);
                     this.setState({
@@ -262,7 +248,9 @@ class PriceDeviation extends Component {
                     this.state.infoList = [];
                 }
             }
-        })
+        }).catch((err) => {
+            alert(err);
+        });
     }
 
     renderRow(rowData) {
@@ -319,23 +307,25 @@ class PriceDeviation extends Component {
         else {
             this.state.orderType = 0;
         }
-        this.state.infoList = null;
+        this.state.infoList = [];
         this.state.start = 0;
         this.state.first = 1;
         this.getPriceDText_2();
     }
 
     _endReached() {
-        this.state.start += this.state.arrlong;
-        if (this.state.arrlong === this.state.limit)
-            this.getPriceDText_2();
+        if (this.state.infoList.length !== 0) {
+            this.state.start += this.state.arrlong;
+            if (this.state.arrlong === this.state.limit)
+                this.getPriceDText_2();
+        }
     }
 
     render() {
 
         var listView = null;
         var wait = this.state.wait;
-        const infoList = this.state.infoList;
+        var infoList = this.state.infoList;
         if (infoList !== undefined && infoList !== null) {
             var data = infoList;
             var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -349,7 +339,7 @@ class PriceDeviation extends Component {
 
                 />
         } else {
-            this.state.infoList = [];
+            //this.state.infoList = [];
             this.getPriceDText_2();
         }
         return (

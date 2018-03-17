@@ -27,7 +27,7 @@ import PopupDialog from 'react-native-popup-dialog';
 import Camera from 'react-native-camera';
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 var Popover = require('react-native-popover');
 const DEMO_OPTIONS_1 = ['option 1', 'option 2', 'option 3', 'option 4', 'option 5', 'option 6', 'option 7', 'option 8', 'option 9'];
 class Stock extends Component {
@@ -138,7 +138,7 @@ class Stock extends Component {
         var start = this.state.start;
         var state = this.state.state;
         var limit = this.state.limit;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/merchant/getSupnuevoMerchantInfoListOfBuyerMobile",
             headers: {
                 'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ class Stock extends Component {
                 state: state,
                 limit: limit,
             }
-        }, (json) => {
+        }).then((json) => {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -160,19 +160,21 @@ class Stock extends Component {
                 this.setState({infoList: infoList});
                 this.setState({arrlong: arrlong});
             }
-        })
+        }).catch((err) => {
+            alert(err);
+        });
     }
 
     fetchData_Province() {
         // var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/merchant/getSupnuevoProvinceListMobile",
             headers: {
                 'Content-Type': 'application/json',
                 // 'Cookie': sessionId
             },
             body: {}
-        }, (json) => {
+        }).then((json)=> {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -181,14 +183,14 @@ class Stock extends Component {
                 this.setState({provinceList: provinceList});
                 //this.state.provinceList = provinceList;
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }
 
     fetchData_City() {
         var provinceId = this.state.provinceId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/merchant/getSupnuevoCityListMobile",
             headers: {
                 'Content-Type': 'application/json',
@@ -196,7 +198,7 @@ class Stock extends Component {
             body: {
                 provinceId: provinceId
             }
-        }, (json) => {
+        }).then((json)=> {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -204,20 +206,20 @@ class Stock extends Component {
                 var cityList = json.data;
                 this.setState({cityList: cityList});
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }
 
     fetchData_Zhonglei() {
         var zhongleiList = this.state.zhongleiList;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/merchant/getSupnuevoCommodityRubroList",
             headers: {
                 'Content-Type': 'application/json',
             },
             body: {}
-        }, (json) => {
+        }).then((json)=> {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -225,7 +227,7 @@ class Stock extends Component {
                 zhongleiList = json.data;
                 this.setState({zhongleiList: zhongleiList});
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }

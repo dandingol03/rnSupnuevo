@@ -18,7 +18,7 @@ import  {
     TouchableOpacity,
     ListView
 } from 'react-native';
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import {connect} from 'react-redux';
 import Config from '../../../config';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -93,7 +93,7 @@ class ConcernOfferCompany extends Component {
        // var sessionId = this.props.sessionId;
         var state = 0;
         var merchantId = this.state.merchantId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + '/func/merchant/setBuyerSellerStateMobile',
             headers: {
                 'Content-Type': 'application/json',
@@ -103,14 +103,14 @@ class ConcernOfferCompany extends Component {
                 sellerId: merchantId,
                 state: state,
             }
-        }, (json) => {
+        }).then((json) => {
             var errorMsg = json.errorMsg;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
             } else {
                 alert("成功不再关注");
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }
@@ -119,7 +119,7 @@ class ConcernOfferCompany extends Component {
         var state = 2;
        // var sessionId = this.props.sessionId;
         var merchantId = this.state.merchantId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + '/func/merchant/setBuyerSellerStateMobile',
             headers: {
                 'Content-Type': 'application/json',
@@ -129,14 +129,14 @@ class ConcernOfferCompany extends Component {
                 sellerId: merchantId,
                 state: state,
             }
-        }, (json) => {
+        }).then((json) => {
             var errorMsg = json.errorMsg;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
             } else {
                 alert("成功拉入我的供应商");
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }
@@ -145,7 +145,7 @@ class ConcernOfferCompany extends Component {
         var start = this.state.start;
         var merchantId = this.state.merchantId;
         var limit = this.state.limit;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/merchant/getCommodityLabelListofSellerMobile",
             headers: {
                 'Content-Type': 'application/json',
@@ -155,7 +155,7 @@ class ConcernOfferCompany extends Component {
                 start: start,
                 limit: limit,
             }
-        }, (json) => {
+        }).then((json) => {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -165,7 +165,7 @@ class ConcernOfferCompany extends Component {
                 var arrlong = json.data.length;
                 this.setState({infoList: infoList,arrlong: arrlong});
             }
-        })
+        }).catch((err)=>{alert(err);});
     }
 
     _endReached() {

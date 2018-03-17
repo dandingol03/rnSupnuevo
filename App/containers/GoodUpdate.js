@@ -27,7 +27,7 @@ import ActionSheet from 'react-native-actionsheet';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../proxy/Proxy');
+var proxy = require('../proxy/Proxy');
 import Config from '../../config';
 
 
@@ -88,7 +88,7 @@ class GoodUpdate extends Component {
             this.setState({wait:true,bgColor:'#D4D4D4'});
 
             var sessionId = this.props.sessionId;
-            Proxy.post({
+            proxy.postes({
                 url: Config.server + '/func/commodity/saveOrUpdateSupnuevoCommonCommodityMobile',
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -108,7 +108,7 @@ class GoodUpdate extends Component {
                     sizeUnited: this.state.selectedCodeInfo.sizeUnit,
                     scaleUnited: this.state.selectedCodeInfo.scaleUnit
                 }
-            }, (json) => {
+            }).then((json)=> {
                 var errorMsg = json.errorMsg;
                 var message = json.message;
                 this.setState({wait:false,bgColor:'#11c1f3'});
@@ -120,7 +120,7 @@ class GoodUpdate extends Component {
                     this.goBack();
                 }
 
-            }, (err) => {
+            }).catch((err) => {
                 this.setState({wait:false,bgColor:'#11c1f3'});
                 alert(err);
             });
@@ -155,7 +155,7 @@ class GoodUpdate extends Component {
             this.setState({selectedCodeInfo: selectedCodeInfo});
         }
         var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + '/func/commodity/getSupnuevoScaleInfoListMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -167,7 +167,7 @@ class GoodUpdate extends Component {
                 sizeUnit: sizeUnit,
                 merchantId: this.state.merchantId
             }
-        }, (json) => {
+        }).then((json)=> {
             var scaleArr = new Array();
             json.scaleArr.map(function (index, i) {
                 scaleArr.push(index);
@@ -175,7 +175,7 @@ class GoodUpdate extends Component {
 
             this.setState({scaleArr: scaleArr});
 
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }
@@ -249,7 +249,7 @@ class GoodUpdate extends Component {
 
         return (
             <View style={{flex: 1}}>
-
+                <ScrollView>
                 {/* header bar */}
                 <View style={[{
                     backgroundColor: '#387ef5',
@@ -274,7 +274,7 @@ class GoodUpdate extends Component {
                 </View>
 
                 {/* body */}
-                <ScrollView>
+
                 <View style={{padding: 10, marginTop: 20}}>
 
 

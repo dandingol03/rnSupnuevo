@@ -17,7 +17,7 @@ import  {
     ListView,
     TouchableOpacity
     } from 'react-native';
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import {connect} from 'react-redux';
 import Config from '../../../config';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -47,7 +47,7 @@ class Bigpic extends Component {
 
     fetchData() {
         var attachId = this.state.attachId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/merchant/getImageByAttachIdMobile",
             headers: {
                 'Content-Type': 'application/json',
@@ -55,7 +55,7 @@ class Bigpic extends Component {
             body: {
                 attachId: attachId
             }
-        }, (json) => {
+        }).then((json)=> {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -63,7 +63,7 @@ class Bigpic extends Component {
                 var img = json.data;
                 this.setState({img: img});
             }
-        })
+        }).catch((err)=>{alert(err);});
     }
 
     render() {

@@ -27,7 +27,7 @@ import CheckBox from 'react-native-check-box';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import _ from 'lodash';
 
@@ -122,7 +122,7 @@ class GoodsInGroup extends Component{
         const {groupInfo}=this.state;
         if(groupInfo&&groupInfo.groupId!==undefined&&groupInfo.groupId!==null)
         {
-            Proxy.post({
+            proxy.postes({
                 url:Config.server+"/func/commodity/removeSupnuevoCommodityFromGroupMobile",
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -134,7 +134,7 @@ class GoodsInGroup extends Component{
                     commodityIds:commodityIds.toString(),
                     groupId:groupInfo.groupId
                 }
-            },(json)=> {
+            }).then((json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                     alert(errorMsg);
@@ -152,7 +152,7 @@ class GoodsInGroup extends Component{
                     );
 
                 }
-            }, (err) =>{
+            }).catch((err) =>{
                 alert(err);
 
             });
@@ -251,7 +251,7 @@ class GoodsInGroup extends Component{
                         <View style={{flex:1,flexDirection:'row',justifyContent:'flex-start'}}>
 
                             <View style={{flex:10,flexDirection:'row',justifyContent:'center',alignItems:'center',
-                                            borderColor:'#aaa',borderWidth:1,borderRightWidth:0,padding:8}}>
+                                            borderColor:'#aaa',borderWidth:1,padding:8}}>
                                 <Text style={{color:'#222'}}>
                                     商品信息
                                 </Text>
@@ -280,7 +280,7 @@ class GoodsInGroup extends Component{
                     {/* header bar */}
                     <View style={[{backgroundColor:'#387ef5',padding:8,paddingTop:20,justifyContent: 'center',alignItems: 'center',flexDirection:'row'},styles.card]}>
 
-                        <TouchableOpacity style={{flex:1,paddingTop:20,paddingBottom:5,marginRight:2,flexDirection:'row',justifyContent:'center',alignItems: 'center'}}
+                        <TouchableOpacity style={{flex:1,paddingTop:10,paddingBottom:5,marginRight:2,flexDirection:'row',justifyContent:'center',alignItems: 'center'}}
                                           onPress={()=>{
                                               this.goBack();
                                           }}>

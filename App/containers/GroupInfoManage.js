@@ -26,7 +26,7 @@ import _ from 'lodash';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../proxy/Proxy');
+var proxy = require('../proxy/Proxy');
 import Config from '../../config';
 import CodesModal from '../components/modal/CodesModal';
 
@@ -164,7 +164,7 @@ class GroupInfoManage extends Component {
         const {merchantId} = this.props;
         //TODO:make a fetch
         var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + '/func/commodity/updateSupnuevoBuyerCommodityPriceGroupMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -183,7 +183,7 @@ class GroupInfoManage extends Component {
                 printType: goodInfo.printType,
                 price: goodInfo.price
             }
-        }, (json) => {
+        }).then((json)=> {
             var errorMsg = json.errorMsg;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -197,7 +197,7 @@ class GroupInfoManage extends Component {
                     ]
                 );
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
 
@@ -209,7 +209,7 @@ class GroupInfoManage extends Component {
         const {groupInfo} = this.props;
         var code = this.state.selectedCodeInfo;
         var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/commodity/addSupnuevoCommodityIntoGroupMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -221,7 +221,7 @@ class GroupInfoManage extends Component {
                 commodityId: code.commodityId,
                 groupId: groupInfo.groupId
             }
-        }, (json) => {
+        }).then((json)=> {
             var errorMsg = json.errorMsg;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -237,7 +237,7 @@ class GroupInfoManage extends Component {
                     );
                 }
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
 
         });
@@ -248,7 +248,7 @@ class GroupInfoManage extends Component {
         var commodityIds = [commodityId];
         var sessionId = this.props.sessionId;
         const {groupInfo} = this.props;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/commodity/removeSupnuevoCommodityFromGroupMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -260,7 +260,7 @@ class GroupInfoManage extends Component {
                 commodityIds: commodityIds,
                 groupId: groupInfo.groupId
             }
-        }, (json) => {
+        }).then((json)=> {
             var errorMsg = json.errorMsg;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -276,7 +276,7 @@ class GroupInfoManage extends Component {
                     );
                 }
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
 
         });
@@ -292,7 +292,7 @@ class GroupInfoManage extends Component {
         const {groupInfo} = this.props;
         var sessionId = this.props.sessionId;
         if (groupName !== undefined && groupName !== null && groupName != '') {
-            Proxy.post({
+            proxy.postes({
                 url: Config.server + '/func/commodity/saveOrUpdateSupnuevoBuyerCommodityGroupMobile',
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -305,7 +305,7 @@ class GroupInfoManage extends Component {
                     groupId: groupInfo.groupId,
                     supnuevoMerchantId: merchantId
                 }
-            }, (json) => {
+            }).then((json)=> {
                 var errorMsg = json.errorMsg;
                 if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                     alert(errorMsg);
@@ -318,7 +318,7 @@ class GroupInfoManage extends Component {
                         ]
                     );
                 }
-            }, (err) => {
+            }).catch((err) => {
                 alert(err);
             });
         } else {
@@ -358,7 +358,7 @@ class GroupInfoManage extends Component {
         var codigo = parseInt(codigo);
         const {merchantId} = this.props;
         var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + '/func/commodity/getSupnuevoCommonCommodityListByLastFourCodigoMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -370,7 +370,7 @@ class GroupInfoManage extends Component {
                 codigo: codigo,
                 merchantId: merchantId
             }
-        }, (json) => {
+        }).then((json)=> {
             var errorMsg = json.errorMsg;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -378,7 +378,7 @@ class GroupInfoManage extends Component {
                 var codes = json.array;
                 this.setState({codes: codes, codesModalVisible: true});
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }

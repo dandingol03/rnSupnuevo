@@ -19,7 +19,7 @@ import {
     InteractionManager
     } from 'react-native';
 import Config from '../../config';
-var Proxy = require('../proxy/Proxy');
+var proxy = require('../proxy/Proxy');
 import { connect } from 'react-redux';
 var { height, width } = Dimensions.get('window');
 import ViewPager from 'react-native-viewpager';
@@ -63,13 +63,13 @@ class AdvertiseMent extends Component {
         var advName = this.state.advName;
         var advbreif = this.state.advbreif;
         var attachIdList = this.state.attachIdList;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/merchant/getAdvertisementListMobile",
             headers: {
                 'Content-Type': 'application/json',
             },
             body: {}
-        }, (json) => {
+        }).then((json)=> {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -79,11 +79,11 @@ class AdvertiseMent extends Component {
                 attachIdList = json.data[0].attachIdList;
                 this.setState({advList: advList, advbreif: advbreif, attachIdList: attachIdList});
             }
-        })
+        }).catch((err)=>{alert(err);});
     }
 
     fetchAdvPic(attachId) {
-        Proxy.postes({
+        proxy.postes({
             url: Config.server + "/func/merchant/getImageByAttachIdMobile",
             headers: {
                 'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ class AdvertiseMent extends Component {
     }
 
     fetchAdvPic_List(attachIdList) {
-        Proxy.postes({
+        proxy.postes({
             url: Config.server + "/func/merchant/getImagesByAttachIdListMobile",
             headers: {
                 'Content-Type': 'application/json',

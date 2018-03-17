@@ -26,7 +26,7 @@ import DatePicker from 'react-native-datepicker';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import MultiPrices from './MultiPrices';
 
@@ -61,7 +61,7 @@ class PriceCodes extends Component{
         const merchantId=this.props.merchantId;
         var commodityId=code.commodityId;
         var sessionId=this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url:Config.server+"/func/commodity/getAreaGroupPriceByCommodityIdMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -73,7 +73,7 @@ class PriceCodes extends Component{
                 commodityId:commodityId,
                 merchantId:merchantId
             }
-        },(json)=> {
+        }).then((json)=> {
             var o = json;
             var errorMsg=json.message;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
@@ -82,7 +82,7 @@ class PriceCodes extends Component{
                 this.navigateMultiPrices(o,count);
             }
 
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
             this.setState({codigo:codigo});
         });

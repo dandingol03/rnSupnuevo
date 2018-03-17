@@ -27,7 +27,7 @@ import ScrollableTabView,{DefaultTabBar,ScrollableTabBar} from 'react-native-scr
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import ActionSheet from 'react-native-actionsheet';
 
@@ -94,7 +94,7 @@ class MultiPrices extends Component{
                     break;
             }
         }
-        Proxy.post({
+        proxy.postes({
             url:Config.server+"/func/commodity/setAreaGroupPriceByPriceIdMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -111,7 +111,7 @@ class MultiPrices extends Component{
                 storeId:this.state.storeId,
                 modifyType:this.state.modifyType
             }
-        },(json)=> {
+        }).then((json)=> {
             var o = json;
             var message=json.message;
             if(message !== null && message !== undefined && message !== ""){
@@ -119,7 +119,7 @@ class MultiPrices extends Component{
                 this.navigatePriceSurvey();
             }
 
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
         });
     }

@@ -26,7 +26,7 @@ import PopupDialog from 'react-native-popup-dialog';
 import Camera from 'react-native-camera';
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 var Popover = require('react-native-popover');
 
 class MyConcernOffer extends Component {
@@ -116,7 +116,7 @@ class MyConcernOffer extends Component {
         var state = this.state.state;
         var limit = this.state.limit;
         // var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/merchant/getSupnuevoMerchantInfoListOfBuyerMobile",
             headers: {
                 'Content-Type': 'application/json',
@@ -127,7 +127,7 @@ class MyConcernOffer extends Component {
                 state: state,
                 limit: limit,
             }
-        }, (json) => {
+        }).then((json) => {
             var o = json;
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
@@ -139,20 +139,20 @@ class MyConcernOffer extends Component {
                 this.setState({infoList: infoList});
                 this.setState({arrlong: arrlong});
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }
 
     fetchData_Zhonglei() {
         var zhongleiList = this.state.zhongleiList;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/merchant/getSupnuevoCommodityRubroList",
             headers: {
                 'Content-Type': 'application/json',
             },
             body: {}
-        }, (json) => {
+        }).then((json) => {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -160,21 +160,21 @@ class MyConcernOffer extends Component {
                 zhongleiList = json.data;
                 this.setState({zhongleiList: zhongleiList});
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }
 
     fetchData_Province() {
         var sessionId = this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/merchant/getSupnuevoProvinceListMobile",
             headers: {
                 'Content-Type': 'application/json',
                // 'Cookie': sessionId
             },
             body: {}
-        }, (json) => {
+        }).then((json) => {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -183,7 +183,7 @@ class MyConcernOffer extends Component {
                 this.setState({provinceList: provinceList});
                 //this.state.provinceList = provinceList;
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }
@@ -191,7 +191,7 @@ class MyConcernOffer extends Component {
     fetchData_City() {
         var sessionId = this.props.sessionId;
         var provinceId = this.state.provinceId;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/merchant/getSupnuevoCityListMobile",
             headers: {
                 'Content-Type': 'application/json',
@@ -200,7 +200,7 @@ class MyConcernOffer extends Component {
             body: {
                 provinceId: provinceId
             }
-        }, (json) => {
+        }).then((json) => {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -209,7 +209,7 @@ class MyConcernOffer extends Component {
                 this.setState({cityList: cityList});
                 //this.state.cityList = cityList;
             }
-        }, (err) => {
+        }).catch((err) => {
             alert(err);
         });
     }

@@ -28,7 +28,7 @@ import CheckBox from 'react-native-check-box';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import _ from 'lodash';
 import CodesModal from '../../components/modal/CodesModal';
@@ -210,7 +210,7 @@ class GroupQueryNotInGroup extends Component{
             //body="codigo=" + codigo + "&supnuevoMerchantId=" + merchantId;
 
 
-        Proxy.post({
+        proxy.postes({
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -218,7 +218,7 @@ class GroupQueryNotInGroup extends Component{
                 //'Cookie':sessionId,
             },
             body: body
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -264,7 +264,7 @@ class GroupQueryNotInGroup extends Component{
                     }
                 }
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
             this.setState({query:query});
         });
@@ -278,7 +278,7 @@ class GroupQueryNotInGroup extends Component{
         var code = parseInt(codeNum);
         const { merchantId } = this.props;
         var sessionId=this.props.sessionId;
-        Proxy.post({
+        proxy.postes({
             url:Config.server+'/func/commodity/getSupnuevoCommonCommodityListByLastFourCodigoMobile',
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -290,7 +290,7 @@ class GroupQueryNotInGroup extends Component{
                 codigo:code,
                 merchantId:merchantId
             }
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -298,7 +298,7 @@ class GroupQueryNotInGroup extends Component{
                 var codes=json.array;
                 this.setState({codes: codes,codesModalVisible:true});
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
         });
     }
@@ -311,7 +311,7 @@ class GroupQueryNotInGroup extends Component{
         var sessionId=this.props.sessionId;
         if(groupInfo&&groupInfo.groupId!==undefined&&groupInfo.groupId!==null)
         {
-            Proxy.post({
+            proxy.postes({
                 url:Config.server+"/func/commodity/removeSupnuevoCommodityFromGroupMobile",
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -323,7 +323,7 @@ class GroupQueryNotInGroup extends Component{
                     commodityIds:commodityIds.toString(),
                     groupId:groupInfo.groupId
                 }
-            },(json)=> {
+            }).then((json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                     alert(errorMsg);
@@ -344,7 +344,7 @@ class GroupQueryNotInGroup extends Component{
                     );
 
                 }
-            }, (err) =>{
+            }).catch((err) =>{
                 alert(err);
 
             });
@@ -371,7 +371,7 @@ class GroupQueryNotInGroup extends Component{
         if(code&&code.codigo)
         {
 
-            Proxy.post({
+            proxy.postes({
                 url:Config.server+"/func/commodity/addSupnuevoCommodityIntoGroupMobile",
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -384,7 +384,7 @@ class GroupQueryNotInGroup extends Component{
                     groupId:groupId,
                     supnuevoMerchantId:merchantId
                 }
-            },(json)=> {
+            }).then((json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                     alert(errorMsg);
@@ -407,7 +407,7 @@ class GroupQueryNotInGroup extends Component{
                         );
                     }
                 }
-            }, (err) =>{
+            }).catch((err) =>{
                 alert(err);
 
             });
@@ -436,7 +436,7 @@ class GroupQueryNotInGroup extends Component{
             if(code&&code.codigo)
             {
                 var codigo=code.codigo;
-                Proxy.post({
+                proxy.postes({
                     url:Config.server+"/func/commodity/addSupnuevoBuyerCommodityGroupMobile",
                     headers: {
                         //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -449,7 +449,7 @@ class GroupQueryNotInGroup extends Component{
                         groupName:groupName,
                         supnuevoMerchantId:merchantId
                     }
-                },(json)=> {
+                }).then((json)=> {
                     var errorMsg=json.errorMsg;
                     if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                         alert(errorMsg);
@@ -472,7 +472,7 @@ class GroupQueryNotInGroup extends Component{
                             );
                         }
                     }
-                }, (err) =>{
+                }).catch((err) =>{
                     alert(err);
 
                 });
@@ -504,7 +504,7 @@ class GroupQueryNotInGroup extends Component{
         if(groupName!==undefined&&groupName!==null&&groupName!='')
         {
             var sessionId=this.props.sessionId;
-            Proxy.post({
+            proxy.postes({
                 url:Config.server+'/func/commodity/saveOrUpdateSupnuevoBuyerCommodityGroupMobile',
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -518,7 +518,7 @@ class GroupQueryNotInGroup extends Component{
                     groupId:'',
                     supnuevoMerchantId:merchantId
                 }
-            },(json)=> {
+            }).then((json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                     alert(errorMsg);
@@ -531,7 +531,7 @@ class GroupQueryNotInGroup extends Component{
                         ]
                     );
                 }
-            }, (err) =>{
+            }).catch((err) =>{
                 alert(err);
             });
         }else {

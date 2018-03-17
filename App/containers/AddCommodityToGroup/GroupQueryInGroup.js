@@ -28,7 +28,7 @@ import CheckBox from 'react-native-check-box';
 
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 import Config from '../../../config';
 import _ from 'lodash';
 
@@ -135,7 +135,7 @@ class GroupQueryInGroup extends Component{
                 supnuevoMerchantId:merchantId
             }
 
-        Proxy.post({
+        proxy.postes({
             url:Config.server+"/func/commodity/getSupnuevoCommonCommodityGroupListByCodigoMobile",
             headers: {
                 //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -143,7 +143,7 @@ class GroupQueryInGroup extends Component{
                 //'Cookie':sessionId,
             },
             body: body
-        },(json)=> {
+        }).then((json)=> {
             var errorMsg=json.errorMsg;
             if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                 alert(errorMsg);
@@ -174,7 +174,7 @@ class GroupQueryInGroup extends Component{
                     this.setState({groupArr: data,query:query,code:code});
                 }
             }
-        }, (err) =>{
+        }).catch((err) =>{
             alert(err);
             this.setState({query:query});
         });
@@ -193,7 +193,7 @@ class GroupQueryInGroup extends Component{
         const {groupInfo}=this.state;
         if(groupInfo&&groupInfo.groupId!==undefined&&groupInfo.groupId!==null)
         {
-            Proxy.post({
+            proxy.postes({
                 url:Config.server+"/func/commodity/removeSupnuevoCommodityFromGroupMobile",
                 headers: {
                     //'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
@@ -205,7 +205,7 @@ class GroupQueryInGroup extends Component{
                     commodityIds:commodityIds.toString(),
                     groupId:groupInfo.groupId
                 }
-            },(json)=> {
+            }).then((json)=> {
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                     alert(errorMsg);
@@ -225,7 +225,7 @@ class GroupQueryInGroup extends Component{
                     );
 
                 }
-            }, (err) =>{
+            }).catch((err) =>{
                 alert(err);
 
             });

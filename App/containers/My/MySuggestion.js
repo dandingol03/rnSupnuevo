@@ -16,7 +16,7 @@ import  {
 import {connect} from 'react-redux';
 import Config from '../../../config';
 import Icon from 'react-native-vector-icons/FontAwesome';
-var Proxy = require('../../proxy/Proxy');
+var proxy = require('../../proxy/Proxy');
 var Dimensions = require('Dimensions');
 var {height, width} = Dimensions.get('window');
 
@@ -38,7 +38,7 @@ class MySuggestion extends Component {
 
     subsuggestion() {
         var suggestion = this.state.suggestion;
-        Proxy.post({
+        proxy.postes({
             url: Config.server + "/func/merchant/submitSupnuevoMerchantQuestionInfoMobile",
             headers: {
                 'Content-Type': 'application/json',
@@ -46,7 +46,7 @@ class MySuggestion extends Component {
             body: {
                 content: suggestion
             }
-        }, (json) => {
+        }).then((json)=> {
             var errorMsg = json.message;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -55,7 +55,7 @@ class MySuggestion extends Component {
                 alert('提交成功');
                 this.navigatorMy();
             }
-        });
+        }).catch((err)=>{alert(err);});
     }
 
     navigatorMy() {
