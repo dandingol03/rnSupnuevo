@@ -487,13 +487,14 @@ class Query extends Component {
             var codigo = this.state.selectedCodeInfo.codigo.toString();
             var printType = this.state.selectedCodeInfo.printType.toString();
             var code = {codigo: codigo};
+
             // var sessionId = this.props.sessionId;
 
             const {merchantId} = this.props;
             //  alert(merchantId,codigo,printType);
 
             if (priceShow !== null && priceShow !== undefined && priceShow !== '') {
-
+                this.setState({wait:true, bgColor: '#D4D4D4'});
                 proxy.postes({
                     url: Config.server + '/func/commodity/saveOrUpdateSupnuevoBuyerCommodityPriceMobile',
                     headers: {
@@ -510,6 +511,7 @@ class Query extends Component {
                         codigo: codigo
                     }
                 }).then((json)=> {
+                    this.setState({wait:false, bgColor: '#387ef5'});
                     //alert(1);
                     var errorMsg = json;
                     if (errorMsg === null && errorMsg === undefined) {
@@ -577,8 +579,10 @@ class Query extends Component {
         this.state = {
             Gsuggestlevel: null,
             uploadModalVisible: false,
+            bgColor: '#387ef5',
             flag: 1,
             goods: {},
+            wait:false,
             codesModalVisible: false,
             codigo: null,
             selectedCodeInfo: {},
@@ -1333,9 +1337,10 @@ class Query extends Component {
 
                         <View style={[styles.row, {borderBottomWidth: 0, height: 50, marginTop: 12}]}>
                             <TouchableOpacity style={{
-                                flex: 1, flexDirection: 'row', justifyContent: 'center', backgroundColor: '#387ef5',
+                                flex: 1, flexDirection: 'row', justifyContent: 'center', backgroundColor:this.state.bgColor,
                                 marginRight: .5, borderTopLeftRadius: 4, borderBottomLeftRadius: 4, alignItems: 'center'
                             }}
+                                              disabled={this.state.wait}
                                               onPress={
                                                   () => {
                                                       this.savePrice();

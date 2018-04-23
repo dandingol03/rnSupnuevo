@@ -167,7 +167,7 @@ class Group extends Component {
                 onClick={() => {
                     var relatedGoods0 = _.cloneDeep(this.state.relatedGoods0);
                     relatedGoods0.map(function (good, i) {
-                        if (good.commodity == rowData.commodity)
+                        if (good.commodityId == rowData.commodityId)
                             good.checked = false;
                     });
                     this.setState({
@@ -184,7 +184,7 @@ class Group extends Component {
                 onClick={() => {
                     var relatedGoods0 = _.cloneDeep(this.state.relatedGoods0);
                     relatedGoods0.map(function (good, i) {
-                        if (good.commodity == rowData.commodity)
+                        if (good.commodityId == rowData.commodityId)
                             good.checked = true;
                     });
                     this.setState({
@@ -311,7 +311,7 @@ class Group extends Component {
                 onClick={() => {
                     var relatedGoods1 = _.cloneDeep(this.state.relatedGoods1);
                     relatedGoods1.map(function (good, i) {
-                        if (good.commodity == rowData.commodity)
+                        if (good.commodityId == rowData.commodityId)
                             good.checked = false;
                     });
                     this.setState({
@@ -328,7 +328,7 @@ class Group extends Component {
                 onClick={() => {
                     var relatedGoods1 = _.cloneDeep(this.state.relatedGoods1);
                     relatedGoods1.map(function (good, i) {
-                        if (good.commodity == rowData.commodity)
+                        if (good.commodityId == rowData.commodityId)
                             good.checked = true;
                     });
                     this.setState({
@@ -418,8 +418,7 @@ class Group extends Component {
                 </TouchableOpacity>
 
             </View>;
-
-        return row;
+    return row;
     }
 
     changePriceRelated() {
@@ -439,6 +438,7 @@ class Group extends Component {
         const {goodInfo} = this.props;
         const {merchantId} = this.props;
         var sessionId = this.props.sessionId;
+        this.setState({wait:true,bgColor:"#D4D4D4"});
         //TODO:make a fetch
 
         proxy.postes({
@@ -461,6 +461,7 @@ class Group extends Component {
                 price: goodInfo.price
             }
         }).then((json) => {
+            this.setState({wait:false,bgColor:"#3b5998"});
             var errorMsg = json.errorMsg;
             if (errorMsg !== null && errorMsg !== undefined && errorMsg !== "") {
                 alert(errorMsg);
@@ -486,6 +487,8 @@ class Group extends Component {
         const ds0 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         const ds1 = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
         this.state = {
+            bgColor:"#3b5998",
+            wait:false,
             merchantId: props.merchantId,
             goodInfo: props.goodInfo,
             relatedGoods0: null,
@@ -570,7 +573,7 @@ class Group extends Component {
                             marginRight: 0,
                             flexDirection: 'row',
                             justifyContent: 'flex-end',
-                            backgroundColor: "#3b5998",
+                            backgroundColor: this.state.bgColor,
                             alignItems: 'center',
                             paddingLeft: 20,
                             paddingRight: 4,
@@ -578,6 +581,7 @@ class Group extends Component {
                             paddingBottom: 4,
                             borderRadius: 6
                         }}
+                                          disabled={this.state.wait}
                                           onPress={function () {
                                               this.changePriceRelated();
                                           }.bind(this)}>

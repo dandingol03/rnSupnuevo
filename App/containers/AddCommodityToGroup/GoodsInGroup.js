@@ -65,8 +65,11 @@ class GoodsInGroup extends Component{
                 onClick={()=>{
                       var groupInfoArray=_.cloneDeep(this.state.groupInfoArray);
                       groupInfoArray.map(function(good,i) {
-                        if(good.commodity==rowData.commodity)
+                        if(good.commodityId==rowData.commodityId){
                             good.checked=false;
+                            console.log(good.commodity+"*****1********"+rowData.commodity);
+                        }
+
                       });
                        this.setState({groupInfoArray: groupInfoArray,dataSource:this.state.dataSource.cloneWithRows(groupInfoArray)});
                 }}
@@ -79,8 +82,12 @@ class GoodsInGroup extends Component{
                 onClick={()=>{
                       var groupInfoArray=_.cloneDeep(this.state.groupInfoArray);
                       groupInfoArray.map(function(good,i) {
-                        if(good.commodity==rowData.commodity)
+                        if(good.commodityId==rowData.commodityId){
                             good.checked=true;
+                            console.log(good.commodity+"*****2********"+rowData.commodity);
+                        }
+
+
                       });
                        this.setState({groupInfoArray: groupInfoArray,dataSource:this.state.dataSource.cloneWithRows(groupInfoArray)});
 
@@ -122,6 +129,7 @@ class GoodsInGroup extends Component{
         const {groupInfo}=this.state;
         if(groupInfo&&groupInfo.groupId!==undefined&&groupInfo.groupId!==null)
         {
+            this.setState({wait:true,bgColor:"#D4D4D4"});
             proxy.postes({
                 url:Config.server+"/func/commodity/removeSupnuevoCommodityFromGroupMobile",
                 headers: {
@@ -135,6 +143,7 @@ class GoodsInGroup extends Component{
                     groupId:groupInfo.groupId
                 }
             }).then((json)=> {
+                this.setState({wait:false,bgColor:"#3536ff"});
                 var errorMsg=json.errorMsg;
                 if(errorMsg !== null && errorMsg !== undefined && errorMsg !== ""){
                     alert(errorMsg);
@@ -172,6 +181,8 @@ class GoodsInGroup extends Component{
     {
         super(props);
         this.state = {
+            wait:false,
+            bgColor:"#3536ff",
             merchantId:props.merchantId,
             query:{},
             groupInfo:props.groupInfo,
@@ -226,10 +237,11 @@ class GoodsInGroup extends Component{
                     </View>
 
                     <TouchableOpacity style={{borderBottomWidth:0,flex:3,flexDirection:'row',justifyContent:'flex-end',alignItems:'center',marginLeft:5,padding:4}}
+                                      disabled={this.state.wait}
                                       onPress={()=>{
                                     this.commodityGroupRemove(this.state.groupInfoArray);
                                 }}>
-                        <View style={{backgroundColor:'#3536ff',padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
+                        <View style={{backgroundColor:this.state.bgColor,padding:8,paddingLeft:12,paddingRight:12,borderRadius:8}}>
                             <Text style={{color:'#fff',fontSize:14}}>从组中移除</Text>
                         </View>
 

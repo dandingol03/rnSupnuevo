@@ -69,7 +69,7 @@ class GroupQueryInGroup extends Component{
                 onClick={()=>{
                       var groupInfoArray=_.cloneDeep(this.state.groupInfoArray);
                       groupInfoArray.map(function(good,i) {
-                        if(good.commodity==rowData.commodity)
+                        if(good.commodityId==rowData.commodityId)
                             good.checked=false;
                       });
                        this.setState({groupInfoArray: groupInfoArray,dataSource:this.state.dataSource.cloneWithRows(groupInfoArray)});
@@ -83,7 +83,7 @@ class GroupQueryInGroup extends Component{
                 onClick={()=>{
                       var groupInfoArray=_.cloneDeep(this.state.groupInfoArray);
                       groupInfoArray.map(function(good,i) {
-                        if(good.commodity==rowData.commodity)
+                        if(good.commodityId==rowData.commodityId)
                             good.checked=true;
                       });
                        this.setState({groupInfoArray: groupInfoArray,dataSource:this.state.dataSource.cloneWithRows(groupInfoArray)});
