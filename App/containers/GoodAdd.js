@@ -57,8 +57,14 @@ class GoodAdd extends Component {
                 alert("商品条码不能为空");
                 return false;
             }
-            if (this.state.newGoodInfo.codigo !== null || this.state.newGoodInfo.codigo !== undefined || this.state.newGoodInfo.codigo !== '') {
+            /*if (this.state.newGoodInfo.codigo !== null || this.state.newGoodInfo.codigo !== undefined || this.state.newGoodInfo.codigo !== '') {
                 if (this.state.newGoodInfo.codigo.length !== 8 && this.state.newGoodInfo.codigo.length !== 13) {
+                    alert("商品条码位数错误");
+                    return false;
+                }
+            }*/
+            if (this.state.newGoodInfo.codigo !== null || this.state.newGoodInfo.codigo !== undefined || this.state.newGoodInfo.codigo !== '') {
+                if (this.state.newGoodInfo.codigo.length < 4 ) {
                     alert("商品条码位数错误");
                     return false;
                 }
